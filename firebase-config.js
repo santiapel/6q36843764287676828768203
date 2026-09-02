@@ -13,21 +13,21 @@
 
 export const firebaseConfig = {
 
-    apiKey: "PEGAR_API_KEY_AQUI",
+    apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
 
     authDomain:
-        "TU_PROJECT_ID.firebaseapp.com",
+        "banco-de-mama.firebaseapp.com",
 
     projectId:
-        "TU_PROJECT_ID",
+        "banco-de-mama",
 
     storageBucket:
-        "TU_PROJECT_ID.firebasestorage.app",
+        "banco-de-mama.firebasestorage.app",
 
     messagingSenderId:
-        "TU_MESSAGING_SENDER_ID",
+        "551441991939",
 
     appId:
-        "TU_APP_ID"
+        "1:551441991939:web:e1b7e5901bc51d86b44136"
 
 };
