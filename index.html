@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Mom Coin Wallet - Billetera digital personal"
+    >
+
+    <title>Mom Coin Wallet</title>
+
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         AUTH SCREEN
+    ========================== -->
+
+    <div id="auth-screen" class="screen auth-screen">
+
+        <div class="auth-container">
+
+            <div class="brand-mark">
+                <span>MC</span>
+            </div>
+
+            <div class="auth-content">
+
+                <p class="eyebrow">
+                    MOM COIN
+                </p>
+
+                <h1>
+                    Tu dinero.<br>
+                    <span>Más simple.</span>
+                </h1>
+
+                <p class="auth-description">
+                    Gestioná tu saldo y consultá tus movimientos
+                    desde una billetera rápida y segura.
+                </p>
+
+                <button
+                    id="google-login"
+                    class="google-button"
+                    type="button"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path
+                            fill="#4285F4"
+                            d="M21.35 12.23c0-.79-.07-1.55-.23-2.23H12v4.22h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.38Z"
+                        />
+                        <path
+                            fill="#34A853"
+                            d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.74 9.74 0 0 0 12 21.5Z"
+                        />
+                        <path
+                            fill="#FBBC05"
+                            d="M6.54 13.58A5.85 5.85 0 0 1 6.23 12c0-.55.1-1.08.31-1.58V7.89H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.05 4.11l3.24-2.53Z"
+                        />
+                        <path
+                            fill="#EA4335"
+                            d="M12 6.39c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.83 3.46 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.7 5.39l3.24 2.53C7.31 8.11 9.46 6.39 12 6.39Z"
+                        />
+                    </svg>
+
+                    <span>
+                        Continuar con Google
+                    </span>
+                </button>
+
+                <p class="auth-note">
+                    Acceso seguro mediante Google Authentication
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         APP
+    ========================== -->
+
+    <div id="app-screen" class="screen app-screen hidden">
+
+        <header class="navbar">
+
+            <div class="navbar-inner">
+
+                <a class="logo" href="#">
+                    <span class="logo-icon">MC</span>
+
+                    <span class="logo-text">
+                        Mom Coin
+                    </span>
+                </a>
+
+                <div class="navbar-actions">
+
+                    <button
+                        id="logout-button"
+                        class="logout-button"
+                        type="button"
+                    >
+                        Cerrar sesión
+                    </button>
+
+                    <button
+                        id="profile-button"
+                        class="avatar-button"
+                        type="button"
+                    >
+                        <img
+                            id="header-avatar"
+                            src=""
+                            alt="Foto de perfil"
+                        >
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="dashboard">
+
+            <section class="welcome-section">
+
+                <div>
+
+                    <p class="section-label">
+                        BILLETERA
+                    </p>
+
+                    <h1 id="welcome-title">
+                        Hola 👋
+                    </h1>
+
+                    <p>
+                        Este es el resumen de tu cuenta.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- BALANCE -->
+
+            <section class="balance-card">
+
+                <div class="balance-top">
+
+                    <div>
+
+                        <span class="balance-label">
+                            Saldo disponible
+                        </span>
+
+                        <div
+                            id="balance-value"
+                            class="balance-value"
+                        >
+                            $0
+                        </div>
+
+                    </div>
+
+                    <button
+                        id="privacy-button"
+                        class="privacy-button"
+                        type="button"
+                        aria-label="Ocultar saldo"
+                    >
+                        <span id="privacy-icon">◉</span>
+                    </button>
+
+                </div>
+
+                <div class="balance-bottom">
+
+                    <span>
+                        Mom Coins
+                    </span>
+
+                    <span id="balance-status">
+                        Actualizado
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <div class="content-grid">
+
+                <!-- MOVIMIENTOS -->
+
+                <section class="panel transactions-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="section-label">
+                                ACTIVIDAD
+                            </p>
+
+                            <h2>
+                                Movimientos
+                            </h2>
+
+                        </div>
+
+                        <span
+                            id="transaction-count"
+                            class="transaction-count"
+                        >
+                            0
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="transactions-list"
+                        class="transactions-list"
+                    >
+
+                        <div class="loading-state">
+                            <div class="spinner"></div>
+
+                            <span>
+                                Cargando movimientos...
+                            </span>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- PERFIL -->
+
+                <aside class="panel profile-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="section-label">
+                                CUENTA
+                            </p>
+
+                            <h2>
+                                Perfil
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-info">
+
+                        <img
+                            id="profile-avatar"
+                            class="profile-avatar"
+                            src=""
+                            alt="Foto de perfil"
+                        >
+
+                        <h3 id="profile-name">
+                            Usuario
+                        </h3>
+
+                        <p id="profile-email">
+                            —
+                        </p>
+
+                    </div>
+
+                    <div class="profile-divider"></div>
+
+                    <div class="profile-row">
+
+                        <span>
+                            ID de usuario
+                        </span>
+
+                        <button
+                            id="copy-uid"
+                            type="button"
+                            class="copy-button"
+                        >
+                            Copiar
+                        </button>
+
+                    </div>
+
+                    <code
+                        id="profile-uid"
+                        class="uid"
+                    >
+                        —
+                    </code>
+
+                </aside>
+
+            </div>
+
+        </main>
+
+        <footer class="footer">
+
+            <span>
+                Mom Coin Wallet
+            </span>
+
+            <span>
+                Firebase secured
+            </span>
+
+        </footer>
+
+    </div>
+
+
+    <!-- TOAST -->
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+    <!-- Firebase / Application -->
+
+    <script type="module" src="./app.js"></script>
+
+</body>
+</html>
