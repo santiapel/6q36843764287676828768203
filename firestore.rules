@@ -1,0 +1,52 @@
+rules_version = '2';
+
+service cloud.firestore {
+
+    match /databases/{database}/documents {
+
+        /*
+         * Cada usuario solamente puede leer
+         * su propio documento.
+         */
+
+        match /users/{userId} {
+
+            allow read:
+                if request.auth != null
+                && request.auth.uid == userId;
+
+            /*
+             * El frontend NO puede modificar
+             * el balance.
+             *
+             * Las modificaciones deberían hacerse
+             * desde un backend seguro / Cloud Functions.
+             */
+
+            allow write:
+                if false;
+        }
+
+
+        /*
+         * Cada usuario solamente puede leer
+         * transacciones cuyo user_ref sea su UID.
+         */
+
+        match /transactions/{transactionId} {
+
+            allow read:
+                if request.auth != null
+                && resource.data.user_ref
+                    == request.auth.uid;
+
+            /*
+             * Los clientes tampoco pueden crear
+             * o modificar movimientos.
+             */
+
+            allow write:
+                if false;
+        }
+    }
+}
