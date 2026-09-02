@@ -31,8 +31,13 @@
       min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
 
     button,
@@ -46,7 +51,9 @@
       cursor: pointer;
     }
 
-    /* LOGIN */
+    /* =========================
+       LOGIN
+       ========================= */
 
     #loginScreen {
       min-height: 100vh;
@@ -91,32 +98,126 @@
       margin-bottom: 28px;
     }
 
-    .google-button {
+    .account-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .account-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      text-align: left;
+      transition: .2s;
+    }
+
+    .account-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 20px rgba(0,0,0,.07);
+      border-color: #d9d4ff;
+    }
+
+    .account-avatar {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 13px;
+      background: #eeeaff;
+      font-size: 21px;
+    }
+
+    .admin-avatar {
+      background: #fff2cf;
+    }
+
+    .account-info {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .account-info strong {
+      font-size: 14px;
+    }
+
+    .account-info span {
+      color: var(--muted);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .account-arrow {
+      color: var(--muted);
+      font-size: 25px;
+    }
+
+    .email-button {
       width: 100%;
       min-height: 52px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      background: white;
-      color: #222;
-      border: 1px solid var(--border);
+      background: var(--primary);
+      color: white;
       border-radius: 14px;
       font-weight: 700;
-      transition: 0.2s;
+      transition: .2s;
     }
 
-    .google-button:hover {
+    .email-button:hover {
+      background: var(--primary-dark);
       transform: translateY(-1px);
-      box-shadow: 0 7px 20px rgba(0,0,0,.08);
     }
 
-    .google-icon {
-      font-size: 20px;
-      font-weight: 800;
+    .email-button:disabled {
+      opacity: .6;
+      cursor: wait;
     }
 
-    /* APP */
+    .selected-account {
+      padding: 15px;
+      background: #f5f5f8;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .back-button {
+      margin-top: 14px;
+      background: none;
+      color: var(--primary);
+      font-weight: 700;
+      padding: 8px;
+    }
+
+    .email-sent-icon {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    #sentEmail {
+      display: block;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+    }
+
+    /* =========================
+       APP
+       ========================= */
 
     #app {
       display: none;
@@ -130,7 +231,9 @@
       padding: 24px;
     }
 
-    /* HEADER */
+    /* =========================
+       HEADER
+       ========================= */
 
     .topbar {
       display: flex;
@@ -191,7 +294,9 @@
       font-size: 14px;
     }
 
-    /* DASHBOARD */
+    /* =========================
+       DASHBOARD
+       ========================= */
 
     .dashboard {
       display: grid;
@@ -206,9 +311,11 @@
       padding: 30px;
       border-radius: var(--radius);
       background:
-        radial-gradient(circle at top right,
+        radial-gradient(
+          circle at top right,
           rgba(255,255,255,.25),
-          transparent 35%),
+          transparent 35%
+        ),
         linear-gradient(135deg, #7055f7, #4b34ce);
       color: white;
       box-shadow: 0 18px 45px rgba(91,65,220,.25);
@@ -253,7 +360,9 @@
       font-size: 13px;
     }
 
-    /* PROFILE */
+    /* =========================
+       PROFILE
+       ========================= */
 
     .profile-card {
       background: var(--card);
@@ -312,7 +421,13 @@
       font-weight: 700;
     }
 
-    /* CARDS */
+    .logout-button:hover {
+      background: #e9eaf0;
+    }
+
+    /* =========================
+       CARDS
+       ========================= */
 
     .transactions-card {
       margin-top: 24px;
@@ -413,7 +528,9 @@
       color: var(--muted);
     }
 
-    /* ADMIN */
+    /* =========================
+       ADMIN
+       ========================= */
 
     #adminPanel {
       display: none;
@@ -457,7 +574,9 @@
       cursor: wait;
     }
 
-    /* TOAST */
+    /* =========================
+       TOAST
+       ========================= */
 
     #toast {
       position: fixed;
@@ -472,13 +591,17 @@
       box-shadow: var(--shadow);
       transition: transform .25s ease;
       z-index: 9999;
+      max-width: calc(100% - 30px);
+      text-align: center;
     }
 
     #toast.show {
       transform: translate(-50%,0);
     }
 
-    /* RESPONSIVE */
+    /* =========================
+       RESPONSIVE
+       ========================= */
 
     @media(max-width:760px) {
       .app-container {
@@ -507,177 +630,166 @@
 
 <body>
 
-  <!-- LOGIN -->
+  <!-- =========================
+       LOGIN
+       ========================= -->
 
-<section id="loginScreen">
+  <section id="loginScreen">
 
-  <div class="login-card">
+    <div class="login-card">
 
-    <div class="logo">
-      MC
-    </div>
+      <div class="logo">
+        MC
+      </div>
 
-    <div id="accountSelection">
+      <!-- SELECCIÓN DE CUENTA -->
 
-      <h1>¿Quién eres?</h1>
+      <div id="accountSelection">
 
-      <p>
-        Seleccioná tu cuenta para continuar.
-      </p>
+        <h1>¿Quién eres?</h1>
 
-      <div class="account-list">
+        <p>
+          Seleccioná tu cuenta para continuar.
+        </p>
 
-        <!-- SANTI -->
+        <div class="account-list">
+
+          <!-- SANTI -->
+
+          <button
+            class="account-button"
+            data-name="Santi"
+            data-email="santipapel16@gmail.com"
+          >
+            <div class="account-avatar">
+              👤
+            </div>
+
+            <div class="account-info">
+              <strong>Santi</strong>
+              <span>santipapel16@gmail.com</span>
+            </div>
+
+            <div class="account-arrow">
+              ›
+            </div>
+          </button>
+
+          <!-- LEONEL -->
+
+          <button
+            class="account-button"
+            data-name="Leonel"
+            data-email="leoxdfunes@gmail.com"
+          >
+            <div class="account-avatar">
+              👤
+            </div>
+
+            <div class="account-info">
+              <strong>Leonel</strong>
+              <span>leoxdfunes@gmail.com</span>
+            </div>
+
+            <div class="account-arrow">
+              ›
+            </div>
+          </button>
+
+          <!-- GABRIELA -->
+
+          <button
+            class="account-button"
+            data-name="Gabriela"
+            data-email="gabyhuchy@gmail.com"
+          >
+            <div class="account-avatar admin-avatar">
+              👑
+            </div>
+
+            <div class="account-info">
+              <strong>Gabriela</strong>
+              <span>ADMIN</span>
+            </div>
+
+            <div class="account-arrow">
+              ›
+            </div>
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONFIRMACIÓN -->
+
+      <div
+        id="emailConfirmation"
+        style="display:none;"
+      >
+
+        <h1>Confirmar cuenta</h1>
+
+        <p>
+          Vas a iniciar sesión como:
+        </p>
+
+        <div
+          id="selectedAccount"
+          class="selected-account"
+        ></div>
 
         <button
-          class="account-button"
-          data-name="Santi"
-          data-email="santipapel16@gmail.com"
+          id="sendEmailButton"
+          class="email-button"
         >
-
-          <div class="account-avatar">
-            👤
-          </div>
-
-          <div class="account-info">
-            <strong>Santi</strong>
-            <span>santipapel16@gmail.com</span>
-          </div>
-
-          <div class="account-arrow">
-            ›
-          </div>
-
+          📧 Enviar correo de confirmación
         </button>
-
-
-        <!-- LEONEL -->
 
         <button
-          class="account-button"
-          data-name="Leonel"
-          data-email="leoxdfunes@gmail.com"
+          id="backAccounts"
+          class="back-button"
         >
-
-          <div class="account-avatar">
-            👤
-          </div>
-
-          <div class="account-info">
-            <strong>Leonel</strong>
-            <span>leoxdfunes@gmail.com</span>
-          </div>
-
-          <div class="account-arrow">
-            ›
-          </div>
-
+          ← Cambiar cuenta
         </button>
 
+      </div>
 
-        <!-- GABRIELA -->
 
-        <button
-          class="account-button"
-          data-name="Gabriela"
-          data-email="gabyhuchy@gmail.com"
-        >
+      <!-- CORREO ENVIADO -->
 
-          <div class="account-avatar admin-avatar">
-            👑
-          </div>
+      <div
+        id="emailSent"
+        style="display:none;"
+      >
 
-          <div class="account-info">
-            <strong>Gabriela</strong>
-            <span>ADMIN</span>
-          </div>
+        <div class="email-sent-icon">
+          📬
+        </div>
 
-          <div class="account-arrow">
-            ›
-          </div>
+        <h1>Correo enviado</h1>
 
-        </button>
+        <p>
+          Mandamos un enlace de confirmación a:
+        </p>
+
+        <strong id="sentEmail"></strong>
+
+        <p style="margin-top:15px;">
+          Abrí el correo y tocá el enlace para entrar.
+        </p>
 
       </div>
 
     </div>
 
-
-    <!-- CONFIRMAR CUENTA -->
-
-    <div
-      id="emailConfirmation"
-      style="display:none;"
-    >
-
-      <h1>Confirmar cuenta</h1>
-
-      <p>
-        Vas a iniciar sesión como:
-      </p>
-
-      <div
-        id="selectedAccount"
-        style="
-          padding:15px;
-          background:#f5f5f8;
-          border-radius:14px;
-          margin-bottom:18px;
-        "
-      ></div>
-
-      <button
-        id="sendEmailButton"
-        class="google-button"
-        style="
-          background:#6c4df6;
-          color:white;
-        "
-      >
-        📧 Enviar correo de confirmación
-      </button>
-
-      <button
-        id="backAccounts"
-        style="
-          margin-top:14px;
-          background:none;
-          color:#6c4df6;
-          font-weight:700;
-        "
-      >
-        ← Cambiar cuenta
-      </button>
-
-    </div>
+  </section>
 
 
-    <!-- CORREO ENVIADO -->
-
-    <div
-      id="emailSent"
-      style="display:none;"
-    >
-
-      <h1>📬 Correo enviado</h1>
-
-      <p>
-        Mandamos un enlace de confirmación a:
-      </p>
-
-      <strong id="sentEmail"></strong>
-
-      <p style="margin-top:15px;">
-        Abrí el correo y tocá el enlace para entrar.
-      </p>
-
-    </div>
-
-  </div>
-
-</section>
-
-  <!-- APP -->
+  <!-- =========================
+       APP
+       ========================= -->
 
   <main id="app">
 
@@ -695,6 +807,7 @@
 
           <div>
             <h2>Mom Coin Wallet</h2>
+
             <span id="headerRole">
               Wallet personal
             </span>
@@ -702,7 +815,10 @@
 
         </div>
 
-        <button id="profileButton" class="profile-button">
+        <button
+          id="profileButton"
+          class="profile-button"
+        >
 
           <img
             id="headerAvatar"
@@ -742,7 +858,10 @@
 
           </div>
 
-          <div id="balance" class="balance">
+          <div
+            id="balance"
+            class="balance"
+          >
             Cargando...
           </div>
 
@@ -802,7 +921,7 @@
       </section>
 
 
-      <!-- ADMIN -->
+      <!-- PANEL ADMIN -->
 
       <section
         id="adminPanel"
@@ -834,11 +953,10 @@
             </option>
 
             <option value="leoxdfunes@gmail.com">
-              Leo
+              Leonel
             </option>
 
           </select>
-
 
           <input
             id="sendAmount"
@@ -848,14 +966,12 @@
             placeholder="Cantidad de Mom Coins"
           >
 
-
           <input
             id="sendReason"
             type="text"
             maxlength="100"
             placeholder="Motivo"
           >
-
 
           <button id="sendCoinsButton">
             💸 Enviar Mom Coins
@@ -935,7 +1051,9 @@
   <div id="toast"></div>
 
 
-  <!-- FIREBASE -->
+  <!-- =========================
+       FIREBASE
+       ========================= -->
 
   <script type="module">
 
@@ -947,10 +1065,9 @@
 
     import {
       getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signInWithRedirect,
-      getRedirectResult,
+      sendSignInLinkToEmail,
+      isSignInWithEmailLink,
+      signInWithEmailLink,
       onAuthStateChanged,
       signOut
     } from
@@ -962,6 +1079,7 @@
       doc,
       getDoc,
       getDocs,
+      setDoc,
       collection,
       query,
       where,
@@ -1009,13 +1127,27 @@
     const db =
       getFirestore(app);
 
-    const googleProvider =
-      new GoogleAuthProvider();
-
 
     /* =========================
        USUARIOS
        ========================= */
+
+    const ACCOUNT_NAMES = {
+
+      "santipapel16@gmail.com":
+        "Santi",
+
+      "leoxdfunes@gmail.com":
+        "Leonel",
+
+      "gabyhuchy@gmail.com":
+        "Gabriela",
+
+      "gabyhuchy@hotmail.com":
+        "Gabriela"
+
+    };
+
 
     const ADMIN_EMAILS = [
 
@@ -1042,10 +1174,13 @@
     function isAdmin(user) {
 
       return Boolean(
+
         user?.email &&
+
         ADMIN_EMAILS.includes(
           user.email.toLowerCase()
         )
+
       );
 
     }
@@ -1054,13 +1189,401 @@
     function isAllowedUser(user) {
 
       return Boolean(
+
         user?.email &&
+
         ALLOWED_USERS.includes(
           user.email.toLowerCase()
         )
+
       );
 
     }
+
+
+    function getAccountName(user) {
+
+      const email =
+        user?.email?.toLowerCase();
+
+      return (
+        ACCOUNT_NAMES[email] ||
+        user?.displayName ||
+        "Usuario"
+      );
+
+    }
+
+
+    /* =========================
+       LOGIN EMAIL LINK
+       ========================= */
+
+    const actionCodeSettings = {
+
+      url:
+        window.location.origin +
+        window.location.pathname,
+
+      handleCodeInApp:
+        true
+
+    };
+
+
+    const accountSelection =
+      document.getElementById(
+        "accountSelection"
+      );
+
+
+    const emailConfirmation =
+      document.getElementById(
+        "emailConfirmation"
+      );
+
+
+    const emailSent =
+      document.getElementById(
+        "emailSent"
+      );
+
+
+    const selectedAccount =
+      document.getElementById(
+        "selectedAccount"
+      );
+
+
+    const sendEmailButton =
+      document.getElementById(
+        "sendEmailButton"
+      );
+
+
+    const backAccounts =
+      document.getElementById(
+        "backAccounts"
+      );
+
+
+    const sentEmail =
+      document.getElementById(
+        "sentEmail"
+      );
+
+
+    let selectedEmail =
+      localStorage.getItem(
+        "momcoin_selected_email"
+      ) || "";
+
+
+    let selectedName =
+      localStorage.getItem(
+        "momcoin_selected_name"
+      ) || "";
+
+
+    document
+      .querySelectorAll(".account-button")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            selectedName =
+              button.dataset.name;
+
+            selectedEmail =
+              button.dataset.email
+                .toLowerCase();
+
+
+            localStorage.setItem(
+              "momcoin_selected_email",
+              selectedEmail
+            );
+
+
+            localStorage.setItem(
+              "momcoin_selected_name",
+              selectedName
+            );
+
+
+            selectedAccount.textContent =
+              `${selectedName} · ${selectedEmail}`;
+
+
+            accountSelection.style.display =
+              "none";
+
+
+            emailConfirmation.style.display =
+              "block";
+
+
+            emailSent.style.display =
+              "none";
+
+          }
+        );
+
+      });
+
+
+    backAccounts.addEventListener(
+      "click",
+      () => {
+
+        emailConfirmation.style.display =
+          "none";
+
+        emailSent.style.display =
+          "none";
+
+        accountSelection.style.display =
+          "block";
+
+      }
+    );
+
+
+    sendEmailButton.addEventListener(
+      "click",
+      async () => {
+
+        if (!selectedEmail) {
+
+          showToast(
+            "Seleccioná una cuenta."
+          );
+
+          return;
+
+        }
+
+
+        if (
+          !ALLOWED_USERS.includes(
+            selectedEmail
+          )
+        ) {
+
+          showToast(
+            "Esta cuenta no está autorizada."
+          );
+
+          return;
+
+        }
+
+
+        sendEmailButton.disabled =
+          true;
+
+        sendEmailButton.textContent =
+          "Enviando...";
+
+
+        try {
+
+          await sendSignInLinkToEmail(
+            auth,
+            selectedEmail,
+            actionCodeSettings
+          );
+
+
+          localStorage.setItem(
+            "momcoin_email_for_signin",
+            selectedEmail
+          );
+
+
+          sentEmail.textContent =
+            selectedEmail;
+
+
+          emailConfirmation.style.display =
+            "none";
+
+
+          emailSent.style.display =
+            "block";
+
+
+          showToast(
+            "📧 Correo enviado."
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Email Link:",
+            error
+          );
+
+
+          let message =
+            "No se pudo enviar el correo.";
+
+
+          if (
+            error.code ===
+            "auth/invalid-email"
+          ) {
+
+            message =
+              "El correo no es válido.";
+
+          }
+
+
+          if (
+            error.code ===
+            "auth/unauthorized-continue-uri"
+          ) {
+
+            message =
+              "El dominio de esta página no está autorizado en Firebase.";
+
+          }
+
+
+          if (
+            error.code ===
+            "auth/operation-not-allowed"
+          ) {
+
+            message =
+              "El inicio de sesión por enlace no está activado en Firebase.";
+
+          }
+
+
+          showToast(message);
+
+        } finally {
+
+          sendEmailButton.disabled =
+            false;
+
+          sendEmailButton.textContent =
+            "📧 Enviar correo de confirmación";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       PROCESAR ENLACE DEL CORREO
+       ========================= */
+
+    async function processEmailLink() {
+
+      if (
+        !isSignInWithEmailLink(
+          auth,
+          window.location.href
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      let email =
+        localStorage.getItem(
+          "momcoin_email_for_signin"
+        );
+
+
+      if (!email) {
+
+        email =
+          window.prompt(
+            "Ingresá el correo usado para iniciar sesión:"
+          );
+
+      }
+
+
+      if (!email) {
+
+        showToast(
+          "No se ingresó ningún correo."
+        );
+
+        return;
+
+      }
+
+
+      email =
+        email.trim().toLowerCase();
+
+
+      if (
+        !ALLOWED_USERS.includes(
+          email
+        )
+      ) {
+
+        showToast(
+          "Esta cuenta no está autorizada."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        await signInWithEmailLink(
+          auth,
+          email,
+          window.location.href
+        );
+
+
+        localStorage.removeItem(
+          "momcoin_email_for_signin"
+        );
+
+
+        history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Confirmación:",
+          error
+        );
+
+
+        showToast(
+          "El enlace no es válido o ya expiró."
+        );
+
+      }
+
+    }
+
+
+    processEmailLink();
 
 
     /* =========================
@@ -1072,110 +1595,126 @@
         "loginScreen"
       );
 
+
     const appScreen =
       document.getElementById(
         "app"
       );
 
-    const googleLogin =
-      document.getElementById(
-        "googleLogin"
-      );
 
     const logoutButton =
       document.getElementById(
         "logoutButton"
       );
 
+
     const balanceElement =
       document.getElementById(
         "balance"
       );
+
 
     const privacyButton =
       document.getElementById(
         "privacyButton"
       );
 
+
     const transactionsList =
       document.getElementById(
         "transactionsList"
       );
+
 
     const transactionCount =
       document.getElementById(
         "transactionCount"
       );
 
+
     const profileName =
       document.getElementById(
         "profileName"
       );
+
 
     const profileEmail =
       document.getElementById(
         "profileEmail"
       );
 
+
     const profileAvatar =
       document.getElementById(
         "profileAvatar"
       );
+
 
     const headerName =
       document.getElementById(
         "headerName"
       );
 
+
     const headerAvatar =
       document.getElementById(
         "headerAvatar"
       );
+
 
     const headerRole =
       document.getElementById(
         "headerRole"
       );
 
+
     const roleBadge =
       document.getElementById(
         "roleBadge"
       );
+
 
     const adminPanel =
       document.getElementById(
         "adminPanel"
       );
 
+
     const toast =
       document.getElementById(
         "toast"
       );
+
 
     const recipientEmail =
       document.getElementById(
         "recipientEmail"
       );
 
+
     const sendAmount =
       document.getElementById(
         "sendAmount"
       );
+
 
     const sendReason =
       document.getElementById(
         "sendReason"
       );
 
+
     const sendCoinsButton =
       document.getElementById(
         "sendCoinsButton"
       );
 
+
     const notificationsList =
       document.getElementById(
         "notificationsList"
       );
+
 
     const notificationCount =
       document.getElementById(
@@ -1211,13 +1750,17 @@
         "show"
       );
 
-      setTimeout(() => {
 
-        toast.classList.remove(
-          "show"
-        );
+      setTimeout(
+        () => {
 
-      }, 3000);
+          toast.classList.remove(
+            "show"
+          );
+
+        },
+        3000
+      );
 
     }
 
@@ -1233,6 +1776,7 @@
         return "••••••";
 
       }
+
 
       return Number(
         value || 0
@@ -1252,6 +1796,7 @@
         formatBalance(
           currentBalance
         );
+
 
       privacyButton.textContent =
         privateMode
@@ -1275,104 +1820,40 @@
 
 
     /* =========================
-       LOGIN GOOGLE
-       ========================= */
-
-    googleLogin.addEventListener(
-      "click",
-      async () => {
-
-        googleLogin.disabled =
-          true;
-
-        googleLogin.textContent =
-          "Conectando...";
-
-        try {
-
-          await signInWithPopup(
-            auth,
-            googleProvider
-          );
-
-        } catch (error) {
-
-          console.error(
-            "Google Auth:",
-            error
-          );
-
-          if (
-            error.code ===
-            "auth/popup-blocked"
-          ) {
-
-            await signInWithRedirect(
-              auth,
-              googleProvider
-            );
-
-            return;
-
-          }
-
-          showToast(
-            "No se pudo iniciar sesión."
-          );
-
-          googleLogin.disabled =
-            false;
-
-          googleLogin.textContent =
-            "Continuar con Google";
-
-        }
-
-      }
-    );
-
-
-    getRedirectResult(auth)
-      .catch(error => {
-
-        console.error(
-          "Redirect Auth:",
-          error
-        );
-
-      });
-
-
-    /* =========================
        PERFIL
        ========================= */
 
     function loadUserProfile(user) {
 
       const name =
-        user.displayName ||
-        "Usuario";
+        getAccountName(user);
+
 
       const email =
         user.email ||
         "Sin correo";
 
+
       const avatar =
         user.photoURL ||
-        "https://ui-avatars.com/api/?name=User";
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`;
 
 
       profileName.textContent =
         name;
 
+
       profileEmail.textContent =
         email;
+
 
       headerName.textContent =
         name;
 
+
       profileAvatar.src =
         avatar;
+
 
       headerAvatar.src =
         avatar;
@@ -1393,6 +1874,64 @@
 
         headerRole.textContent =
           "Wallet personal";
+
+      }
+
+    }
+
+
+    /* =========================
+       USUARIO FIRESTORE
+       ========================= */
+
+    async function ensureUserDocument(
+      user
+    ) {
+
+      const userRef =
+        doc(
+          db,
+          "users",
+          user.uid
+        );
+
+
+      const snapshot =
+        await getDoc(
+          userRef
+        );
+
+
+      if (!snapshot.exists()) {
+
+        const email =
+          user.email
+            ?.toLowerCase() || "";
+
+
+        const name =
+          ACCOUNT_NAMES[email] ||
+          "Usuario";
+
+
+        await setDoc(
+          userRef,
+          {
+
+            email:
+              email,
+
+            name:
+              name,
+
+            balance:
+              0,
+
+            created_at:
+              serverTimestamp()
+
+          }
+        );
 
       }
 
@@ -1424,7 +1963,9 @@
        BALANCE FIRESTORE
        ========================= */
 
-    async function loadBalance(user) {
+    async function loadBalance(
+      user
+    ) {
 
       try {
 
@@ -1435,13 +1976,17 @@
             user.uid
           );
 
+
         const snapshot =
-          await getDoc(userRef);
+          await getDoc(
+            userRef
+          );
 
 
         if (!snapshot.exists()) {
 
-          currentBalance = 0;
+          currentBalance =
+            0;
 
           updateBalanceUI();
 
@@ -1476,12 +2021,14 @@
 
         } else {
 
-          currentBalance = 0;
+          currentBalance =
+            0;
 
         }
 
 
         updateBalanceUI();
+
 
       } catch (error) {
 
@@ -1490,8 +2037,10 @@
           error
         );
 
+
         balanceElement.textContent =
           "Error";
+
 
         showToast(
           "No se pudo cargar el saldo."
@@ -1506,9 +2055,13 @@
        MOVIMIENTOS
        ========================= */
 
-    function listenToTransactions(user) {
+    function listenToTransactions(
+      user
+    ) {
 
-      if (unsubscribeTransactions) {
+      if (
+        unsubscribeTransactions
+      ) {
 
         unsubscribeTransactions();
 
@@ -1541,12 +2094,14 @@
 
       unsubscribeTransactions =
         onSnapshot(
+
           transactionsQuery,
 
           snapshot => {
 
             transactionsList.innerHTML =
               "";
+
 
             transactionCount.textContent =
               `${snapshot.size} ${
@@ -1588,6 +2143,7 @@
               error
             );
 
+
             transactionsList.innerHTML = `
               <div class="empty">
                 No se pudieron cargar los movimientos.
@@ -1595,12 +2151,15 @@
             `;
 
           }
+
         );
 
     }
 
 
-    function renderTransaction(data) {
+    function renderTransaction(
+      data
+    ) {
 
       const amount =
         Number(
@@ -1675,7 +2234,6 @@
 
         </div>
 
-
         <div class="transaction-amount ${
           isIncome
             ? "income"
@@ -1704,9 +2262,13 @@
        NOTIFICACIONES
        ========================= */
 
-    function listenToNotifications(user) {
+    function listenToNotifications(
+      user
+    ) {
 
-      if (unsubscribeNotifications) {
+      if (
+        unsubscribeNotifications
+      ) {
 
         unsubscribeNotifications();
 
@@ -1722,6 +2284,7 @@
 
       const notificationsQuery =
         query(
+
           notificationsRef,
 
           where(
@@ -1734,17 +2297,20 @@
             "created_at",
             "desc"
           )
+
         );
 
 
       unsubscribeNotifications =
         onSnapshot(
+
           notificationsQuery,
 
           snapshot => {
 
             notificationsList.innerHTML =
               "";
+
 
             notificationCount.textContent =
               snapshot.size;
@@ -1828,6 +2394,7 @@
             );
 
           }
+
         );
 
     }
@@ -1908,6 +2475,7 @@
 
           const usersQuery =
             query(
+
               collection(
                 db,
                 "users"
@@ -1918,6 +2486,7 @@
                 "==",
                 email
               )
+
             );
 
 
@@ -2022,9 +2591,11 @@
               transaction.update(
                 senderRef,
                 {
+
                   balance:
                     senderBalance -
                     amount
+
                 }
               );
 
@@ -2032,9 +2603,11 @@
               transaction.update(
                 recipientRef,
                 {
+
                   balance:
                     recipientBalance +
                     amount
+
                 }
               );
 
@@ -2120,11 +2693,18 @@
           recipientEmail.value =
             "";
 
+
           sendAmount.value =
             "";
 
+
           sendReason.value =
             "";
+
+
+          await loadBalance(
+            currentUser
+          );
 
 
         } catch (error) {
@@ -2156,6 +2736,7 @@
 
           sendCoinsButton.disabled =
             false;
+
 
           sendCoinsButton.textContent =
             "💸 Enviar Mom Coins";
@@ -2229,7 +2810,9 @@
        ESCAPE HTML
        ========================= */
 
-    function escapeHTML(value) {
+    function escapeHTML(
+      value
+    ) {
 
       return String(value)
 
@@ -2283,17 +2866,40 @@
               "Esta cuenta no está autorizada."
             );
 
+
             await signOut(
               auth
             );
+
 
             return;
 
           }
 
 
+          try {
+
+            await ensureUserDocument(
+              user
+            );
+
+          } catch (error) {
+
+            console.error(
+              "User document:",
+              error
+            );
+
+            showToast(
+              "No se pudo preparar tu cuenta."
+            );
+
+          }
+
+
           loginScreen.style.display =
             "none";
+
 
           appScreen.style.display =
             "block";
@@ -2329,12 +2935,17 @@
           loginScreen.style.display =
             "flex";
 
+
           appScreen.style.display =
             "none";
 
 
           currentUser =
             null;
+
+
+          currentBalance =
+            0;
 
 
           if (
@@ -2380,9 +2991,11 @@
             auth
           );
 
+
           showToast(
             "Sesión cerrada."
           );
+
 
         } catch (error) {
 
@@ -2390,6 +3003,7 @@
             "Logout:",
             error
           );
+
 
           showToast(
             "No se pudo cerrar sesión."
