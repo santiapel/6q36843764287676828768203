@@ -1,354 +1,1634 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta
-        name="description"
-        content="Mom Coin Wallet - Billetera digital personal"
-    >
+  <title>Mom Coin Wallet</title>
 
-    <title>Mom Coin Wallet</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    <link rel="stylesheet" href="./styles.css">
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #16181d;
+      --muted: #7b8190;
+      --primary: #6c4df6;
+      --primary-dark: #5538d8;
+      --green: #16a36b;
+      --red: #e55353;
+      --border: #e9ebf0;
+      --shadow: 0 12px 35px rgba(25, 25, 50, 0.08);
+      --radius: 22px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      overflow-x: hidden;
+    }
+
+    button {
+      font: inherit;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* =========================
+       PANTALLA DE LOGIN
+       ========================= */
+
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      padding: 38px 30px;
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .logo {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 20px;
+      background: linear-gradient(135deg, #7c5cff, #5438dc);
+      color: white;
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .login-card h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .login-card p {
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .google-button {
+      width: 100%;
+      min-height: 52px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+
+      background: white;
+      color: #222;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    .google-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .google-icon {
+      font-size: 20px;
+    }
+
+    /* =========================
+       APP
+       ========================= */
+
+    #app {
+      display: none;
+      width: 100%;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 14px;
+      background: var(--primary);
+      color: white;
+      font-weight: 800;
+    }
+
+    .brand h2 {
+      font-size: 19px;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .profile-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      background: white;
+      padding: 7px 12px 7px 7px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+    }
+
+    .profile-button img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-button span {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* Grid */
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+      gap: 24px;
+    }
+
+    /* Balance */
+
+    .balance-card {
+      position: relative;
+      overflow: hidden;
+
+      min-height: 235px;
+      padding: 30px;
+
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,.25), transparent 35%),
+        linear-gradient(135deg, #7055f7, #4b34ce);
+
+      color: white;
+      box-shadow: 0 18px 45px rgba(91, 65, 220, 0.25);
+    }
+
+    .balance-card::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: -80px;
+      bottom: -90px;
+
+      border: 25px solid rgba(255,255,255,.08);
+      border-radius: 50%;
+    }
+
+    .balance-header {
+      position: relative;
+      z-index: 1;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .balance-label {
+      font-size: 14px;
+      opacity: .8;
+    }
+
+    .privacy-button {
+      padding: 8px 12px;
+      border-radius: 10px;
+
+      background: rgba(255,255,255,.15);
+      color: white;
+
+      font-size: 13px;
+      font-weight: 700;
+      backdrop-filter: blur(5px);
+    }
+
+    .balance {
+      position: relative;
+      z-index: 1;
+
+      margin-top: 20px;
+      font-size: clamp(34px, 6vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+    }
+
+    .balance-currency {
+      position: relative;
+      z-index: 1;
+
+      margin-top: 4px;
+      opacity: .75;
+      font-size: 13px;
+    }
+
+    /* Profile */
+
+    .profile-card {
+      background: var(--card);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 17px;
+      margin-bottom: 18px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .user-info img {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      object-fit: cover;
+    }
+
+    .user-info h3 {
+      font-size: 16px;
+    }
+
+    .user-info p {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .logout-button {
+      width: 100%;
+      padding: 12px;
+
+      background: #f2f3f7;
+      color: #454954;
+
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .logout-button:hover {
+      background: #e8e9ee;
+    }
+
+    /* Transactions */
+
+    .transactions-card {
+      margin-top: 24px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+
+    .transactions-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .transactions-header h2 {
+      font-size: 19px;
+    }
+
+    .transaction-count {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #transactionsList {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .transaction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+    }
+
+    .transaction-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .transaction-icon {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+      background: #f0efff;
+      color: var(--primary);
+      font-size: 18px;
+    }
+
+    .transaction-info {
+      min-width: 0;
+    }
+
+    .transaction-title {
+      font-weight: 700;
+      font-size: 14px;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .transaction-date {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .transaction-amount {
+      flex-shrink: 0;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .income {
+      color: var(--green);
+    }
+
+    .expense {
+      color: var(--red);
+    }
+
+    .empty {
+      padding: 35px 15px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .loading {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* Toast */
+
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+
+      transform: translate(-50%, 120px);
+
+      padding: 13px 18px;
+      border-radius: 12px;
+
+      background: #1d1e24;
+      color: white;
+
+      font-size: 14px;
+      box-shadow: var(--shadow);
+
+      transition: transform .25s ease;
+      z-index: 9999;
+    }
+
+    #toast.show {
+      transform: translate(-50%, 0);
+    }
+
+    /* Responsive */
+
+    @media (max-width: 760px) {
+      .app-container {
+        padding: 16px;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-button span {
+        display: none;
+      }
+
+      .balance-card {
+        min-height: 215px;
+        padding: 24px;
+      }
+
+      .transactions-card {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar {
+        margin-bottom: 18px;
+      }
+
+      .brand h2 {
+        font-size: 17px;
+      }
+
+      .brand-logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .transaction {
+        padding: 12px;
+      }
+
+      .transaction-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+      .transaction-amount {
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <!-- =========================
-         AUTH SCREEN
-    ========================== -->
+  <!-- ==========================================
+       LOGIN
+       ========================================== -->
 
-    <div id="auth-screen" class="screen auth-screen">
+  <section id="loginScreen">
 
-        <div class="auth-container">
+    <div class="login-card">
 
-            <div class="brand-mark">
-                <span>MC</span>
-            </div>
+      <div class="logo">
+        MC
+      </div>
 
-            <div class="auth-content">
+      <h1>Mom Coin Wallet</h1>
 
-                <p class="eyebrow">
-                    MOM COIN
-                </p>
+      <p>
+        Tu billetera digital para consultar tu saldo
+        y movimientos de forma sencilla.
+      </p>
 
-                <h1>
-                    Tu dinero.<br>
-                    <span>Más simple.</span>
-                </h1>
+      <button
+        id="googleLogin"
+        class="google-button"
+      >
+        <span class="google-icon">G</span>
+        Continuar con Google
+      </button>
 
-                <p class="auth-description">
-                    Gestioná tu saldo y consultá tus movimientos
-                    desde una billetera rápida y segura.
-                </p>
+    </div>
 
-                <button
-                    id="google-login"
-                    class="google-button"
-                    type="button"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                    >
-                        <path
-                            fill="#4285F4"
-                            d="M21.35 12.23c0-.79-.07-1.55-.23-2.23H12v4.22h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.38Z"
-                        />
-                        <path
-                            fill="#34A853"
-                            d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.74 9.74 0 0 0 12 21.5Z"
-                        />
-                        <path
-                            fill="#FBBC05"
-                            d="M6.54 13.58A5.85 5.85 0 0 1 6.23 12c0-.55.1-1.08.31-1.58V7.89H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.05 4.11l3.24-2.53Z"
-                        />
-                        <path
-                            fill="#EA4335"
-                            d="M12 6.39c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.83 3.46 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.7 5.39l3.24 2.53C7.31 8.11 9.46 6.39 12 6.39Z"
-                        />
-                    </svg>
+  </section>
 
-                    <span>
-                        Continuar con Google
-                    </span>
-                </button>
 
-                <p class="auth-note">
-                    Acceso seguro mediante Google Authentication
-                </p>
+  <!-- ==========================================
+       APLICACIÓN
+       ========================================== -->
 
-            </div>
+  <main id="app">
+
+    <div class="app-container">
+
+      <!-- HEADER -->
+
+      <header class="topbar">
+
+        <div class="brand">
+
+          <div class="brand-logo">
+            MC
+          </div>
+
+          <div>
+            <h2>Mom Coin Wallet</h2>
+            <span>Wallet personal</span>
+          </div>
 
         </div>
 
-    </div>
+        <button
+          id="profileButton"
+          class="profile-button"
+        >
+
+          <img
+            id="headerAvatar"
+            src=""
+            alt="Foto de perfil"
+          />
+
+          <span id="headerName">
+            Usuario
+          </span>
+
+        </button>
+
+      </header>
 
 
-    <!-- =========================
-         APP
-    ========================== -->
+      <!-- DASHBOARD -->
 
-    <div id="app-screen" class="screen app-screen hidden">
+      <section class="dashboard">
 
-        <header class="navbar">
+        <!-- BALANCE -->
 
-            <div class="navbar-inner">
+        <article class="balance-card">
 
-                <a class="logo" href="#">
-                    <span class="logo-icon">MC</span>
+          <div class="balance-header">
 
-                    <span class="logo-text">
-                        Mom Coin
-                    </span>
-                </a>
+            <span class="balance-label">
+              Saldo disponible
+            </span>
 
-                <div class="navbar-actions">
+            <button
+              id="privacyButton"
+              class="privacy-button"
+            >
+              👁 Ocultar
+            </button>
 
-                    <button
-                        id="logout-button"
-                        class="logout-button"
-                        type="button"
-                    >
-                        Cerrar sesión
-                    </button>
+          </div>
 
-                    <button
-                        id="profile-button"
-                        class="avatar-button"
-                        type="button"
-                    >
-                        <img
-                            id="header-avatar"
-                            src=""
-                            alt="Foto de perfil"
-                        >
-                    </button>
+          <div
+            id="balance"
+            class="balance"
+          >
+            Cargando...
+          </div>
 
-                </div>
+          <div class="balance-currency">
+            Mom Coins
+          </div>
+
+        </article>
+
+
+        <!-- PERFIL -->
+
+        <article class="profile-card">
+
+          <h2 class="section-title">
+            Mi perfil
+          </h2>
+
+          <div class="user-info">
+
+            <img
+              id="profileAvatar"
+              src=""
+              alt="Avatar"
+            />
+
+            <div>
+
+              <h3 id="profileName">
+                Cargando...
+              </h3>
+
+              <p id="profileEmail">
+                Cargando...
+              </p>
 
             </div>
 
-        </header>
+          </div>
 
+          <button
+            id="logoutButton"
+            class="logout-button"
+          >
+            Cerrar sesión
+          </button>
 
-        <main class="dashboard">
+        </article>
 
-            <section class="welcome-section">
+      </section>
 
-                <div>
 
-                    <p class="section-label">
-                        BILLETERA
-                    </p>
+      <!-- TRANSACCIONES -->
 
-                    <h1 id="welcome-title">
-                        Hola 👋
-                    </h1>
+      <section class="transactions-card">
 
-                    <p>
-                        Este es el resumen de tu cuenta.
-                    </p>
+        <div class="transactions-header">
 
-                </div>
+          <h2>
+            Movimientos
+          </h2>
 
-            </section>
+          <span
+            id="transactionCount"
+            class="transaction-count"
+          >
+            0 movimientos
+          </span>
 
+        </div>
 
-            <!-- BALANCE -->
+        <div id="transactionsList">
 
-            <section class="balance-card">
+          <div class="loading">
+            Cargando movimientos...
+          </div>
 
-                <div class="balance-top">
+        </div>
 
-                    <div>
-
-                        <span class="balance-label">
-                            Saldo disponible
-                        </span>
-
-                        <div
-                            id="balance-value"
-                            class="balance-value"
-                        >
-                            $0
-                        </div>
-
-                    </div>
-
-                    <button
-                        id="privacy-button"
-                        class="privacy-button"
-                        type="button"
-                        aria-label="Ocultar saldo"
-                    >
-                        <span id="privacy-icon">◉</span>
-                    </button>
-
-                </div>
-
-                <div class="balance-bottom">
-
-                    <span>
-                        Mom Coins
-                    </span>
-
-                    <span id="balance-status">
-                        Actualizado
-                    </span>
-
-                </div>
-
-            </section>
-
-
-            <div class="content-grid">
-
-                <!-- MOVIMIENTOS -->
-
-                <section class="panel transactions-panel">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <p class="section-label">
-                                ACTIVIDAD
-                            </p>
-
-                            <h2>
-                                Movimientos
-                            </h2>
-
-                        </div>
-
-                        <span
-                            id="transaction-count"
-                            class="transaction-count"
-                        >
-                            0
-                        </span>
-
-                    </div>
-
-                    <div
-                        id="transactions-list"
-                        class="transactions-list"
-                    >
-
-                        <div class="loading-state">
-                            <div class="spinner"></div>
-
-                            <span>
-                                Cargando movimientos...
-                            </span>
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- PERFIL -->
-
-                <aside class="panel profile-panel">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <p class="section-label">
-                                CUENTA
-                            </p>
-
-                            <h2>
-                                Perfil
-                            </h2>
-
-                        </div>
-
-                    </div>
-
-                    <div class="profile-info">
-
-                        <img
-                            id="profile-avatar"
-                            class="profile-avatar"
-                            src=""
-                            alt="Foto de perfil"
-                        >
-
-                        <h3 id="profile-name">
-                            Usuario
-                        </h3>
-
-                        <p id="profile-email">
-                            —
-                        </p>
-
-                    </div>
-
-                    <div class="profile-divider"></div>
-
-                    <div class="profile-row">
-
-                        <span>
-                            ID de usuario
-                        </span>
-
-                        <button
-                            id="copy-uid"
-                            type="button"
-                            class="copy-button"
-                        >
-                            Copiar
-                        </button>
-
-                    </div>
-
-                    <code
-                        id="profile-uid"
-                        class="uid"
-                    >
-                        —
-                    </code>
-
-                </aside>
-
-            </div>
-
-        </main>
-
-        <footer class="footer">
-
-            <span>
-                Mom Coin Wallet
-            </span>
-
-            <span>
-                Firebase secured
-            </span>
-
-        </footer>
+      </section>
 
     </div>
 
+  </main>
 
-    <!-- TOAST -->
+        <section class="auth-box">
+            <h2>Iniciar sesión</h2>
 
-    <div
-        id="toast"
-        class="toast"
-        role="status"
-        aria-live="polite"
-    ></div>
+            <input type="email" id="email" placeholder="Tu correo">
+
+            <input type="password" id="password" placeholder="Contraseña">
+
+            <button id="loginBtn">Iniciar sesión</button>
+            <button id="registerBtn">Crear cuenta</button>
+
+            <p id="authMessage"></p>
+        </section>
+
+  <!-- TOAST -->
+
+  <div id="toast"></div>
 
 
-    <!-- Firebase / Application -->
+  <!-- ==========================================
+       FIREBASE
+       Firebase JS SDK v10+ / Modular
+       ========================================== -->
 
-    <script type="module" src="./app.js"></script>
+  <script type="module">
+
+    /*
+     * =====================================================
+     * 1. IMPORTAR FIREBASE
+     * =====================================================
+     */
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signInWithRedirect,
+      getRedirectResult,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      orderBy,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+    /*
+     * =====================================================
+     * 2. CONFIGURACIÓN DE FIREBASE
+     * =====================================================
+     *
+     * REEMPLAZÁ ESTOS VALORES POR LOS DE TU PROYECTO.
+     *
+     * Firebase Console:
+     *
+     * Project settings
+     *    ↓
+     * Your apps
+     *    ↓
+     * Web app
+     *
+     * Ahí Firebase te proporciona este objeto.
+     */
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
+
+  authDomain: "banco-de-mama.firebaseapp.com",
+
+  projectId: "banco-de-mama",
+
+  storageBucket: "banco-de-mama.firebasestorage.app",
+
+  messagingSenderId: "551441991939",
+
+  appId: "1:551441991939:web:e1b7e5901bc51d86b44136"
+
+};
+
+
+
+    /*
+     * =====================================================
+     * 3. INICIALIZAR FIREBASE
+     * =====================================================
+     */
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+    const googleProvider = new GoogleAuthProvider();
+
+
+    /*
+     * =====================================================
+     * 4. ELEMENTOS DEL DOM
+     * =====================================================
+     */
+
+    const loginScreen =
+      document.getElementById("loginScreen");
+
+    const appScreen =
+      document.getElementById("app");
+
+    const googleLogin =
+      document.getElementById("googleLogin");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const balanceElement =
+      document.getElementById("balance");
+
+    const privacyButton =
+      document.getElementById("privacyButton");
+
+    const transactionsList =
+      document.getElementById("transactionsList");
+
+    const transactionCount =
+      document.getElementById("transactionCount");
+
+    const profileName =
+      document.getElementById("profileName");
+
+    const profileEmail =
+      document.getElementById("profileEmail");
+
+    const profileAvatar =
+      document.getElementById("profileAvatar");
+
+    const headerName =
+      document.getElementById("headerName");
+
+    const headerAvatar =
+      document.getElementById("headerAvatar");
+
+    const toast =
+      document.getElementById("toast");
+
+
+    /*
+     * =====================================================
+     * 5. ESTADO DE LA APLICACIÓN
+     * =====================================================
+     */
+
+    let currentUser = null;
+
+    let privateMode = false;
+
+    let currentBalance = 0;
+
+    let unsubscribeTransactions = null;
+
+
+    /*
+     * =====================================================
+     * 6. TOAST
+     * =====================================================
+     */
+
+    function showToast(message) {
+
+      toast.textContent = message;
+
+      toast.classList.add("show");
+
+      setTimeout(() => {
+
+        toast.classList.remove("show");
+
+      }, 3000);
+
+    }
+
+
+    /*
+     * =====================================================
+     * 7. FORMATEAR SALDO
+     * =====================================================
+     */
+
+    function formatBalance(value) {
+
+      if (privateMode) {
+
+        return "••••••";
+
+      }
+
+      return Number(value || 0).toLocaleString(
+        "es-AR",
+        {
+          maximumFractionDigits: 2
+        }
+      );
+
+    }
+
+
+    function updateBalanceUI() {
+
+      balanceElement.textContent =
+        formatBalance(currentBalance);
+
+      privacyButton.textContent =
+        privateMode
+          ? "🙈 Mostrar"
+          : "👁 Ocultar";
+
+    }
+
+
+    /*
+     * =====================================================
+     * 8. MODO PRIVADO
+     * =====================================================
+     */
+
+    privacyButton.addEventListener(
+      "click",
+      () => {
+
+        privateMode = !privateMode;
+
+        updateBalanceUI();
+
+      }
+    );
+
+
+    /*
+     * =====================================================
+     * 9. LOGIN CON GOOGLE
+     * =====================================================
+     */
+
+    googleLogin.addEventListener(
+      "click",
+      async () => {
+
+        googleLogin.disabled = true;
+
+        googleLogin.textContent =
+          "Conectando...";
+
+        try {
+
+          /*
+           * Popup funciona bien en escritorio.
+           */
+
+          await signInWithPopup(
+            auth,
+            googleProvider
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Error de Google Auth:",
+            error
+          );
+
+          /*
+           * Algunos navegadores pueden bloquear
+           * los popups. En ese caso podemos intentar
+           * el flujo de redirección.
+           */
+
+          if (
+            error.code ===
+            "auth/popup-blocked"
+          ) {
+
+            await signInWithRedirect(
+              auth,
+              googleProvider
+            );
+
+            return;
+
+          }
+
+          showToast(
+            "No se pudo iniciar sesión."
+          );
+
+          googleLogin.disabled = false;
+
+          googleLogin.textContent =
+            "Continuar con Google";
+        }
+
+      }
+    );
+
+
+    /*
+     * =====================================================
+     * 10. RESULTADO DE REDIRECCIÓN
+     * =====================================================
+     */
+
+    getRedirectResult(auth)
+      .catch(error => {
+
+        console.error(
+          "Redirect Auth:",
+          error
+        );
+
+      });
+
+
+    /*
+     * =====================================================
+     * 11. CONTROL DE SESIÓN
+     * =====================================================
+     *
+     * onAuthStateChanged detecta automáticamente
+     * cuándo el usuario inicia o cierra sesión.
+     */
+
+    onAuthStateChanged(
+      auth,
+      async (user) => {
+
+        currentUser = user;
+
+        if (user) {
+
+          /*
+           * Usuario autenticado
+           */
+
+          loginScreen.style.display =
+            "none";
+
+          appScreen.style.display =
+            "block";
+
+          loadUserProfile(user);
+
+          await loadBalance(user);
+
+          listenToTransactions(user);
+
+        } else {
+
+          /*
+           * Usuario NO autenticado
+           */
+
+          loginScreen.style.display =
+            "flex";
+
+          appScreen.style.display =
+            "none";
+
+          currentUser = null;
+
+          if (unsubscribeTransactions) {
+
+            unsubscribeTransactions();
+
+            unsubscribeTransactions = null;
+
+          }
+
+        }
+
+      }
+    );
+
+
+    /*
+     * =====================================================
+     * 12. PERFIL DEL USUARIO
+     * =====================================================
+     */
+
+    function loadUserProfile(user) {
+
+      const name =
+        user.displayName ||
+        "Usuario";
+
+      const email =
+        user.email ||
+        "Sin correo";
+
+      const avatar =
+        user.photoURL ||
+        "https://ui-avatars.com/api/?name=User";
+
+
+      profileName.textContent =
+        name;
+
+      profileEmail.textContent =
+        email;
+
+      headerName.textContent =
+        name;
+
+      profileAvatar.src =
+        avatar;
+
+      headerAvatar.src =
+        avatar;
+
+    }
+
+
+    /*
+     * =====================================================
+     * 13. LEER BALANCE
+     * =====================================================
+     *
+     * Estructura esperada:
+     *
+     * users
+     *   └── UID_DEL_USUARIO
+     *        ├── balance: 1500
+     *        └── coins: 1500
+     *
+     * Se intenta primero "balance".
+     * Si no existe, se intenta "coins".
+     */
+
+    async function loadBalance(user) {
+
+      try {
+
+        const userRef =
+          doc(
+            db,
+            "users",
+            user.uid
+          );
+
+        const snapshot =
+          await getDoc(userRef);
+
+        if (!snapshot.exists()) {
+
+          currentBalance = 0;
+
+          updateBalanceUI();
+
+          showToast(
+            "No existe un documento de usuario todavía."
+          );
+
+          return;
+
+        }
+
+        const data =
+          snapshot.data();
+
+        if (
+          typeof data.balance ===
+          "number"
+        ) {
+
+          currentBalance =
+            data.balance;
+
+        } else if (
+          typeof data.coins ===
+          "number"
+        ) {
+
+          currentBalance =
+            data.coins;
+
+        } else {
+
+          currentBalance = 0;
+
+        }
+
+        updateBalanceUI();
+
+      } catch (error) {
+
+        console.error(
+          "Error obteniendo balance:",
+          error
+        );
+
+        balanceElement.textContent =
+          "Error";
+
+        showToast(
+          "No se pudo cargar el saldo."
+        );
+
+      }
+
+    }
+
+
+    /*
+     * =====================================================
+     * 14. TRANSACCIONES EN TIEMPO REAL
+     * =====================================================
+     *
+     * Estructura esperada:
+     *
+     * transactions
+     *   └── documento
+     *       ├── user_ref: "UID"
+     *       ├── amount: 100
+     *       ├── type: "income"
+     *       ├── title: "Pago"
+     *       └── created_at: Timestamp
+     *
+     * IMPORTANTE:
+     *
+     * user_ref debe contener el UID de Firebase Auth.
+     */
+
+    function listenToTransactions(user) {
+
+      /*
+       * Cancelar listener anterior
+       */
+
+      if (unsubscribeTransactions) {
+
+        unsubscribeTransactions();
+
+      }
+
+
+      const transactionsRef =
+        collection(
+          db,
+          "transactions"
+        );
+
+
+      /*
+       * Filtrar EXCLUSIVAMENTE por
+       * el usuario autenticado.
+       */
+
+      const transactionsQuery =
+        query(
+          transactionsRef,
+
+          where(
+            "user_ref",
+            "==",
+            user.uid
+          ),
+
+          orderBy(
+            "created_at",
+            "desc"
+          )
+        );
+
+
+      /*
+       * Listener en tiempo real.
+       */
+
+      unsubscribeTransactions =
+        onSnapshot(
+          transactionsQuery,
+
+          (snapshot) => {
+
+            transactionsList.innerHTML =
+              "";
+
+            transactionCount.textContent =
+              `${snapshot.size} ${
+                snapshot.size === 1
+                  ? "movimiento"
+                  : "movimientos"
+              }`;
+
+
+            if (snapshot.empty) {
+
+              transactionsList.innerHTML = `
+                <div class="empty">
+                  No hay movimientos todavía.
+                </div>
+              `;
+
+              return;
+
+            }
+
+
+            snapshot.forEach(
+              (transactionDoc) => {
+
+                const data =
+                  transactionDoc.data();
+
+                renderTransaction(data);
+
+              }
+            );
+
+          },
+
+          (error) => {
+
+            console.error(
+              "Error escuchando transacciones:",
+              error
+            );
+
+            transactionsList.innerHTML = `
+              <div class="empty">
+                No se pudieron cargar los movimientos.
+              </div>
+            `;
+
+            showToast(
+              "Error cargando movimientos."
+            );
+
+          }
+        );
+
+    }
+
+
+    /*
+     * =====================================================
+     * 15. RENDERIZAR TRANSACCIÓN
+     * =====================================================
+     */
+
+    function renderTransaction(data) {
+
+      const amount =
+        Number(data.amount || 0);
+
+      /*
+       * Aceptamos varios nombres comunes
+       * para determinar el tipo.
+       */
+
+      const type =
+        data.type ||
+        data.transaction_type ||
+        (
+          amount >= 0
+            ? "income"
+            : "expense"
+        );
+
+
+      const isIncome =
+        type === "income" ||
+        type === "deposit" ||
+        type === "credit" ||
+        (
+          !data.type &&
+          amount >= 0
+        );
+
+
+      const title =
+        data.title ||
+        data.description ||
+        "Movimiento";
+
+
+      const icon =
+        isIncome
+          ? "↓"
+          : "↑";
+
+
+      const sign =
+        isIncome
+          ? "+"
+          : "-";
+
+
+      const absoluteAmount =
+        Math.abs(amount);
+
+
+      const date =
+        formatTransactionDate(
+          data.created_at
+        );
+
+
+      const element =
+        document.createElement(
+          "div"
+        );
+
+
+      element.className =
+        "transaction";
+
+
+      element.innerHTML = `
+
+        <div class="transaction-left">
+
+          <div class="transaction-icon">
+            ${icon}
+          </div>
+
+          <div class="transaction-info">
+
+            <div class="transaction-title">
+              ${escapeHTML(title)}
+            </div>
+
+            <div class="transaction-date">
+              ${date}
+            </div>
+
+          </div>
+
+        </div>
+
+        <div
+          class="transaction-amount ${
+            isIncome
+              ? "income"
+              : "expense"
+          }"
+        >
+          ${sign}${absoluteAmount.toLocaleString(
+            "es-AR"
+          )} MC
+        </div>
+
+      `;
+
+
+      transactionsList.appendChild(
+        element
+      );
+
+    }
+
+
+    /*
+     * =====================================================
+     * 16. FECHA DE FIRESTORE
+     * =====================================================
+     */
+
+    function formatTransactionDate(
+      timestamp
+    ) {
+
+      if (!timestamp) {
+
+        return "Fecha desconocida";
+
+      }
+
+
+      let date;
+
+
+      /*
+       * Firestore Timestamp
+       */
+
+      if (
+        typeof timestamp.toDate ===
+        "function"
+      ) {
+
+        date =
+          timestamp.toDate();
+
+      }
+
+      /*
+       * JavaScript Date
+       */
+
+      else if (
+        timestamp instanceof Date
+      ) {
+
+        date =
+          timestamp;
+
+      }
+
+      /*
+       * Timestamp en milisegundos
+       */
+
+      else if (
+        typeof timestamp ===
+        "number"
+      ) {
+
+        date =
+          new Date(timestamp);
+
+      }
+
+      else {
+
+        return "Fecha desconocida";
+
+      }
+
+
+      return date.toLocaleString(
+        "es-AR",
+        {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }
+      );
+
+    }
+
+
+    /*
+     * =====================================================
+     * 17. ESCAPAR HTML
+     * =====================================================
+     *
+     * Evita insertar HTML directamente desde
+     * datos almacenados en Firestore.
+     */
+
+    function escapeHTML(value) {
+
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+
+    /*
+     * =====================================================
+     * 18. CERRAR SESIÓN
+     * =====================================================
+     */
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        try {
+
+          await signOut(auth);
+
+          showToast(
+            "Sesión cerrada."
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Error cerrando sesión:",
+            error
+          );
+
+          showToast(
+            "No se pudo cerrar sesión."
+          );
+
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
