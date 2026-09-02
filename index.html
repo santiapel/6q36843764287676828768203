@@ -509,30 +509,173 @@
 
   <!-- LOGIN -->
 
-  <section id="loginScreen">
+<section id="loginScreen">
 
-    <div class="login-card">
+  <div class="login-card">
 
-      <div class="logo">
-        MC
-      </div>
+    <div class="logo">
+      MC
+    </div>
 
-      <h1>Mom Coin Wallet</h1>
+    <div id="accountSelection">
+
+      <h1>¿Quién eres?</h1>
 
       <p>
-        Tu billetera digital para consultar
-        tus Mom Coins y movimientos.
+        Seleccioná tu cuenta para continuar.
       </p>
 
-      <button id="googleLogin" class="google-button">
-        <span class="google-icon">G</span>
-        Continuar con Google
+      <div class="account-list">
+
+        <!-- SANTI -->
+
+        <button
+          class="account-button"
+          data-name="Santi"
+          data-email="santipapel16@gmail.com"
+        >
+
+          <div class="account-avatar">
+            👤
+          </div>
+
+          <div class="account-info">
+            <strong>Santi</strong>
+            <span>santipapel16@gmail.com</span>
+          </div>
+
+          <div class="account-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+        <!-- LEONEL -->
+
+        <button
+          class="account-button"
+          data-name="Leonel"
+          data-email="leoxdfunes@gmail.com"
+        >
+
+          <div class="account-avatar">
+            👤
+          </div>
+
+          <div class="account-info">
+            <strong>Leonel</strong>
+            <span>leoxdfunes@gmail.com</span>
+          </div>
+
+          <div class="account-arrow">
+            ›
+          </div>
+
+        </button>
+
+
+        <!-- GABRIELA -->
+
+        <button
+          class="account-button"
+          data-name="Gabriela"
+          data-email="gabyhuchy@gmail.com"
+        >
+
+          <div class="account-avatar admin-avatar">
+            👑
+          </div>
+
+          <div class="account-info">
+            <strong>Gabriela</strong>
+            <span>ADMIN</span>
+          </div>
+
+          <div class="account-arrow">
+            ›
+          </div>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- CONFIRMAR CUENTA -->
+
+    <div
+      id="emailConfirmation"
+      style="display:none;"
+    >
+
+      <h1>Confirmar cuenta</h1>
+
+      <p>
+        Vas a iniciar sesión como:
+      </p>
+
+      <div
+        id="selectedAccount"
+        style="
+          padding:15px;
+          background:#f5f5f8;
+          border-radius:14px;
+          margin-bottom:18px;
+        "
+      ></div>
+
+      <button
+        id="sendEmailButton"
+        class="google-button"
+        style="
+          background:#6c4df6;
+          color:white;
+        "
+      >
+        📧 Enviar correo de confirmación
+      </button>
+
+      <button
+        id="backAccounts"
+        style="
+          margin-top:14px;
+          background:none;
+          color:#6c4df6;
+          font-weight:700;
+        "
+      >
+        ← Cambiar cuenta
       </button>
 
     </div>
 
-  </section>
 
+    <!-- CORREO ENVIADO -->
+
+    <div
+      id="emailSent"
+      style="display:none;"
+    >
+
+      <h1>📬 Correo enviado</h1>
+
+      <p>
+        Mandamos un enlace de confirmación a:
+      </p>
+
+      <strong id="sentEmail"></strong>
+
+      <p style="margin-top:15px;">
+        Abrí el correo y tocá el enlace para entrar.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 
   <!-- APP -->
 
