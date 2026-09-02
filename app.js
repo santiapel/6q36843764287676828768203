@@ -1,109 +1,699 @@
+<script type="module">
+
+/* =========================================
+   FIREBASE
+   ========================================= */
+
 import {
-    initializeApp
+  initializeApp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signInWithRedirect,
-    getRedirectResult,
-    onAuthStateChanged,
-    signOut
+  getAuth,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
-    getFirestore,
-    doc,
-    getDoc,
-    collection,
-    query,
-    where,
-    orderBy,
-    onSnapshot
+  getFirestore,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  runTransaction
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-import {
-    firebaseConfig
-} from "./firebase-config.js";
+
+/* =========================================
+   CONFIG
+   ========================================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
+
+  authDomain:
+    "banco-de-mama.firebaseapp.com",
+
+  projectId:
+    "banco-de-mama",
+
+  storageBucket:
+    "banco-de-mama.firebasestorage.app",
+
+  messagingSenderId:
+    "551441991939",
+
+  appId:
+    "1:551441991939:web:e1b7e5901bc51d86b44136"
+
+};
 
 
-// ============================================================
-// FIREBASE
-// ============================================================
-
-const firebaseApp =
-    initializeApp(firebaseConfig);
+const app =
+  initializeApp(firebaseConfig);
 
 const auth =
-    getAuth(firebaseApp);
+  getAuth(app);
 
 const db =
-    getFirestore(firebaseApp);
-
-const googleProvider =
-    new GoogleAuthProvider();
+  getFirestore(app);
 
 
-// ============================================================
-// DOM
-// ============================================================
+/* =========================================
+   CUENTAS PERMITIDAS
+   ========================================= */
 
-const authScreen =
-    document.getElementById("auth-screen");
+const ACCOUNTS = {
 
-const appScreen =
-    document.getElementById("app-screen");
+  santi: {
+    name: "Santi",
+    email: "santipapel16@gmail.com",
+    icon: "👤",
+    admin: false
+  },
 
-const googleLogin =
-    document.getElementById("google-login");
+  leonel: {
+    name: "Leonel",
+    email: "leoxdfunes@gmail.com",
+    icon: "👤",
+    admin: false
+  },
 
-const logoutButton =
-    document.getElementById("logout-button");
+  gabriela: {
+    name: "Gabriela",
+    email: "gabyhuchy@gmail.com",
+    icon: "👑",
+    admin: true
+  }
 
-const balanceValue =
-    document.getElementById("balance-value");
+};
 
-const privacyButton =
-    document.getElementById("privacy-button");
 
-const privacyIcon =
-    document.getElementById("privacy-icon");
+const ADMIN_EMAILS = [
 
-const welcomeTitle =
-    document.getElementById("welcome-title");
+  "gabyhuchy@gmail.com",
+  "gabyhuchy@hotmail.com"
 
-const headerAvatar =
-    document.getElementById("header-avatar");
+];
 
-const profileAvatar =
-    document.getElementById("profile-avatar");
 
-const profileName =
-    document.getElementById("profile-name");
+const ALLOWED_EMAILS = [
 
-const profileEmail =
-    document.getElementById("profile-email");
+  "santipapel16@gmail.com",
+  "leoxdfunes@gmail.com",
+  "gabyhuchy@gmail.com",
+  "gabyhuchy@hotmail.com"
 
-const profileUid =
-    document.getElementById("profile-uid");
+];
 
-const copyUid =
-    document.getElementById("copy-uid");
 
-const transactionsList =
-    document.getElementById("transactions-list");
+/* =========================================
+   LOGIN
+   ========================================= */
 
-const transactionCount =
-    document.getElementById("transaction-count");
+const accountSelection =
+  document.getElementById(
+    "accountSelection"
+  );
+
+const emailConfirmation =
+  document.getElementById(
+    "emailConfirmation"
+  );
+
+const emailSent =
+  document.getElementById(
+    "emailSent"
+  );
+
+const selectedAccount =
+  document.getElementById(
+    "selectedAccount"
+  );
+
+const sentEmail =
+  document.getElementById(
+    "sentEmail"
+  );
+
+const sendEmailButton =
+  document.getElementById(
+    "sendEmailButton"
+  );
+
+const backAccounts =
+  document.getElementById(
+    "backAccounts"
+  );
+
+
+let selectedAccountData = null;
+
+
+/* =========================================
+   CONFIGURACIÓN DEL ENLACE
+   ========================================= */
+
+const actionCodeSettings = {
+
+  url:
+    window.location.origin +
+    window.location.pathname,
+
+  handleCodeInApp:
+    true
+
+};
+
+
+/* =========================================
+   TOAST
+   ========================================= */
 
 const toast =
-    document.getElementById("toast");
+  document.getElementById(
+    "toast"
+  );
 
 
-// ============================================================
-// STATE
-// ============================================================
+function showToast(message) {
+
+  toast.textContent =
+    message;
+
+  toast.classList.add(
+    "show"
+  );
+
+  setTimeout(() => {
+
+    toast.classList.remove(
+      "show"
+    );
+
+  }, 3000);
+
+}
+
+
+/* =========================================
+   SELECCIONAR CUENTA
+   ========================================= */
+
+document
+  .querySelectorAll(".account-button")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const accountName =
+          button.dataset.name;
+
+        const accountEmail =
+          button.dataset.email;
+
+
+        selectedAccountData = {
+
+          name:
+            accountName,
+
+          email:
+            accountEmail
+
+        };
+
+
+        let icon =
+          "👤";
+
+
+        if (
+          accountEmail ===
+          "gabyhuchy@gmail.com"
+        ) {
+
+          icon =
+            "👑";
+
+        }
+
+
+        selectedAccount.innerHTML = `
+
+          <div class="selected-icon">
+            ${icon}
+          </div>
+
+          <div>
+
+            <strong>
+              ${escapeHTML(accountName)}
+            </strong>
+
+            <span>
+              ${escapeHTML(accountEmail)}
+            </span>
+
+          </div>
+
+        `;
+
+
+        accountSelection.style.display =
+          "none";
+
+        emailConfirmation.style.display =
+          "block";
+
+      }
+    );
+
+  });
+
+
+/* =========================================
+   VOLVER A CUENTAS
+   ========================================= */
+
+backAccounts.addEventListener(
+  "click",
+  () => {
+
+    emailConfirmation.style.display =
+      "none";
+
+    accountSelection.style.display =
+      "block";
+
+  }
+);
+
+
+/* =========================================
+   ENVIAR EMAIL
+   ========================================= */
+
+sendEmailButton.addEventListener(
+  "click",
+  async () => {
+
+    if (!selectedAccountData) {
+
+      showToast(
+        "Seleccioná una cuenta."
+      );
+
+      return;
+
+    }
+
+
+    const email =
+      selectedAccountData.email
+        .toLowerCase()
+        .trim();
+
+
+    if (
+      !ALLOWED_EMAILS.includes(
+        email
+      )
+    ) {
+
+      showToast(
+        "Esta cuenta no está autorizada."
+      );
+
+      return;
+
+    }
+
+
+    sendEmailButton.disabled =
+      true;
+
+    sendEmailButton.textContent =
+      "Enviando correo...";
+
+
+    try {
+
+      /*
+       * Guardamos la cuenta elegida.
+       */
+
+      localStorage.setItem(
+        "momcoin_selected_email",
+        email
+      );
+
+
+      localStorage.setItem(
+        "momcoin_selected_name",
+        selectedAccountData.name
+      );
+
+
+      /*
+       * Firebase manda el enlace mágico.
+       */
+
+      await sendSignInLinkToEmail(
+        auth,
+        email,
+        actionCodeSettings
+      );
+
+
+      sentEmail.textContent =
+        email;
+
+
+      emailConfirmation.style.display =
+        "none";
+
+      emailSent.style.display =
+        "block";
+
+
+      showToast(
+        "📧 Revisá tu correo."
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "Error enviando email:",
+        error
+      );
+
+
+      if (
+        error.code ===
+        "auth/unauthorized-continue-uri"
+      ) {
+
+        showToast(
+          "El dominio no está autorizado en Firebase."
+        );
+
+      } else if (
+        error.code ===
+        "auth/invalid-email"
+      ) {
+
+        showToast(
+          "El correo no es válido."
+        );
+
+      } else if (
+        error.code ===
+        "auth/operation-not-allowed"
+      ) {
+
+        showToast(
+          "Tenés que activar Email Link en Firebase."
+        );
+
+      } else {
+
+        showToast(
+          "No se pudo enviar el correo."
+        );
+
+      }
+
+
+      sendEmailButton.disabled =
+        false;
+
+      sendEmailButton.textContent =
+        "📧 Enviar correo de confirmación";
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   CONFIRMAR ENLACE MÁGICO
+   ========================================= */
+
+async function processEmailLink() {
+
+  if (
+    !isSignInWithEmailLink(
+      auth,
+      window.location.href
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  let email =
+    localStorage.getItem(
+      "momcoin_selected_email"
+    );
+
+
+  /*
+   * Si por alguna razón se perdió
+   * el localStorage, pedimos el correo.
+   */
+
+  if (!email) {
+
+    email =
+      window.prompt(
+        "Confirmá tu correo electrónico:"
+      );
+
+  }
+
+
+  if (!email) {
+
+    showToast(
+      "No se pudo identificar la cuenta."
+    );
+
+    return;
+
+  }
+
+
+  email =
+    email
+      .trim()
+      .toLowerCase();
+
+
+  if (
+    !ALLOWED_EMAILS.includes(
+      email
+    )
+  ) {
+
+    showToast(
+      "Esta cuenta no está autorizada."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const result =
+      await signInWithEmailLink(
+        auth,
+        email,
+        window.location.href
+      );
+
+
+    /*
+     * Limpiamos datos temporales.
+     */
+
+    localStorage.removeItem(
+      "momcoin_selected_email"
+    );
+
+    localStorage.removeItem(
+      "momcoin_selected_name"
+    );
+
+
+    /*
+     * Limpiamos la URL.
+     */
+
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    );
+
+
+    console.log(
+      "Login correcto:",
+      result.user.email
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Error autenticando:",
+      error
+    );
+
+    showToast(
+      "El enlace no es válido o expiró."
+    );
+
+  }
+
+}
+
+
+processEmailLink();
+
+
+/* =========================================
+   ELEMENTOS APP
+   ========================================= */
+
+const loginScreen =
+  document.getElementById(
+    "loginScreen"
+  );
+
+const appScreen =
+  document.getElementById(
+    "app"
+  );
+
+const logoutButton =
+  document.getElementById(
+    "logoutButton"
+  );
+
+const balanceElement =
+  document.getElementById(
+    "balance"
+  );
+
+const privacyButton =
+  document.getElementById(
+    "privacyButton"
+  );
+
+const profileName =
+  document.getElementById(
+    "profileName"
+  );
+
+const profileEmail =
+  document.getElementById(
+    "profileEmail"
+  );
+
+const profileAvatar =
+  document.getElementById(
+    "profileAvatar"
+  );
+
+const headerName =
+  document.getElementById(
+    "headerName"
+  );
+
+const headerAvatar =
+  document.getElementById(
+    "headerAvatar"
+  );
+
+const headerRole =
+  document.getElementById(
+    "headerRole"
+  );
+
+const roleBadge =
+  document.getElementById(
+    "roleBadge"
+  );
+
+const adminPanel =
+  document.getElementById(
+    "adminPanel"
+  );
+
+const recipientEmail =
+  document.getElementById(
+    "recipientEmail"
+  );
+
+const sendAmount =
+  document.getElementById(
+    "sendAmount"
+  );
+
+const sendReason =
+  document.getElementById(
+    "sendReason"
+  );
+
+const sendCoinsButton =
+  document.getElementById(
+    "sendCoinsButton"
+  );
+
+const transactionsList =
+  document.getElementById(
+    "transactionsList"
+  );
+
+const transactionCount =
+  document.getElementById(
+    "transactionCount"
+  );
+
+const notificationsList =
+  document.getElementById(
+    "notificationsList"
+  );
+
+const notificationCount =
+  document.getElementById(
+    "notificationCount"
+  );
+
+
+/* =========================================
+   ESTADO
+   ========================================= */
 
 let currentUser = null;
 
@@ -113,744 +703,1210 @@ let privateMode = false;
 
 let unsubscribeTransactions = null;
 
+let unsubscribeNotifications = null;
 
-// ============================================================
-// TOAST
-// ============================================================
 
-function showToast(message) {
+/* =========================================
+   SALDO
+   ========================================= */
 
-    toast.textContent = message;
+function updateBalanceUI() {
 
-    toast.classList.add("visible");
+  if (privateMode) {
 
-    window.clearTimeout(
-        showToast.timeout
-    );
+    balanceElement.textContent =
+      "••••••";
 
-    showToast.timeout =
-        window.setTimeout(() => {
+  } else {
 
-            toast.classList.remove(
-                "visible"
-            );
+    balanceElement.textContent =
+      Number(
+        currentBalance || 0
+      ).toLocaleString(
+        "es-AR"
+      );
 
-        }, 3000);
+  }
+
+
+  privacyButton.textContent =
+    privateMode
+      ? "🙈 Mostrar"
+      : "👁 Ocultar";
+
 }
 
 
-// ============================================================
-// AUTH
-// ============================================================
+privacyButton.addEventListener(
+  "click",
+  () => {
 
-googleLogin.addEventListener(
-    "click",
-    async () => {
+    privateMode =
+      !privateMode;
 
-        googleLogin.disabled = true;
+    updateBalanceUI();
 
-        googleLogin.querySelector("span")
-            .textContent =
-            "Conectando...";
-
-        try {
-
-            await signInWithPopup(
-                auth,
-                googleProvider
-            );
-
-        } catch (error) {
-
-            console.error(error);
-
-            /*
-             * Si el navegador bloquea el popup,
-             * utilizamos redirect.
-             */
-
-            if (
-                error.code ===
-                "auth/popup-blocked"
-            ) {
-
-                await signInWithRedirect(
-                    auth,
-                    googleProvider
-                );
-
-                return;
-            }
-
-            showToast(
-                getAuthError(error)
-            );
-
-            googleLogin.disabled = false;
-
-            googleLogin.querySelector("span")
-                .textContent =
-                "Continuar con Google";
-        }
-    }
+  }
 );
 
 
-// Resultado del login mediante redirect.
+/* =========================================
+   PERFIL
+   ========================================= */
 
-getRedirectResult(auth)
-    .catch(error => {
+function loadUserProfile(user) {
 
-        console.error(
-            "Redirect error:",
-            error
-        );
+  const name =
+    user.displayName ||
+    "Usuario";
 
-        showToast(
-            getAuthError(error)
-        );
-    });
-
-
-// ============================================================
-// AUTH STATE
-// ============================================================
-
-onAuthStateChanged(
-    auth,
-    async user => {
-
-        currentUser = user;
-
-        if (!user) {
-
-            showAuth();
-
-            return;
-        }
-
-        showApp();
-
-        renderUser(user);
-
-        await loadBalance(user);
-
-        subscribeTransactions(user);
-    }
-);
+  const email =
+    user.email ||
+    "";
 
 
-// ============================================================
-// SCREEN CONTROL
-// ============================================================
-
-function showAuth() {
-
-    authScreen.classList.remove(
-        "hidden"
-    );
-
-    appScreen.classList.add(
-        "hidden"
-    );
-}
+  let avatar =
+    user.photoURL;
 
 
-function showApp() {
+  if (!avatar) {
 
-    authScreen.classList.add(
-        "hidden"
-    );
-
-    appScreen.classList.remove(
-        "hidden"
-    );
-}
-
-
-// ============================================================
-// USER
-// ============================================================
-
-function renderUser(user) {
-
-    const name =
-        user.displayName ||
-        "Usuario";
-
-    const email =
-        user.email ||
-        "Sin correo";
-
-    const avatar =
-        user.photoURL ||
-        createAvatar(name);
-
-
-    welcomeTitle.textContent =
-        `Hola, ${getFirstName(name)} 👋`;
-
-    profileName.textContent =
-        name;
-
-    profileEmail.textContent =
-        email;
-
-    profileUid.textContent =
-        user.uid;
-
-    headerAvatar.src =
-        avatar;
-
-    profileAvatar.src =
-        avatar;
-}
-
-
-function getFirstName(name) {
-
-    return name
-        .trim()
-        .split(/\s+/)[0];
-}
-
-
-function createAvatar(name) {
-
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    avatar =
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(
         name
-    )}&background=6657f5&color=fff`;
+      )}`;
+
+  }
+
+
+  profileName.textContent =
+    name;
+
+  profileEmail.textContent =
+    email;
+
+  profileAvatar.src =
+    avatar;
+
+  headerName.textContent =
+    name;
+
+  headerAvatar.src =
+    avatar;
+
+
+  if (
+    isAdmin(user)
+  ) {
+
+    roleBadge.textContent =
+      "👑 ADMIN";
+
+    headerRole.textContent =
+      "Administrador";
+
+  } else {
+
+    roleBadge.textContent =
+      "USUARIO";
+
+    headerRole.textContent =
+      "Wallet personal";
+
+  }
+
 }
 
 
-// ============================================================
-// BALANCE
-// ============================================================
+/* =========================================
+   PERMISOS
+   ========================================= */
+
+function isAdmin(user) {
+
+  return Boolean(
+    user?.email &&
+    ADMIN_EMAILS.includes(
+      user.email.toLowerCase()
+    )
+  );
+
+}
+
+
+function isAllowedUser(user) {
+
+  return Boolean(
+    user?.email &&
+    ALLOWED_EMAILS.includes(
+      user.email.toLowerCase()
+    )
+  );
+
+}
+
+
+/* =========================================
+   PANEL DE MAMÁ
+   ========================================= */
+
+function updateAdminUI(user) {
+
+  if (
+    isAdmin(user)
+  ) {
+
+    adminPanel.style.display =
+      "block";
+
+  } else {
+
+    adminPanel.style.display =
+      "none";
+
+  }
+
+}
+
+
+/* =========================================
+   CARGAR / CREAR USUARIO
+   ========================================= */
+
+async function ensureUserDocument(user) {
+
+  const userRef =
+    doc(
+      db,
+      "users",
+      user.uid
+    );
+
+
+  const snapshot =
+    await getDoc(
+      userRef
+    );
+
+
+  if (
+    !snapshot.exists()
+  ) {
+
+    await setDoc(
+      userRef,
+      {
+
+        email:
+          user.email,
+
+        displayName:
+          user.displayName ||
+          localStorage.getItem(
+            "momcoin_selected_name"
+          ) ||
+          "Usuario",
+
+        balance:
+          0
+
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   CARGAR SALDO
+   ========================================= */
 
 async function loadBalance(user) {
 
-    balanceValue.textContent =
-        "Cargando...";
+  try {
 
-    try {
+    const userRef =
+      doc(
+        db,
+        "users",
+        user.uid
+      );
 
-        const userReference =
-            doc(
-                db,
-                "users",
-                user.uid
-            );
 
-        const snapshot =
-            await getDoc(
-                userReference
-            );
+    const snapshot =
+      await getDoc(
+        userRef
+      );
 
-        if (!snapshot.exists()) {
 
-            currentBalance = 0;
+    if (
+      !snapshot.exists()
+    ) {
 
-            updateBalance();
+      currentBalance =
+        0;
 
-            return;
-        }
+      updateBalanceUI();
 
-        const data =
-            snapshot.data();
+      return;
+
+    }
+
+
+    const data =
+      snapshot.data();
+
+
+    currentBalance =
+      Number(
+        data.balance ??
+        data.coins ??
+        0
+      );
+
+
+    updateBalanceUI();
+
+  } catch (error) {
+
+    console.error(
+      "Balance:",
+      error
+    );
+
+    balanceElement.textContent =
+      "Error";
+
+  }
+
+}
+
+
+/* =========================================
+   MOVIMIENTOS
+   ========================================= */
+
+function listenToTransactions(user) {
+
+  if (
+    unsubscribeTransactions
+  ) {
+
+    unsubscribeTransactions();
+
+  }
+
+
+  const transactionsRef =
+    collection(
+      db,
+      "transactions"
+    );
+
+
+  const transactionsQuery =
+    query(
+
+      transactionsRef,
+
+      where(
+        "user_ref",
+        "==",
+        user.uid
+      ),
+
+      orderBy(
+        "created_at",
+        "desc"
+      )
+
+    );
+
+
+  unsubscribeTransactions =
+    onSnapshot(
+
+      transactionsQuery,
+
+      snapshot => {
+
+        transactionsList.innerHTML =
+          "";
+
+
+        transactionCount.textContent =
+          `${snapshot.size} ${
+            snapshot.size === 1
+              ? "movimiento"
+              : "movimientos"
+          }`;
+
 
         if (
-            typeof data.balance ===
-            "number"
+          snapshot.empty
         ) {
 
-            currentBalance =
-                data.balance;
+          transactionsList.innerHTML = `
+            <div class="empty">
+              Todavía no tenés movimientos. 💸
+            </div>
+          `;
 
-        } else if (
-            typeof data.coins ===
-            "number"
-        ) {
+          return;
 
-            currentBalance =
-                data.coins;
-
-        } else {
-
-            currentBalance = 0;
         }
 
-        updateBalance();
 
-    } catch (error) {
+        snapshot.forEach(
+          transactionDoc => {
+
+            renderTransaction(
+              transactionDoc.data()
+            );
+
+          }
+        );
+
+      },
+
+      error => {
 
         console.error(
-            "Balance error:",
-            error
+          "Transactions:",
+          error
         );
 
-        balanceValue.textContent =
-            "Error";
+        transactionsList.innerHTML = `
+          <div class="empty">
+            No se pudieron cargar los movimientos.
+          </div>
+        `;
 
-        showToast(
-            "No se pudo cargar el saldo."
-        );
-    }
+      }
+
+    );
+
 }
 
 
-function updateBalance() {
-
-    if (privateMode) {
-
-        balanceValue.textContent =
-            "••••••";
-
-        privacyIcon.textContent =
-            "◎";
-
-        return;
-    }
-
-    balanceValue.textContent =
-        formatMoney(currentBalance);
-
-    privacyIcon.textContent =
-        "◉";
-}
-
-
-function formatMoney(value) {
-
-    return `$${Number(value || 0)
-        .toLocaleString(
-            "es-AR",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        )}`;
-}
-
-
-// ============================================================
-// PRIVATE MODE
-// ============================================================
-
-privacyButton.addEventListener(
-    "click",
-    () => {
-
-        privateMode =
-            !privateMode;
-
-        updateBalance();
-    }
-);
-
-
-// ============================================================
-// TRANSACTIONS
-// ============================================================
-
-function subscribeTransactions(user) {
-
-    if (unsubscribeTransactions) {
-
-        unsubscribeTransactions();
-
-        unsubscribeTransactions =
-            null;
-    }
-
-
-    const transactions =
-        collection(
-            db,
-            "transactions"
-        );
-
-
-    const transactionsQuery =
-        query(
-            transactions,
-
-            where(
-                "user_ref",
-                "==",
-                user.uid
-            ),
-
-            orderBy(
-                "created_at",
-                "desc"
-            )
-        );
-
-
-    unsubscribeTransactions =
-        onSnapshot(
-            transactionsQuery,
-
-            snapshot => {
-
-                transactionsList.innerHTML =
-                    "";
-
-                transactionCount.textContent =
-                    snapshot.size;
-
-                if (snapshot.empty) {
-
-                    transactionsList.innerHTML = `
-                        <div class="empty-state">
-                            <strong>
-                                No hay movimientos
-                            </strong>
-
-                            <span>
-                                Cuando tengas actividad,
-                                aparecerá acá.
-                            </span>
-                        </div>
-                    `;
-
-                    return;
-                }
-
-
-                snapshot.forEach(
-                    transaction => {
-
-                        renderTransaction(
-                            transaction.data()
-                        );
-                    }
-                );
-            },
-
-            error => {
-
-                console.error(
-                    "Transactions error:",
-                    error
-                );
-
-                transactionsList.innerHTML = `
-                    <div class="error-state">
-                        <strong>
-                            No se pudieron cargar
-                            los movimientos.
-                        </strong>
-
-                        <span>
-                            Revisá las reglas e índices
-                            de Firestore.
-                        </span>
-                    </div>
-                `;
-            }
-        );
-}
-
-
-// ============================================================
-// TRANSACTION RENDER
-// ============================================================
+/* =========================================
+   RENDER MOVIMIENTO
+   ========================================= */
 
 function renderTransaction(data) {
 
-    const amount =
-        Number(data.amount || 0);
-
-    const type =
-        data.type ||
-        (
-            amount >= 0
-                ? "income"
-                : "expense"
-        );
-
-    const income =
-        type === "income" ||
-        type === "deposit" ||
-        type === "credit" ||
-        (
-            !data.type &&
-            amount >= 0
-        );
-
-    const title =
-        data.title ||
-        data.description ||
-        "Movimiento";
-
-    const icon =
-        income
-            ? "↓"
-            : "↑";
-
-    const sign =
-        income
-            ? "+"
-            : "-";
-
-    const date =
-        formatDate(
-            data.created_at
-        );
-
-
-    const element =
-        document.createElement(
-            "article"
-        );
-
-    element.className =
-        "transaction";
-
-
-    const main =
-        document.createElement(
-            "div"
-        );
-
-    main.className =
-        "transaction-main";
-
-
-    const iconElement =
-        document.createElement(
-            "div"
-        );
-
-    iconElement.className =
-        "transaction-icon";
-
-    iconElement.textContent =
-        icon;
-
-
-    const details =
-        document.createElement(
-            "div"
-        );
-
-    details.className =
-        "transaction-details";
-
-
-    const titleElement =
-        document.createElement(
-            "div"
-        );
-
-    titleElement.className =
-        "transaction-title";
-
-    titleElement.textContent =
-        title;
-
-
-    const dateElement =
-        document.createElement(
-            "div"
-        );
-
-    dateElement.className =
-        "transaction-date";
-
-    dateElement.textContent =
-        date;
-
-
-    details.append(
-        titleElement,
-        dateElement
-    );
-
-    main.append(
-        iconElement,
-        details
+  const amount =
+    Number(
+      data.amount || 0
     );
 
 
-    const amountElement =
-        document.createElement(
-            "div"
-        );
-
-    amountElement.className =
-        `transaction-amount ${
-            income
-                ? "income"
-                : "expense"
-        }`;
-
-    amountElement.textContent =
-        `${sign}${formatMoney(
-            Math.abs(amount)
-        )}`;
+  const type =
+    data.type ||
+    "income";
 
 
-    element.append(
-        main,
-        amountElement
+  const income =
+    type === "income" ||
+    type === "deposit" ||
+    type === "credit";
+
+
+  const title =
+    data.title ||
+    data.description ||
+    "Movimiento";
+
+
+  const element =
+    document.createElement(
+      "div"
     );
 
-    transactionsList.appendChild(
-        element
-    );
+
+  element.className =
+    "transaction";
+
+
+  element.innerHTML = `
+
+    <div class="transaction-left">
+
+      <div class="transaction-icon">
+        ${income ? "↓" : "↑"}
+      </div>
+
+      <div class="transaction-info">
+
+        <div class="transaction-title">
+          ${escapeHTML(title)}
+        </div>
+
+        <div class="transaction-date">
+          ${formatDate(data.created_at)}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="transaction-amount ${
+      income
+        ? "income"
+        : "expense"
+    }">
+
+      ${income ? "+" : "-"}${Math.abs(
+        amount
+      ).toLocaleString(
+        "es-AR"
+      )} MC
+
+    </div>
+
+  `;
+
+
+  transactionsList.appendChild(
+    element
+  );
+
 }
 
 
-// ============================================================
-// DATE
-// ============================================================
+/* =========================================
+   NOTIFICACIONES
+   ========================================= */
+
+function listenToNotifications(user) {
+
+  if (
+    unsubscribeNotifications
+  ) {
+
+    unsubscribeNotifications();
+
+  }
+
+
+  const notificationsRef =
+    collection(
+      db,
+      "notifications"
+    );
+
+
+  const notificationsQuery =
+    query(
+
+      notificationsRef,
+
+      where(
+        "userId",
+        "==",
+        user.uid
+      ),
+
+      orderBy(
+        "created_at",
+        "desc"
+      )
+
+    );
+
+
+  unsubscribeNotifications =
+    onSnapshot(
+
+      notificationsQuery,
+
+      snapshot => {
+
+        notificationsList.innerHTML =
+          "";
+
+
+        notificationCount.textContent =
+          snapshot.size;
+
+
+        if (
+          snapshot.empty
+        ) {
+
+          notificationsList.innerHTML = `
+            <div class="empty">
+              No tenés notificaciones todavía. 🔔
+            </div>
+          `;
+
+          return;
+
+        }
+
+
+        snapshot.forEach(
+          notificationDoc => {
+
+            const data =
+              notificationDoc.data();
+
+
+            const element =
+              document.createElement(
+                "div"
+              );
+
+
+            element.className =
+              "transaction";
+
+
+            element.innerHTML = `
+
+              <div class="transaction-left">
+
+                <div class="transaction-icon">
+                  🔔
+                </div>
+
+                <div class="transaction-info">
+
+                  <div class="transaction-title">
+                    ${escapeHTML(
+                      data.title ||
+                      "Notificación"
+                    )}
+                  </div>
+
+                  <div class="transaction-date">
+                    ${escapeHTML(
+                      data.message ||
+                      ""
+                    )}
+                  </div>
+
+                </div>
+
+              </div>
+
+            `;
+
+
+            notificationsList.appendChild(
+              element
+            );
+
+          }
+        );
+
+      },
+
+      error => {
+
+        console.error(
+          "Notifications:",
+          error
+        );
+
+      }
+
+    );
+
+}
+
+
+/* =========================================
+   ENVIAR MOM COINS
+   ========================================= */
+
+sendCoinsButton.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      !currentUser ||
+      !isAdmin(currentUser)
+    ) {
+
+      showToast(
+        "No tenés permisos de administrador."
+      );
+
+      return;
+
+    }
+
+
+    const email =
+      recipientEmail.value
+        .trim()
+        .toLowerCase();
+
+
+    const amount =
+      Number(
+        sendAmount.value
+      );
+
+
+    const reason =
+      sendReason.value.trim() ||
+      "Mom Coins recibidos";
+
+
+    if (!email) {
+
+      showToast(
+        "Seleccioná un destinatario."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      !Number.isFinite(amount) ||
+      amount <= 0
+    ) {
+
+      showToast(
+        "Ingresá una cantidad válida."
+      );
+
+      return;
+
+    }
+
+
+    sendCoinsButton.disabled =
+      true;
+
+    sendCoinsButton.textContent =
+      "Enviando...";
+
+
+    try {
+
+      const usersQuery =
+        query(
+
+          collection(
+            db,
+            "users"
+          ),
+
+          where(
+            "email",
+            "==",
+            email
+          )
+
+        );
+
+
+      const usersSnapshot =
+        await getDocs(
+          usersQuery
+        );
+
+
+      if (
+        usersSnapshot.empty
+      ) {
+
+        showToast(
+          "Ese usuario todavía no inició sesión."
+        );
+
+        return;
+
+      }
+
+
+      const recipientDoc =
+        usersSnapshot.docs[0];
+
+
+      const recipientRef =
+        recipientDoc.ref;
+
+
+      const senderRef =
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        );
+
+
+      await runTransaction(
+        db,
+        async transaction => {
+
+          const senderSnapshot =
+            await transaction.get(
+              senderRef
+            );
+
+
+          const recipientSnapshot =
+            await transaction.get(
+              recipientRef
+            );
+
+
+          if (
+            !senderSnapshot.exists() ||
+            !recipientSnapshot.exists()
+          ) {
+
+            throw new Error(
+              "USER_NOT_FOUND"
+            );
+
+          }
+
+
+          const senderData =
+            senderSnapshot.data();
+
+
+          const recipientData =
+            recipientSnapshot.data();
+
+
+          const senderBalance =
+            Number(
+              senderData.balance ??
+              0
+            );
+
+
+          const recipientBalance =
+            Number(
+              recipientData.balance ??
+              0
+            );
+
+
+          /*
+           * Mamá no puede enviar más
+           * de lo que tiene.
+           */
+
+          if (
+            senderBalance < amount
+          ) {
+
+            throw new Error(
+              "INSUFFICIENT_BALANCE"
+            );
+
+          }
+
+
+          /*
+           * Restar a mamá.
+           */
+
+          transaction.update(
+
+            senderRef,
+
+            {
+              balance:
+                senderBalance -
+                amount
+            }
+
+          );
+
+
+          /*
+           * Sumar al destinatario.
+           */
+
+          transaction.update(
+
+            recipientRef,
+
+            {
+              balance:
+                recipientBalance +
+                amount
+            }
+
+          );
+
+
+          /*
+           * Movimiento del destinatario.
+           */
+
+          const recipientTransaction =
+            doc(
+              collection(
+                db,
+                "transactions"
+              )
+            );
+
+
+          transaction.set(
+
+            recipientTransaction,
+
+            {
+
+              user_ref:
+                recipientDoc.id,
+
+              from_uid:
+                currentUser.uid,
+
+              from_email:
+                currentUser.email,
+
+              to_email:
+                email,
+
+              amount:
+                amount,
+
+              type:
+                "income",
+
+              title:
+                reason,
+
+              created_at:
+                serverTimestamp()
+
+            }
+
+          );
+
+
+          /*
+           * Notificación.
+           */
+
+          const notificationRef =
+            doc(
+              collection(
+                db,
+                "notifications"
+              )
+            );
+
+
+          transaction.set(
+
+            notificationRef,
+
+            {
+
+              userId:
+                recipientDoc.id,
+
+              title:
+                "💰 Recibiste Mom Coins",
+
+              message:
+                `Recibiste ${amount} Mom Coins. Motivo: ${reason}`,
+
+              read:
+                false,
+
+              created_at:
+                serverTimestamp()
+
+            }
+
+          );
+
+        }
+      );
+
+
+      /*
+       * Actualizamos inmediatamente
+       * el saldo mostrado de mamá.
+       */
+
+      await loadBalance(
+        currentUser
+      );
+
+
+      showToast(
+        "💰 Mom Coins enviados."
+      );
+
+
+      recipientEmail.value =
+        "";
+
+      sendAmount.value =
+        "";
+
+      sendReason.value =
+        "";
+
+
+    } catch (error) {
+
+      console.error(
+        "Send coins:",
+        error
+      );
+
+
+      if (
+        error.message ===
+        "INSUFFICIENT_BALANCE"
+      ) {
+
+        showToast(
+          "Mamá no tiene suficientes Mom Coins."
+        );
+
+      } else {
+
+        showToast(
+          "No se pudo completar la transferencia."
+        );
+
+      }
+
+    } finally {
+
+      sendCoinsButton.disabled =
+        false;
+
+      sendCoinsButton.textContent =
+        "💸 Enviar Mom Coins";
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   FECHAS
+   ========================================= */
 
 function formatDate(timestamp) {
 
-    if (!timestamp) {
-        return "Fecha desconocida";
+  if (!timestamp) {
+
+    return "Fecha pendiente";
+
+  }
+
+
+  let date;
+
+
+  if (
+    typeof timestamp.toDate ===
+    "function"
+  ) {
+
+    date =
+      timestamp.toDate();
+
+  } else {
+
+    return "Fecha desconocida";
+
+  }
+
+
+  return date.toLocaleString(
+    "es-AR",
+    {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }
+  );
+
+}
+
+
+/* =========================================
+   SEGURIDAD HTML
+   ========================================= */
+
+function escapeHTML(value) {
+
+  return String(value)
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================
+   AUTH STATE
+   ========================================= */
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    currentUser =
+      user;
+
+
+    if (!user) {
+
+      loginScreen.style.display =
+        "flex";
+
+      appScreen.style.display =
+        "none";
+
+      return;
+
     }
 
-    let date;
+
+    /*
+     * Comprobar correo permitido.
+     */
 
     if (
-        typeof timestamp.toDate ===
-        "function"
+      !isAllowedUser(user)
     ) {
 
-        date =
-            timestamp.toDate();
+      showToast(
+        "Esta cuenta no está autorizada."
+      );
 
-    } else if (
-        timestamp instanceof Date
-    ) {
+      await signOut(
+        auth
+      );
 
-        date =
-            timestamp;
+      return;
 
-    } else if (
-        typeof timestamp ===
-        "number"
-    ) {
-
-        date =
-            new Date(timestamp);
-
-    } else {
-
-        return "Fecha desconocida";
     }
 
 
-    return date.toLocaleString(
-        "es-AR",
-        {
-            dateStyle: "medium",
-            timeStyle: "short"
-        }
+    /*
+     * Mostrar aplicación.
+     */
+
+    loginScreen.style.display =
+      "none";
+
+    appScreen.style.display =
+      "block";
+
+
+    /*
+     * Crear perfil si no existe.
+     */
+
+    try {
+
+      await ensureUserDocument(
+        user
+      );
+
+    } catch (error) {
+
+      console.error(
+        "User document:",
+        error
+      );
+
+    }
+
+
+    /*
+     * Cargar todo.
+     */
+
+    loadUserProfile(
+      user
     );
-}
 
+    updateAdminUI(
+      user
+    );
 
-// ============================================================
-// COPY UID
-// ============================================================
+    await loadBalance(
+      user
+    );
 
-copyUid.addEventListener(
-    "click",
-    async () => {
+    listenToTransactions(
+      user
+    );
 
-        if (!currentUser) {
-            return;
-        }
+    listenToNotifications(
+      user
+    );
 
-        try {
-
-            await navigator.clipboard.writeText(
-                currentUser.uid
-            );
-
-            copyUid.textContent =
-                "Copiado ✓";
-
-            showToast(
-                "UID copiado."
-            );
-
-            setTimeout(() => {
-
-                copyUid.textContent =
-                    "Copiar";
-
-            }, 1800);
-
-        } catch {
-
-            showToast(
-                "No se pudo copiar."
-            );
-        }
-    }
+  }
 );
 
 
-// ============================================================
-// LOGOUT
-// ============================================================
+/* =========================================
+   CERRAR SESIÓN
+   ========================================= */
 
 logoutButton.addEventListener(
-    "click",
-    async () => {
+  "click",
+  async () => {
 
-        try {
+    try {
 
-            await signOut(auth);
+      await signOut(
+        auth
+      );
 
-            if (
-                unsubscribeTransactions
-            ) {
+      showToast(
+        "Sesión cerrada."
+      );
 
-                unsubscribeTransactions();
+    } catch (error) {
 
-                unsubscribeTransactions =
-                    null;
-            }
+      console.error(
+        "Logout:",
+        error
+      );
 
-        } catch (error) {
-
-            console.error(error);
-
-            showToast(
-                "No se pudo cerrar sesión."
-            );
-        }
     }
+
+  }
 );
 
-
-// ============================================================
-// AUTH ERRORS
-// ============================================================
-
-function getAuthError(error) {
-
-    switch (error.code) {
-
-        case "auth/popup-closed-by-user":
-            return "Cerraste la ventana de Google.";
-
-        case "auth/popup-blocked":
-            return "El navegador bloqueó el popup.";
-
-        case "auth/unauthorized-domain":
-            return "Este dominio no está autorizado en Firebase.";
-
-        case "auth/network-request-failed":
-            return "Error de conexión.";
-
-        default:
-            return "No se pudo iniciar sesión.";
-    }
-}
+</script>
