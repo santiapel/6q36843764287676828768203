@@ -22,6 +22,7 @@
       --primary-dark: #5538d8;
       --green: #16a36b;
       --red: #e55353;
+      --amber: #f59e0b;
       --border: #e9ebf0;
       --shadow: 0 12px 35px rgba(25, 25, 50, 0.08);
       --radius: 22px;
@@ -31,13 +32,10 @@
       min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    button,
-    input,
-    select {
+    button, input, select {
       font: inherit;
     }
 
@@ -188,7 +186,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .brand {
@@ -242,6 +240,95 @@
       font-size: 14px;
     }
 
+    /* ADMIN PENDING WITHDRAWALS BANNER FOR MAMÁ */
+    .admin-withdrawals-card {
+      display: none;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 2px solid #f59e0b;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+    }
+
+    .admin-withdrawals-card h3 {
+      font-size: 18px;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .withdrawal-requests-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .withdrawal-request-item {
+      background: white;
+      border: 1px solid #fcd34d;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .request-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .request-user {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1f2937;
+    }
+
+    .request-amount {
+      font-size: 14px;
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .request-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-accept {
+      background: #16a36b;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+
+    .btn-accept:hover {
+      background: #128054;
+    }
+
+    .btn-reject {
+      background: #e55353;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+
+    .btn-reject:hover {
+      background: #c83c3c;
+    }
+
     /* DASHBOARD LAYOUT */
     .dashboard {
       display: grid;
@@ -256,9 +343,7 @@
       padding: 30px;
       border-radius: var(--radius);
       background:
-        radial-gradient(circle at top right,
-          rgba(255,255,255,.25),
-          transparent 35%),
+        radial-gradient(circle at top right, rgba(255,255,255,.25), transparent 35%),
         linear-gradient(135deg, #7055f7, #4b34ce);
       color: white;
       box-shadow: 0 18px 45px rgba(91,65,220,.25);
@@ -454,11 +539,47 @@
       color: var(--red);
     }
 
-    .empty,
-    .loading {
+    .empty, .loading {
       padding: 30px;
       text-align: center;
       color: var(--muted);
+    }
+
+    /* CHAT BUBBLE & ACTIONS */
+    .message-bubble {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+
+    .message-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 3px;
+      opacity: 0.7;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .action-btn:hover {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    .star-btn.starred {
+      opacity: 1;
+      filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.8));
     }
 
     /* ADMIN & FORMS */
@@ -566,6 +687,7 @@
 
 <body>
 
+  <!-- LOGIN SECTION -->
   <section id="loginScreen">
     <div class="login-card">
       <div class="logo">MC</div>
@@ -635,8 +757,17 @@
     </div>
   </section>
 
+  <!-- MAIN APP SECTION -->
   <main id="app">
     <div class="app-container">
+
+      <!-- TOP BANNER DE RETIROS PENDIENTES PARA MAMÁ -->
+      <section id="adminWithdrawalsCard" class="admin-withdrawals-card">
+        <h3>⚠️ Solicitudes de Retiro Pendientes</h3>
+        <div id="withdrawalRequestsList" class="withdrawal-requests-list">
+          <div class="loading">Buscando solicitudes...</div>
+        </div>
+      </section>
 
       <!-- HEADER -->
       <header class="topbar">
@@ -681,6 +812,7 @@
         </article>
       </section>
 
+      <!-- MESSAGES / CHAT -->
       <section id="messagesSection" class="card">
         <div class="section-header">
           <div>
@@ -717,9 +849,9 @@
           </button>
         </div>
 
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;">
           <button id="recordVoiceBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">
-            🎙️ Grabar
+            🎙️ Grabar (Máx 1m)
           </button>
           <button id="notificationBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">
             🔔 Activar notificaciones
@@ -727,7 +859,7 @@
         </div>
 
         <div id="recordingStatus" style="display:none;margin-top:8px;color:#ef4444;font-weight:600;">
-          🔴 Grabando... <span id="recordingTime">0:00</span>
+          🔴 Grabando... <span id="recordingTime">0:00</span> / 1:00
         </div>
       </section>
 
@@ -735,7 +867,7 @@
       <section id="withdrawSection" class="transactions-card">
         <div class="transactions-header">
           <h2>💸 Solicitar Retiro</h2>
-          <span class="transaction-count">Máx 10 MC = $5.000 ARS</span>
+          <span class="transaction-count">1 MC = $500 ARS (Máx 10 MC)</span>
         </div>
         <div class="admin-form">
           <input id="withdrawAmount" type="number" min="1" max="10" step="1" placeholder="Cantidad de MC a retirar (Máx 10)">
@@ -792,6 +924,7 @@
 
   <div id="toast"></div>
 
+  <!-- SCRIPTING & LOGIC -->
   <script type="module">
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -808,6 +941,8 @@
       getDoc,
       getDocs,
       setDoc,
+      updateDoc,
+      deleteDoc,
       collection,
       query,
       where,
@@ -835,6 +970,7 @@
     /* CONSTANTES */
     const MAX_WITHDRAWAL_MC = 10;
     const MC_VALUE_ARS = 500;
+    const MAX_RECORDING_SECONDS = 60; // Max 1 min audio
 
     const ADMIN_EMAILS = [
       "gabyhuchy@hotmail.com",
@@ -901,6 +1037,10 @@
     const notificationsList = document.getElementById("notificationsList");
     const notificationCount = document.getElementById("notificationCount");
 
+    // Admin Withdrawals Banner
+    const adminWithdrawalsCard = document.getElementById("adminWithdrawalsCard");
+    const withdrawalRequestsList = document.getElementById("withdrawalRequestsList");
+
     // Chat Elements
     const messagesList = document.getElementById("messagesList");
     const messageInput = document.getElementById("messageInput");
@@ -924,6 +1064,7 @@
     let privateMode = false;
     let unsubscribeTransactions = null;
     let unsubscribeNotifications = null;
+    let unsubscribeWithdrawals = null;
     let messagesUnsubscribe = null;
 
     let mediaRecorder = null;
@@ -1040,6 +1181,7 @@
         withdrawSection.style.display = "none";
         momChatRecipientSelect.style.display = "inline-block";
         chatSubtitle.textContent = "Chat con usuario seleccionado";
+        listenAdminWithdrawalRequests();
       } else {
         roleBadge.textContent = "USUARIO";
         headerRole.textContent = "Wallet personal";
@@ -1047,6 +1189,7 @@
         withdrawSection.style.display = "block";
         momChatRecipientSelect.style.display = "none";
         chatSubtitle.textContent = "Chat con Mamá";
+        adminWithdrawalsCard.style.display = "none";
       }
     }
 
@@ -1080,6 +1223,7 @@
       }
     }
 
+    /* MESSAGES & CHAT SYSTEM WITH 12H AUTO-EXPIRE & STARRING */
     async function sendMessage(text) {
       if (!currentUser || !text.trim()) return;
 
@@ -1098,6 +1242,7 @@
         text: text.trim(),
         type: "text",
         read: false,
+        starred: false,
         created_at: serverTimestamp()
       };
 
@@ -1115,11 +1260,7 @@
         }
       } catch (err) {
         console.error("Error sending message:", err);
-        if (err.code === 'permission-denied') {
-          showToast("⚠️ Permiso denegado en Firestore. Revisa las reglas de seguridad.");
-        } else {
-          showToast("No se pudo enviar el mensaje.");
-        }
+        showToast("No se pudo enviar el mensaje.");
       }
     }
 
@@ -1191,6 +1332,28 @@
       speechSynthesis.speak(utterance);
     }
 
+    async function toggleStarMessage(msgId, currentStarred) {
+      try {
+        await updateDoc(doc(db, "messages", msgId), {
+          starred: !currentStarred
+        });
+        showToast(!currentStarred ? "⭐ Mensaje destacado (no se borrará)" : "Estrella removida");
+      } catch (err) {
+        console.error("Star toggle error:", err);
+        showToast("No se pudo actualizar el destacado.");
+      }
+    }
+
+    async function deleteMessage(msgId) {
+      try {
+        await deleteDoc(doc(db, "messages", msgId));
+        showToast("🗑️ Mensaje eliminado");
+      } catch (err) {
+        console.error("Delete message error:", err);
+        showToast("No se pudo borrar el mensaje.");
+      }
+    }
+
     async function loadMessages() {
       if (!currentUser) return;
 
@@ -1211,11 +1374,28 @@
         messagesUnsubscribe = onSnapshot(messagesQuery, (snapshot) => {
           messagesList.innerHTML = "";
           let unread = 0;
+          const now = Date.now();
+          const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
           snapshot.forEach((messageDoc) => {
             const msg = messageDoc.data();
+            const msgId = messageDoc.id;
 
             if (activeChatId && msg.chatId !== activeChatId) return;
+
+            // 12-Hour Expiration Check (unless starred)
+            let msgTime = now;
+            if (msg.created_at?.toMillis) {
+              msgTime = msg.created_at.toMillis();
+            } else if (msg.created_at) {
+              msgTime = new Date(msg.created_at).getTime();
+            }
+
+            const isExpired = (now - msgTime > TWELVE_HOURS_MS) && !msg.starred;
+            if (isExpired) {
+              // Automatically hide expired unstarred messages
+              return;
+            }
 
             if (msg.recipientId === currentUser.uid && !msg.read) {
               unread++;
@@ -1224,49 +1404,80 @@
             const bubble = document.createElement("div");
             const mine = msg.senderId === currentUser.uid;
 
+            bubble.className = "message-bubble";
             bubble.style.cssText = `
               align-self:${mine ? "flex-end" : "flex-start"};
-              max-width:80%;
+              max-width:85%;
               padding:10px 14px;
               border-radius:16px;
               background:${mine ? "#2563eb" : "#e5e7eb"};
-              color:${mine ? "white" : "black"};
+              color:${mine ? "white" : "#111827"};
+            `;
+
+            let innerHTMLContent = `
+              <div style="font-size:12px;opacity:.8;display:flex;justify-content:space-between;gap:8px;">
+                <span>${escapeHTML(msg.senderName || "Usuario")}</span>
+                ${msg.starred ? '<span>⭐</span>' : ''}
+              </div>
             `;
 
             if (msg.type === "voice") {
-              bubble.innerHTML = `
-                <div style="font-size:12px;opacity:.8;">
-                  🎙️ ${escapeHTML(msg.senderName || "Usuario")}
-                </div>
+              innerHTMLContent += `
                 <div style="margin-top:5px;">
                   ${renderTranscript(msg.transcript || [])}
                 </div>
                 <audio controls src="${msg.audioUrl}" style="width:100%;margin-top:8px;"></audio>
               `;
-              const audioEl = bubble.querySelector("audio");
-              if (audioEl && msg.transcript) {
-                syncVoiceTranscript(audioEl, bubble, msg.transcript);
-              }
             } else {
-              bubble.innerHTML = `
-                <div style="font-size:12px;opacity:.8;">
-                  ${escapeHTML(msg.senderName || "Usuario")}
-                </div>
+              innerHTMLContent += `
                 <div style="margin-top:3px;word-break:break-word;">
                   ${escapeHTML(msg.text || "")}
                 </div>
-                <button class="speak-btn" style="margin-top:6px;background:none;border:none;cursor:pointer;font-size:16px;">
-                  🔊
-                </button>
               `;
-              const speakBtn = bubble.querySelector(".speak-btn");
-              if (speakBtn) {
-                speakBtn.addEventListener("click", () => speakText(msg.text || ""));
+            }
+
+            // Message action buttons (Read text, Star, Delete)
+            innerHTMLContent += `
+              <div class="message-actions">
+                ${msg.type !== "voice" ? `<button class="action-btn speak-btn" title="Escuchar">🔊</button>` : ''}
+                <button class="action-btn star-btn ${msg.starred ? 'starred' : ''}" title="${msg.starred ? 'Quitar estrella' : 'Destacar (Guardar)'}">
+                  ${msg.starred ? '⭐' : '☆'}
+                </button>
+                <button class="action-btn delete-btn" title="Borrar mensaje">🗑️</button>
+              </div>
+            `;
+
+            bubble.innerHTML = innerHTMLContent;
+
+            // Event Listeners for actions
+            const speakBtn = bubble.querySelector(".speak-btn");
+            if (speakBtn) {
+              speakBtn.addEventListener("click", () => speakText(msg.text || ""));
+            }
+
+            const starBtn = bubble.querySelector(".star-btn");
+            if (starBtn) {
+              starBtn.addEventListener("click", () => toggleStarMessage(msgId, !!msg.starred));
+            }
+
+            const deleteBtn = bubble.querySelector(".delete-btn");
+            if (deleteBtn) {
+              deleteBtn.addEventListener("click", () => deleteMessage(msgId));
+            }
+
+            if (msg.type === "voice") {
+              const audioEl = bubble.querySelector("audio");
+              if (audioEl && msg.transcript) {
+                syncVoiceTranscript(audioEl, bubble, msg.transcript);
               }
             }
 
             messagesList.appendChild(bubble);
           });
+
+          if (messagesList.children.length === 0) {
+            messagesList.innerHTML = `<div class="empty">No hay mensajes recientes.</div>`;
+          }
 
           messagesList.scrollTop = messagesList.scrollHeight;
 
@@ -1279,22 +1490,18 @@
           }
         }, (error) => {
           console.error("Error en listener del chat:", error);
-          if (error.code === 'permission-denied') {
-            messagesList.innerHTML = `<div class="empty" style="color:var(--red);">⚠️ Error de permisos en Firebase. Necesitás actualizar las Reglas de Firestore en Firebase Console.</div>`;
-          } else {
-            messagesList.innerHTML = `<div class="empty">Error al cargar el chat.</div>`;
-          }
+          messagesList.innerHTML = `<div class="empty">Error al cargar el chat.</div>`;
         });
       } catch (err) {
         console.error("Error loading chat:", err);
       }
     }
 
+    /* VOICE RECORDING WITH 1-MINUTE MAX LIMIT */
     function startSpeechRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SpeechRecognition) {
-        console.warn("Este navegador no soporta reconocimiento de voz.");
         return;
       }
 
@@ -1372,6 +1579,14 @@
 
         recordingTimer = setInterval(() => {
           const seconds = Math.floor((Date.now() - recordingStart) / 1000);
+
+          // Check for 1-minute limit (60s)
+          if (seconds >= MAX_RECORDING_SECONDS) {
+            stopRecording();
+            showToast("⏱️ Límite máximo alcanzado (1 minuto).");
+            return;
+          }
+
           const min = Math.floor(seconds / 60);
           const sec = String(seconds % 60).padStart(2, "0");
           recordingTime.textContent = `${min}:${sec}`;
@@ -1386,9 +1601,11 @@
     function stopRecording() {
       if (!mediaRecorder) return;
       clearInterval(recordingTimer);
-      mediaRecorder.stop();
+      if (mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
       recordingStatus.style.display = "none";
-      recordVoiceBtn.textContent = "🎙️ Grabar";
+      recordVoiceBtn.textContent = "🎙️ Grabar (Máx 1m)";
     }
 
     function blobToBase64(blob) {
@@ -1406,8 +1623,6 @@
       try {
         const recipientId = await getChatTargetUid();
         const blob = new Blob(audioChunks, { type: "audio/webm" });
-
-        // Convert Blob directly to Base64 (Data URL) without requiring Firebase Storage
         const audioUrl = await blobToBase64(blob);
 
         await addDoc(collection(db, "messages"), {
@@ -1420,6 +1635,7 @@
           audioUrl,
           transcript: transcriptWords,
           read: false,
+          starred: false,
           created_at: serverTimestamp()
         });
 
@@ -1440,6 +1656,7 @@
       }
     }
 
+    /* NOTIFICATIONS */
     notificationBtn.addEventListener("click", async () => {
       if (!("Notification" in window)) {
         showToast("Tu navegador no soporta notificaciones.");
@@ -1488,6 +1705,7 @@
       });
     }
 
+    /* WITHDRAWAL SYSTEM (REQUEST, ACCEPT & REJECT WITH COIN DEDUCTION / REFUND) */
     if (withdrawAmount) {
       withdrawAmount.addEventListener("input", () => {
         const amount = Number(withdrawAmount.value) || 0;
@@ -1498,7 +1716,7 @@
 
     if (requestWithdrawBtn) {
       requestWithdrawBtn.addEventListener("click", async () => {
-        const amount = Number(withdrawAmount.value);
+        const amount = Math.floor(Number(withdrawAmount.value));
 
         if (!amount || amount <= 0) {
           showToast("Ingresá una cantidad válida.");
@@ -1516,28 +1734,206 @@
         }
 
         const amountARS = amount * MC_VALUE_ARS;
+        requestWithdrawBtn.disabled = true;
 
         try {
-          const momUid = await getUserUidByEmail("gabyhuchy@gmail.com") || currentUser.uid;
+          const userRef = doc(db, "users", currentUser.uid);
 
+          // Deduct MC immediately upon request using transaction
+          await runTransaction(db, async (transaction) => {
+            const userSnap = await transaction.get(userRef);
+            if (!userSnap.exists()) throw new Error("USER_NOT_FOUND");
+
+            const userData = userSnap.data();
+            const balance = Number(userData.balance ?? userData.coins ?? 0);
+
+            if (balance < amount) {
+              throw new Error("INSUFFICIENT_BALANCE");
+            }
+
+            // Deduct balance immediately
+            transaction.update(userRef, { balance: balance - amount });
+
+            // Create pending withdrawal document
+            const withdrawalRef = doc(collection(db, "withdrawals"));
+            transaction.set(withdrawalRef, {
+              userId: currentUser.uid,
+              userName: currentUser.displayName || currentUser.email.split('@')[0],
+              userEmail: currentUser.email,
+              amount: amount,
+              amountARS: amountARS,
+              status: "pending",
+              created_at: serverTimestamp()
+            });
+
+            // Create transaction log for user
+            const transactionRef = doc(collection(db, "transactions"));
+            transaction.set(transactionRef, {
+              user_ref: currentUser.uid,
+              from_uid: currentUser.uid,
+              amount: -amount,
+              type: "expense",
+              title: `Solicitud de retiro (${amount} MC)`,
+              created_at: serverTimestamp()
+            });
+          });
+
+          // Notify Mamá (admin)
+          const momUid = await getUserUidByEmail("gabyhuchy@gmail.com") || "admin";
           await addDoc(collection(db, "notifications"), {
             userId: momUid,
-            title: "💰 Solicitud de Retiro",
-            message: `${currentUser.displayName || currentUser.email.split('@')[0]} solicita retirar ${amount} MC ($${amountARS.toLocaleString("es-AR")} ARS).`,
+            title: "💰 Nueva Solicitud de Retiro",
+            message: `${currentUser.displayName || currentUser.email.split('@')[0]} solicitó retirar ${amount} MC ($${amountARS.toLocaleString("es-AR")} ARS).`,
             read: false,
             created_at: serverTimestamp()
           });
 
-          showToast(`Solicitud de retiro enviada (${amount} MC = $${amountARS.toLocaleString("es-AR")} ARS)`);
+          showToast(`Solicitud enviada (${amount} MC descontados). Esperando a Mamá...`);
           withdrawAmount.value = "";
           withdrawCalc.textContent = "Valor estimado: $0 ARS";
+          await loadBalance(currentUser);
+
         } catch (error) {
-          console.error(error);
-          showToast("No se pudo enviar la solicitud de retiro.");
+          console.error("Withdraw request error:", error);
+          if (error.message === "INSUFFICIENT_BALANCE") {
+            showToast("No tenés suficiente saldo.");
+          } else {
+            showToast("No se pudo enviar la solicitud de retiro.");
+          }
+        } finally {
+          requestWithdrawBtn.disabled = false;
         }
       });
     }
 
+    /* MAMÁ ADMIN: LISTEN & HANDLE WITHDRAWAL REQUESTS */
+    function listenAdminWithdrawalRequests() {
+      if (!currentUser || !isAdmin(currentUser)) return;
+
+      const q = query(
+        collection(db, "withdrawals"),
+        where("status", "==", "pending"),
+        orderBy("created_at", "desc")
+      );
+
+      if (unsubscribeWithdrawals) {
+        unsubscribeWithdrawals();
+      }
+
+      unsubscribeWithdrawals = onSnapshot(q, snapshot => {
+        if (snapshot.empty) {
+          adminWithdrawalsCard.style.display = "none";
+          withdrawalRequestsList.innerHTML = "";
+          return;
+        }
+
+        adminWithdrawalsCard.style.display = "block";
+        withdrawalRequestsList.innerHTML = "";
+
+        snapshot.forEach(requestDoc => {
+          const req = requestDoc.data();
+          const reqId = requestDoc.id;
+
+          const item = document.createElement("div");
+          item.className = "withdrawal-request-item";
+          item.innerHTML = `
+            <div class="request-details">
+              <span class="request-user">👤 ${escapeHTML(req.userName || req.userEmail)}</span>
+              <span class="request-amount">💸 ${req.amount} MC = $${Number(req.amountARS || 0).toLocaleString("es-AR")} ARS</span>
+              <span style="font-size:11px;color:var(--muted);">${formatTransactionDate(req.created_at)}</span>
+            </div>
+            <div class="request-actions">
+              <button class="btn-accept" data-id="${reqId}">✅ Aceptar</button>
+              <button class="btn-reject" data-id="${reqId}">❌ Rechazar</button>
+            </div>
+          `;
+
+          const acceptBtn = item.querySelector(".btn-accept");
+          acceptBtn.addEventListener("click", () => acceptWithdrawal(reqId, req));
+
+          const rejectBtn = item.querySelector(".btn-reject");
+          rejectBtn.addEventListener("click", () => rejectWithdrawal(reqId, req));
+
+          withdrawalRequestsList.appendChild(item);
+        });
+      }, err => {
+        console.warn("Error listening withdrawals:", err);
+      });
+    }
+
+    async function acceptWithdrawal(reqId, req) {
+      try {
+        await updateDoc(doc(db, "withdrawals", reqId), {
+          status: "accepted",
+          handled_at: serverTimestamp()
+        });
+
+        // Notify user that withdrawal was accepted
+        await addDoc(collection(db, "notifications"), {
+          userId: req.userId,
+          title: "✅ Retiro Aprobado",
+          message: `Mamá aprobó tu retiro de ${req.amount} MC ($${Number(req.amountARS).toLocaleString("es-AR")} ARS).`,
+          read: false,
+          created_at: serverTimestamp()
+        });
+
+        showToast(`Retiro de ${req.userName} aceptado correctamente.`);
+      } catch (err) {
+        console.error("Accept withdrawal error:", err);
+        showToast("Error al aceptar el retiro.");
+      }
+    }
+
+    async function rejectWithdrawal(reqId, req) {
+      try {
+        const userRef = doc(db, "users", req.userId);
+
+        // Refund coins back to user balance
+        await runTransaction(db, async (transaction) => {
+          const userSnap = await transaction.get(userRef);
+          if (!userSnap.exists()) throw new Error("USER_NOT_FOUND");
+
+          const userData = userSnap.data();
+          const currentBal = Number(userData.balance ?? userData.coins ?? 0);
+
+          // Refund coins
+          transaction.update(userRef, { balance: currentBal + req.amount });
+
+          // Mark withdrawal as rejected
+          transaction.update(doc(db, "withdrawals", reqId), {
+            status: "rejected",
+            handled_at: serverTimestamp()
+          });
+
+          // Log refund transaction
+          const transRef = doc(collection(db, "transactions"));
+          transaction.set(transRef, {
+            user_ref: req.userId,
+            from_uid: currentUser.uid,
+            amount: req.amount,
+            type: "income",
+            title: `Retiro rechazado (Reembolso de ${req.amount} MC)`,
+            created_at: serverTimestamp()
+          });
+        });
+
+        // Notify user
+        await addDoc(collection(db, "notifications"), {
+          userId: req.userId,
+          title: "❌ Retiro Rechazado",
+          message: `Tu solicitud de retiro de ${req.amount} MC fue rechazada. Se te reembolsaron las monedas a tu cuenta.`,
+          read: false,
+          created_at: serverTimestamp()
+        });
+
+        showToast(`Retiro rechazado. Se le devolvieron ${req.amount} MC a ${req.userName}.`);
+      } catch (err) {
+        console.error("Reject withdrawal error:", err);
+        showToast("Error al rechazar el retiro.");
+      }
+    }
+
+    /* LOAD BALANCE & TRANSACTIONS */
     async function loadBalance(user) {
       try {
         const userRef = doc(db, "users", user.uid);
@@ -1596,11 +1992,7 @@
         },
         error => {
           console.error("Transactions listener:", error);
-          if (error.code === 'permission-denied') {
-            transactionsList.innerHTML = `<div class="empty" style="color:var(--red);">⚠️ Permisos insuficientes para cargar movimientos.</div>`;
-          } else {
-            transactionsList.innerHTML = `<div class="empty">No se pudieron cargar los movimientos.</div>`;
-          }
+          transactionsList.innerHTML = `<div class="empty">No se pudieron cargar los movimientos.</div>`;
         }
       );
     }
@@ -1608,10 +2000,10 @@
     function renderTransaction(data) {
       const amount = Number(data.amount || 0);
       const type = data.type || (amount >= 0 ? "income" : "expense");
-      const isIncome = type === "income" || type === "deposit" || type === "credit";
+      const isIncome = type === "income" || type === "deposit" || type === "credit" || amount > 0;
       const title = data.title || data.description || "Movimiento";
       const icon = isIncome ? "↓" : "↑";
-      const sign = isIncome ? "+" : "-";
+      const sign = isIncome ? "+" : "";
 
       const element = document.createElement("div");
       element.className = "transaction";
@@ -1624,7 +2016,7 @@
           </div>
         </div>
         <div class="transaction-amount ${isIncome ? "income" : "expense"}">
-          ${sign}${Math.abs(amount).toLocaleString("es-AR")} MC
+          ${sign}${amount.toLocaleString("es-AR")} MC
         </div>
       `;
 
@@ -1762,8 +2154,6 @@
         console.error("Send coins error:", error);
         if (error.message === "INSUFFICIENT_BALANCE") {
           showToast("Mamá no tiene suficientes Mom Coins.");
-        } else if (error.code === "permission-denied") {
-          showToast("⚠️ Permiso denegado en Firestore al enviar monedas.");
         } else {
           showToast("No se pudieron enviar los Mom Coins.");
         }
@@ -1794,6 +2184,7 @@
       });
     }
 
+    /* AUTH STATE CHANGED */
     onAuthStateChanged(auth, async user => {
       currentUser = user;
 
@@ -1804,7 +2195,6 @@
           return;
         }
 
-        // Asegurar que el usuario tenga un documento inicial en Firestore
         try {
           const userDocRef = doc(db, "users", user.uid);
           const userSnap = await getDoc(userDocRef);
@@ -1844,6 +2234,11 @@
         if (unsubscribeNotifications) {
           unsubscribeNotifications();
           unsubscribeNotifications = null;
+        }
+
+        if (unsubscribeWithdrawals) {
+          unsubscribeWithdrawals();
+          unsubscribeWithdrawals = null;
         }
 
         if (messagesUnsubscribe) {
