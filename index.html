@@ -1085,6 +1085,7 @@
     let unsubscribeNotifications = null;
     let unsubscribeWithdrawals = null;
     let messagesUnsubscribe = null;
+    const processingWithdrawals = new Set();
 
     let mediaRecorder = null;
     let audioChunks = [];
@@ -1891,6 +1892,8 @@
           const req = requestDoc.data();
           const reqId = requestDoc.id;
 
+          if (processingWithdrawals.has(reqId)) return;
+
           const item = document.createElement("div");
           item.className = "withdrawal-request-item";
           item.innerHTML = `
@@ -1906,13 +1909,17 @@
           `;
 
           const acceptBtn = item.querySelector(".btn-accept");
-          acceptBtn.addEventListener("click", () => acceptWithdrawal(reqId, req));
+          acceptBtn.addEventListener("click", () => acceptWithdrawal(reqId, req, item));
 
           const rejectBtn = item.querySelector(".btn-reject");
-          rejectBtn.addEventListener("click", () => rejectWithdrawal(reqId, req));
+          rejectBtn.addEventListener("click", () => rejectWithdrawal(reqId, req, item));
 
           withdrawalRequestsList.appendChild(item);
         });
+
+        if (withdrawalRequestsList.children.length === 0) {
+          adminWithdrawalsCard.style.display = "none";
+        }
 
         // Smooth scroll to top to ensure immediate visibility
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1921,11 +1928,29 @@
       });
     }
 
-    async function acceptWithdrawal(reqId, req) {
+    async function acceptWithdrawal(reqId, req, item) {
+      if (processingWithdrawals.has(reqId)) return;
+      processingWithdrawals.add(reqId);
+
+      // Instantly hide and remove from UI so it cannot be double-clicked
+      if (item) item.remove();
+      if (withdrawalRequestsList.children.length === 0) {
+        adminWithdrawalsCard.style.display = "none";
+      }
+
       try {
-        await updateDoc(doc(db, "withdrawals", reqId), {
-          status: "accepted",
-          handled_at: serverTimestamp()
+        await runTransaction(db, async (transaction) => {
+          const withdrawalRef = doc(db, "withdrawals", reqId);
+          const withdrawalSnap = await transaction.get(withdrawalRef);
+
+          if (!withdrawalSnap.exists() || withdrawalSnap.data().status !== "pending") {
+            throw new Error("ALREADY_PROCESSED");
+          }
+
+          transaction.update(withdrawalRef, {
+            status: "accepted",
+            handled_at: serverTimestamp()
+          });
         });
 
         // Notify user that withdrawal was accepted
@@ -1940,16 +1965,36 @@
         showToast(`Retiro de ${req.userName} aceptado correctamente.`);
       } catch (err) {
         console.error("Accept withdrawal error:", err);
-        showToast("Error al aceptar el retiro.");
+        if (err.message === "ALREADY_PROCESSED") {
+          showToast("Esta solicitud ya fue procesada.");
+        } else {
+          showToast("Error al aceptar el retiro.");
+          processingWithdrawals.delete(reqId);
+        }
       }
     }
 
-    async function rejectWithdrawal(reqId, req) {
+    async function rejectWithdrawal(reqId, req, item) {
+      if (processingWithdrawals.has(reqId)) return;
+      processingWithdrawals.add(reqId);
+
+      // Instantly hide and remove from UI so it cannot be double-clicked
+      if (item) item.remove();
+      if (withdrawalRequestsList.children.length === 0) {
+        adminWithdrawalsCard.style.display = "none";
+      }
+
       try {
         const userRef = doc(db, "users", req.userId);
+        const withdrawalRef = doc(db, "withdrawals", reqId);
 
-        // Refund coins back to user balance
+        // Refund coins back to user balance inside a transaction with status check
         await runTransaction(db, async (transaction) => {
+          const withdrawalSnap = await transaction.get(withdrawalRef);
+          if (!withdrawalSnap.exists() || withdrawalSnap.data().status !== "pending") {
+            throw new Error("ALREADY_PROCESSED");
+          }
+
           const userSnap = await transaction.get(userRef);
           if (!userSnap.exists()) throw new Error("USER_NOT_FOUND");
 
@@ -1960,7 +2005,7 @@
           transaction.update(userRef, { balance: currentBal + req.amount });
 
           // Mark withdrawal as rejected
-          transaction.update(doc(db, "withdrawals", reqId), {
+          transaction.update(withdrawalRef, {
             status: "rejected",
             handled_at: serverTimestamp()
           });
@@ -1989,7 +2034,12 @@
         showToast(`Retiro rechazado. Se le devolvieron ${req.amount} MC a ${req.userName}.`);
       } catch (err) {
         console.error("Reject withdrawal error:", err);
-        showToast("Error al rechazar el retiro.");
+        if (err.message === "ALREADY_PROCESSED") {
+          showToast("Esta solicitud ya fue procesada.");
+        } else {
+          showToast("Error al rechazar el retiro.");
+          processingWithdrawals.delete(reqId);
+        }
       }
     }
 
