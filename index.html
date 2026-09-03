@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mom Coin Wallet</title>
-    <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
+  <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
 
   <style>
     * {
@@ -22,6 +22,7 @@
       --primary-dark: #5538d8;
       --green: #16a36b;
       --red: #e55353;
+      --amber: #f59e0b;
       --border: #e9ebf0;
       --shadow: 0 12px 35px rgba(25, 25, 50, 0.08);
       --radius: 22px;
@@ -43,86 +44,7 @@
       cursor: pointer;
     }
 
-    /* ALERTA DE RETIRO (PANEL DE MAMÁ) */
-    @keyframes alertPulse {
-      0% { box-shadow: 0 0 0 0 rgba(229, 83, 83, 0.5); }
-      70% { box-shadow: 0 0 0 15px rgba(229, 83, 83, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(229, 83, 83, 0); }
-    }
-
-    .admin-withdraw-alert {
-      background: linear-gradient(135deg, #ff4d4d, #dc2626);
-      color: white;
-      padding: 20px;
-      border-radius: var(--radius);
-      margin-bottom: 24px;
-      animation: alertPulse 2s infinite;
-      box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
-    }
-
-    .admin-withdraw-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    .withdraw-item-card {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 16px;
-      padding: 14px;
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      transition: all 0.2s ease;
-    }
-
-    .withdraw-item-info strong {
-      display: block;
-      font-size: 15px;
-    }
-
-    .withdraw-item-info span {
-      font-size: 12px;
-      opacity: 0.9;
-    }
-
-    .withdraw-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-approve, .btn-reject {
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 13px;
-      transition: opacity 0.2s ease;
-    }
-
-    .btn-approve {
-      background: #10b981;
-      color: white;
-    }
-
-    .btn-reject {
-      background: #ffffff;
-      color: #dc2626;
-    }
-
-    .btn-approve:disabled, .btn-reject:disabled {
-      opacity: 0.5;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
-
-    /* LOGIN */
+    /* LOGIN SCREEN STYLES */
     #loginScreen {
       min-height: 100vh;
       display: flex;
@@ -240,7 +162,12 @@
       transition: 0.2s;
     }
 
-    /* APP */
+    .google-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 20px rgba(0,0,0,.08);
+    }
+
+    /* MAIN APP STYLES */
     #app {
       display: none;
       width: 100%;
@@ -253,13 +180,13 @@
       padding: 24px;
     }
 
-    /* HEADER */
+    /* TOP HEADER BAR */
     .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .brand {
@@ -313,7 +240,115 @@
       font-size: 14px;
     }
 
-    /* DASHBOARD */
+    /* ADMIN PENDING WITHDRAWALS BANNER FOR MAMÁ */
+    @keyframes alertPulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6), 0 12px 35px rgba(239, 68, 68, 0.25); transform: scale(1); }
+      50% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0), 0 16px 40px rgba(239, 68, 68, 0.35); transform: scale(1.01); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 12px 35px rgba(239, 68, 68, 0.25); transform: scale(1); }
+    }
+
+    .admin-withdrawals-card {
+      display: none;
+      position: relative;
+      background: linear-gradient(135deg, #fef2f2, #fffbe0, #fef3c7);
+      border: 3px solid #ef4444;
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      margin-bottom: 28px;
+      animation: alertPulse 2s infinite ease-in-out;
+    }
+
+    .admin-withdrawals-card h3 {
+      font-size: 20px;
+      color: #991b1b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-weight: 800;
+    }
+
+    .alert-badge {
+      background: #ef4444;
+      color: white;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(239,68,68,0.3);
+    }
+
+    .withdrawal-requests-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .withdrawal-request-item {
+      background: white;
+      border: 1px solid #fcd34d;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .request-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .request-user {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1f2937;
+    }
+
+    .request-amount {
+      font-size: 14px;
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .request-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-accept {
+      background: #16a36b;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+
+    .btn-accept:hover {
+      background: #128054;
+    }
+
+    .btn-reject {
+      background: #e55353;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+
+    .btn-reject:hover {
+      background: #c83c3c;
+    }
+
+    /* DASHBOARD LAYOUT */
     .dashboard {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
@@ -372,7 +407,7 @@
       font-size: 13px;
     }
 
-    /* PROFILE */
+    /* PROFILE CARD */
     .profile-card {
       background: var(--card);
       padding: 24px;
@@ -430,7 +465,7 @@
       font-weight: 700;
     }
 
-    /* CARDS */
+    /* CARDS & SECTIONS */
     .transactions-card, .card {
       margin-top: 24px;
       background: var(--card);
@@ -455,7 +490,8 @@
       font-size: 13px;
     }
 
-    #transactionsList, #notificationsList {
+    #transactionsList,
+    #notificationsList {
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -514,13 +550,55 @@
       font-size: 14px;
     }
 
-    .income { color: var(--green); }
-    .expense { color: var(--red); }
+    .income {
+      color: var(--green);
+    }
+
+    .expense {
+      color: var(--red);
+    }
 
     .empty, .loading {
       padding: 30px;
       text-align: center;
       color: var(--muted);
+    }
+
+    /* CHAT BUBBLE & ACTIONS */
+    .message-bubble {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+
+    .message-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 3px;
+      opacity: 0.7;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .action-btn:hover {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    .star-btn.starred {
+      opacity: 1;
+      filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.8));
     }
 
     /* ADMIN & FORMS */
@@ -534,7 +612,8 @@
       gap: 12px;
     }
 
-    .admin-form input, .admin-form select {
+    .admin-form input,
+    .admin-form select {
       width: 100%;
       padding: 14px;
       border: 1px solid var(--border);
@@ -543,7 +622,8 @@
       outline: none;
     }
 
-    .admin-form input:focus, .admin-form select:focus {
+    .admin-form input:focus,
+    .admin-form select:focus {
       border-color: var(--primary);
     }
 
@@ -564,14 +644,13 @@
       cursor: wait;
     }
 
-    /* TRANSCRIPT STYLING DE VOZ */
+    /* TRANSCRIPT STYLING */
     .voice-transcript {
       font-size: 13px;
       line-height: 1.4;
       background: rgba(0, 0, 0, 0.05);
       padding: 8px 10px;
       border-radius: 8px;
-      margin-top: 4px;
     }
 
     .transcript-word {
@@ -580,34 +659,7 @@
       margin-right: 2px;
     }
 
-    /* CHAT & MENSAJES ACCIONES */
-    .msg-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    .msg-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      opacity: 0.75;
-      transition: transform 0.1s ease, opacity 0.1s ease;
-    }
-
-    .msg-btn:hover {
-      opacity: 1;
-      transform: scale(1.15);
-    }
-
-    .msg-btn.starred {
-      opacity: 1;
-      color: #f59e0b;
-    }
-
-    /* TOAST */
+    /* TOAST NOTIFICATION */
     #toast {
       position: fixed;
       left: 50%;
@@ -627,29 +679,44 @@
       transform: translate(-50%,0);
     }
 
-    /* RESPONSIVE */
     @media(max-width:760px) {
-      .app-container { padding: 16px; }
-      .dashboard { grid-template-columns: 1fr; }
-      .profile-button span { display: none; }
-      .balance-card { min-height: 215px; padding: 24px; }
-      .transactions-card, .card { padding: 20px; }
-      .withdraw-item-card { flex-direction: column; align-items: flex-start; }
-      .withdraw-actions { width: 100%; justify-content: flex-end; }
+      .app-container {
+        padding: 16px;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-button span {
+        display: none;
+      }
+
+      .balance-card {
+        min-height: 215px;
+        padding: 24px;
+      }
+
+      .transactions-card, .card {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- LOGIN -->
+  <!-- LOGIN SECTION -->
   <section id="loginScreen">
     <div class="login-card">
       <div class="logo">MC</div>
+
       <div id="accountSelection">
         <h1>¿Quién eres?</h1>
         <p>Seleccioná tu cuenta para continuar.</p>
+
         <div class="account-list">
+          <!-- SANTI -->
           <button class="account-button" data-name="Santi" data-email="santipapel16@gmail.com">
             <div class="account-avatar">👤</div>
             <div class="account-info">
@@ -659,6 +726,7 @@
             <div class="account-arrow">›</div>
           </button>
 
+          <!-- LEONEL -->
           <button class="account-button" data-name="Leonel" data-email="leoxdfunes@gmail.com">
             <div class="account-avatar">👤</div>
             <div class="account-info">
@@ -668,6 +736,7 @@
             <div class="account-arrow">›</div>
           </button>
 
+          <!-- GABRIELA -->
           <button class="account-button" data-name="Gabriela" data-email="gabyhuchy@gmail.com">
             <div class="account-avatar admin-avatar">👑</div>
             <div class="account-info">
@@ -683,33 +752,41 @@
       <div id="emailConfirmation" style="display:none;">
         <h1>Confirmar cuenta</h1>
         <p>Vas a iniciar sesión como:</p>
-        <div id="selectedAccount" style="padding:15px;background:#f5f5f8;border-radius:14px;margin-bottom:18px;"></div>
-        <input id="pinInput" type="password" inputmode="text" maxlength="30" autocomplete="current-password" placeholder="Ingresá tu PIN" style="width:100%;padding:15px;border:1px solid #ddd;border-radius:14px;margin-bottom:12px;font-size:18px;text-align:center;box-sizing:border-box;">
-        <button id="pinLoginButton" class="google-button" style="background:#6c4df6;color:white;">🔐 Iniciar sesión</button>
-        <button id="backAccounts" style="margin-top:14px;background:none;color:#6c4df6;font-weight:700;">← Cambiar cuenta</button>
-      </div>
 
-      <div id="emailSent" style="display:none;">
-        <h1>📬 Correo enviado</h1>
-        <p>Mandamos un enlace de confirmación a:</p>
-        <strong id="sentEmail"></strong>
-        <p style="margin-top:15px;">Abrí el correo y tocá el enlace para entrar.</p>
+        <div id="selectedAccount" style="padding:15px;background:#f5f5f8;border-radius:14px;margin-bottom:18px;"></div>
+
+        <input
+          id="pinInput"
+          type="password"
+          inputmode="text"
+          maxlength="30"
+          autocomplete="current-password"
+          placeholder="Ingresá tu PIN"
+          style="width:100%;padding:15px;border:1px solid #ddd;border-radius:14px;margin-bottom:12px;font-size:18px;text-align:center;box-sizing:border-box;"
+        >
+
+        <button id="pinLoginButton" class="google-button" style="background:#6c4df6;color:white;">
+          🔐 Iniciar sesión
+        </button>
+
+        <button id="backAccounts" style="margin-top:14px;background:none;color:#6c4df6;font-weight:700;">
+          ← Cambiar cuenta
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- APP -->
+  <!-- MAIN APP SECTION -->
   <main id="app">
     <div class="app-container">
 
-      <!-- CARTELES DE ALERTA PARA MAMÁ (RETIROS PENDIENTES) -->
-      <div id="adminWithdrawAlert" class="admin-withdraw-alert" style="display: none;">
-        <div class="admin-withdraw-header">
-          <span>🚨 SOLICITUDES DE RETIRO PENDIENTES</span>
-          <span id="withdrawAlertBadge" style="background:white;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:12px;">0</span>
+      <!-- TOP BANNER DE RETIROS PENDIENTES PARA MAMÁ -->
+      <section id="adminWithdrawalsCard" class="admin-withdrawals-card">
+        <h3>⚠️ Solicitudes de Retiro Pendientes</h3>
+        <div id="withdrawalRequestsList" class="withdrawal-requests-list">
+          <div class="loading">Buscando solicitudes...</div>
         </div>
-        <div id="withdrawAlertList"></div>
-      </div>
+      </section>
 
       <!-- HEADER -->
       <header class="topbar">
@@ -720,6 +797,7 @@
             <span id="headerRole">Wallet personal</span>
           </div>
         </div>
+
         <button id="profileButton" class="profile-button">
           <img id="headerAvatar" src="" alt="Foto de perfil">
           <span id="headerName">Usuario</span>
@@ -728,6 +806,7 @@
 
       <!-- DASHBOARD -->
       <section class="dashboard">
+        <!-- SALDO -->
         <article class="balance-card">
           <div class="balance-header">
             <span class="balance-label">Saldo disponible</span>
@@ -737,6 +816,7 @@
           <div class="balance-currency">Mom Coins</div>
         </article>
 
+        <!-- PERFIL -->
         <article class="profile-card">
           <h2 class="section-title">Mi perfil</h2>
           <div class="user-info">
@@ -751,30 +831,54 @@
         </article>
       </section>
 
-      <!-- CHAT DE MENSAJES -->
+      <!-- MESSAGES / CHAT -->
       <section id="messagesSection" class="card">
         <div class="section-header">
           <div>
             <h2>💬 Mensajes</h2>
-            <p style="color:var(--muted);font-size:13px;">Chat con Mamá</p>
+            <p id="chatSubtitle" style="color:var(--muted);font-size:13px;">Chat con Mamá</p>
           </div>
-          <span id="unreadMessagesBadge" style="display:none;background:#ef4444;color:white;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:bold;">0</span>
+
+          <div style="display:flex;align-items:center;gap:10px;">
+            <!-- Selector de chat visible para Mamá -->
+            <select id="momChatRecipientSelect" style="display:none;padding:6px 12px;border-radius:10px;border:1px solid var(--border);font-size:13px;">
+              <option value="santipapel16@gmail.com">Santi (santipapel16@gmail.com)</option>
+              <option value="leoxdfunes@gmail.com">Leonel (leoxdfunes@gmail.com)</option>
+            </select>
+
+            <span id="unreadMessagesBadge" style="display:none;background:#ef4444;color:white;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:bold;">
+              0
+            </span>
+          </div>
         </div>
 
-        <div id="messagesList" style="display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto;padding:10px 0;"></div>
+        <div id="messagesList" style="display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto;padding:10px 0;">
+        </div>
 
         <div style="display:flex;gap:8px;margin-top:12px;">
-          <input id="messageInput" type="text" maxlength="500" placeholder="Escribí un mensaje..." style="flex:1;padding:12px;border:1px solid var(--border);border-radius:12px;outline:none;">
-          <button id="sendMessageBtn" style="padding:12px 18px;background:var(--primary);color:white;border-radius:12px;font-weight:bold;">➤</button>
+          <input
+            id="messageInput"
+            type="text"
+            maxlength="500"
+            placeholder="Escribí un mensaje..."
+            style="flex:1;padding:12px;border:1px solid var(--border);border-radius:12px;outline:none;"
+          >
+          <button id="sendMessageBtn" style="padding:12px 18px;background:var(--primary);color:white;border-radius:12px;font-weight:bold;">
+            ➤
+          </button>
         </div>
 
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-          <button id="recordVoiceBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">🎙️ Grabar (Máx 1m)</button>
-          <button id="notificationBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">🔔 Activar notificaciones</button>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;">
+          <button id="recordVoiceBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">
+            🎙️ Grabar (Máx 1m)
+          </button>
+          <button id="notificationBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">
+            🔔 Activar notificaciones
+          </button>
         </div>
 
         <div id="recordingStatus" style="display:none;margin-top:8px;color:#ef4444;font-weight:600;">
-          🔴 Grabando... <span id="recordingTime">0:00</span>
+          🔴 Grabando... <span id="recordingTime">0:00</span> / 1:00
         </div>
       </section>
 
@@ -782,7 +886,7 @@
       <section id="withdrawSection" class="transactions-card">
         <div class="transactions-header">
           <h2>💸 Solicitar Retiro</h2>
-          <span class="transaction-count">Máx 10 MC = $5.000 ARS</span>
+          <span class="transaction-count">1 MC = $500 ARS (Máx 10 MC)</span>
         </div>
         <div class="admin-form">
           <input id="withdrawAmount" type="number" min="1" max="10" step="1" placeholder="Cantidad de MC a retirar (Máx 10)">
@@ -791,20 +895,23 @@
         </div>
       </section>
 
-      <!-- ADMIN PANEL MAMÁ -->
+      <!-- ADMIN PANEL -->
       <section id="adminPanel" class="transactions-card">
         <div class="transactions-header">
           <h2>👑 Panel de mamá</h2>
           <span class="transaction-count">ADMIN</span>
         </div>
+
         <div class="admin-form">
           <select id="recipientEmail">
             <option value="">Seleccionar destinatario</option>
             <option value="santipapel16@gmail.com">Santi</option>
             <option value="leoxdfunes@gmail.com">Leo</option>
           </select>
+
           <input id="sendAmount" type="number" min="1" step="1" placeholder="Cantidad de Mom Coins">
           <input id="sendReason" type="text" maxlength="100" placeholder="Motivo">
+
           <button id="sendCoinsButton">💸 Enviar Mom Coins</button>
         </div>
       </section>
@@ -836,12 +943,36 @@
 
   <div id="toast"></div>
 
-  <!-- FIREBASE MODULES -->
+  <!-- SCRIPTING & LOGIC -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      getDocs,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      collection,
+      query,
+      where,
+      orderBy,
+      onSnapshot,
+      serverTimestamp,
+      runTransaction,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    /* FIREBASE CONFIG */
     const firebaseConfig = {
       apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
       authDomain: "banco-de-mama.firebaseapp.com",
@@ -855,23 +986,43 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    /* CONSTANTES */
     const MAX_WITHDRAWAL_MC = 10;
     const MC_VALUE_ARS = 500;
-    const MAX_VOICE_SECONDS = 60; // Límite de 1 minuto para notas de voz
-    const MESSAGE_EXPIRY_MS = 12 * 60 * 60 * 1000; // 12 Horas para autodestrucción
+    const MAX_RECORDING_SECONDS = 60; // Max 1 min audio
 
-    const ADMIN_EMAILS = ["gabyhuchy@hotmail.com", "gabyhuchy@gmail.com"];
-    const ALLOWED_USERS = ["santipapel16@gmail.com", "gabyhuchy@hotmail.com", "gabyhuchy@gmail.com", "leoxdfunes@gmail.com"];
+    const ADMIN_EMAILS = [
+      "gabyhuchy@hotmail.com",
+      "gabyhuchy@gmail.com"
+    ];
+
+    const ALLOWED_USERS = [
+      "santipapel16@gmail.com",
+      "gabyhuchy@hotmail.com",
+      "gabyhuchy@gmail.com",
+      "leoxdfunes@gmail.com"
+    ];
+
+    const ACCOUNT_PINS = {
+      "Santi": "Sanfunpro",
+      "Leonel": "Leoncito2012",
+      "Gabriela": "Chanchuly2014"
+    };
 
     function isAdmin(user) {
-      return Boolean(user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase()));
+      return Boolean(
+        user?.email &&
+        ADMIN_EMAILS.includes(user.email.toLowerCase())
+      );
     }
 
     function isAllowedUser(user) {
-      return Boolean(user?.email && ALLOWED_USERS.includes(user.email.toLowerCase()));
+      return Boolean(
+        user?.email &&
+        ALLOWED_USERS.includes(user.email.toLowerCase())
+      );
     }
 
-    // DOM Elements
     const loginScreen = document.getElementById("loginScreen");
     const appScreen = document.getElementById("app");
     const accountSelection = document.getElementById("accountSelection");
@@ -880,6 +1031,10 @@
     const backAccounts = document.getElementById("backAccounts");
     const pinInput = document.getElementById("pinInput");
     const pinLoginButton = document.getElementById("pinLoginButton");
+
+    let selectedEmail = "";
+    let selectedName = "";
+
     const logoutButton = document.getElementById("logoutButton");
     const balanceElement = document.getElementById("balance");
     const privacyButton = document.getElementById("privacyButton");
@@ -901,7 +1056,11 @@
     const notificationsList = document.getElementById("notificationsList");
     const notificationCount = document.getElementById("notificationCount");
 
-    // Chat
+    // Admin Withdrawals Banner
+    const adminWithdrawalsCard = document.getElementById("adminWithdrawalsCard");
+    const withdrawalRequestsList = document.getElementById("withdrawalRequestsList");
+
+    // Chat Elements
     const messagesList = document.getElementById("messagesList");
     const messageInput = document.getElementById("messageInput");
     const sendMessageBtn = document.getElementById("sendMessageBtn");
@@ -909,25 +1068,16 @@
     const recordingStatus = document.getElementById("recordingStatus");
     const recordingTime = document.getElementById("recordingTime");
     const notificationBtn = document.getElementById("notificationBtn");
+    const momChatRecipientSelect = document.getElementById("momChatRecipientSelect");
+    const chatSubtitle = document.getElementById("chatSubtitle");
 
-    // Retiros
+    // Withdrawal Elements
     const withdrawSection = document.getElementById("withdrawSection");
     const withdrawAmount = document.getElementById("withdrawAmount");
     const withdrawCalc = document.getElementById("withdrawCalc");
     const requestWithdrawBtn = document.getElementById("requestWithdrawBtn");
-    const adminWithdrawAlert = document.getElementById("adminWithdrawAlert");
-    const withdrawAlertList = document.getElementById("withdrawAlertList");
-    const withdrawAlertBadge = document.getElementById("withdrawAlertBadge");
 
-    let selectedEmail = "";
-    let selectedName = "";
-
-    const ACCOUNT_PINS = {
-      "Santi": "Sanfunpro",
-      "Leonel": "Leoncito2012",
-      "Gabriela": "Chanchuly2014"
-    };
-
+    /* ESTADO APP */
     let currentUser = null;
     let currentBalance = 0;
     let privateMode = false;
@@ -935,6 +1085,7 @@
     let unsubscribeNotifications = null;
     let unsubscribeWithdrawals = null;
     let messagesUnsubscribe = null;
+    const processingWithdrawals = new Set();
 
     let mediaRecorder = null;
     let audioChunks = [];
@@ -944,13 +1095,13 @@
     let recordingTimer = null;
     let firstNotificationSnapshot = true;
 
-    // Conjunto global para evitar procesar el mismo retiro más de una vez
-    const processingWithdrawals = new Set();
-
+    /* TOAST & HELPER FUNCTIONS */
     function showToast(message) {
       toast.textContent = message;
       toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3000);
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3500);
     }
 
     function escapeHTML(text) {
@@ -961,7 +1112,9 @@
 
     function formatBalance(value) {
       if (privateMode) return "••••••";
-      return Number(value || 0).toLocaleString("es-AR", { maximumFractionDigits: 2 });
+      return Number(value || 0).toLocaleString("es-AR", {
+        maximumFractionDigits: 2
+      });
     }
 
     function updateBalanceUI() {
@@ -974,11 +1127,12 @@
       updateBalanceUI();
     });
 
-    // LOGIN POR PIN
+    /* LOGIN HANDLERS */
     document.querySelectorAll(".account-button").forEach(button => {
       button.addEventListener("click", () => {
         selectedName = button.dataset.name;
         selectedEmail = button.dataset.email;
+
         selectedAccount.textContent = `${selectedName} · ${selectedEmail}`;
         accountSelection.style.display = "none";
         emailConfirmation.style.display = "block";
@@ -995,7 +1149,12 @@
 
     pinLoginButton.addEventListener("click", async () => {
       const pin = pinInput.value.trim();
-      if (!selectedName || !selectedEmail) return showToast("Seleccioná una cuenta primero.");
+
+      if (!selectedName || !selectedEmail) {
+        showToast("Seleccioná una cuenta primero.");
+        return;
+      }
+
       if (pin !== ACCOUNT_PINS[selectedName]) {
         showToast("PIN incorrecto.");
         pinInput.value = "";
@@ -1010,7 +1169,7 @@
         await signInWithEmailAndPassword(auth, selectedEmail, pin);
       } catch (error) {
         console.error("PIN Auth:", error);
-        showToast("Error al iniciar sesión.");
+        showToast("Error de inicio de sesión en Firebase.");
       } finally {
         pinLoginButton.disabled = false;
         pinLoginButton.textContent = "🔐 Iniciar sesión";
@@ -1018,9 +1177,12 @@
     });
 
     pinInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") pinLoginButton.click();
+      if (event.key === "Enter") {
+        pinLoginButton.click();
+      }
     });
 
+    /* USER PROFILE */
     function loadUserProfile(user) {
       const name = user.displayName || user.email.split('@')[0] || "Usuario";
       const email = user.email || "Sin correo";
@@ -1037,198 +1199,100 @@
         headerRole.textContent = "Administrador";
         adminPanel.style.display = "block";
         withdrawSection.style.display = "none";
-        listenToWithdrawalAlerts();
+        momChatRecipientSelect.style.display = "inline-block";
+        chatSubtitle.textContent = "Chat con usuario seleccionado";
+        listenAdminWithdrawalRequests();
       } else {
         roleBadge.textContent = "USUARIO";
         headerRole.textContent = "Wallet personal";
         adminPanel.style.display = "none";
         withdrawSection.style.display = "block";
-        adminWithdrawAlert.style.display = "none";
+        momChatRecipientSelect.style.display = "none";
+        chatSubtitle.textContent = "Chat con Mamá";
+        adminWithdrawalsCard.style.display = "none";
       }
     }
 
-    // LISTENER ALERTA DE RETIROS PARA MAMÁ
-    function listenToWithdrawalAlerts() {
-      if (unsubscribeWithdrawals) unsubscribeWithdrawals();
-
-      const q = query(collection(db, "withdrawals"), where("status", "==", "pending"), orderBy("created_at", "asc"));
-
-      unsubscribeWithdrawals = onSnapshot(q, (snapshot) => {
-        withdrawAlertList.innerHTML = "";
-        const pendingCount = snapshot.size;
-
-        if (pendingCount === 0) {
-          adminWithdrawAlert.style.display = "none";
-          return;
-        }
-
-        adminWithdrawAlert.style.display = "block";
-        withdrawAlertBadge.textContent = pendingCount;
-
-        snapshot.forEach((docSnap) => {
-          const wData = docSnap.data();
-          const wId = docSnap.id;
-
-          // Si ya se está procesando localmente este id, no volver a pintarlo
-          if (processingWithdrawals.has(wId)) return;
-
-          const card = document.createElement("div");
-          card.className = "withdraw-item-card";
-          card.id = `withdraw-card-${wId}`;
-          card.innerHTML = `
-            <div class="withdraw-item-info">
-              <strong>👤 ${escapeHTML(wData.userName || "Usuario")} solicita ${wData.amount} MC</strong>
-              <span>Valor: $${(wData.amountARS || 0).toLocaleString("es-AR")} ARS</span>
-            </div>
-            <div class="withdraw-actions">
-              <button class="btn-approve" id="approve-btn-${wId}">✅ Aceptar</button>
-              <button class="btn-reject" id="reject-btn-${wId}">❌ Rechazar</button>
-            </div>
-          `;
-
-          const approveBtn = card.querySelector(`#approve-btn-${wId}`);
-          const rejectBtn = card.querySelector(`#reject-btn-${wId}`);
-
-          approveBtn.addEventListener("click", () => handleWithdrawalAction(wId, "approve", card));
-          rejectBtn.addEventListener("click", () => handleWithdrawalAction(wId, "reject", card));
-
-          withdrawAlertList.appendChild(card);
-        });
-      }, (err) => console.error("Withdrawal snapshot error:", err));
-    }
-
-    // MANEJO ATÓMICO DE ACEPTAR/RECHAZAR RETIRO (CANDADO ANTI-CLIC DUPLICADO)
-    async function handleWithdrawalAction(withdrawalId, action, cardElement) {
-      if (processingWithdrawals.has(withdrawalId)) return;
-      processingWithdrawals.add(withdrawalId);
-
-      if (cardElement) {
-        cardElement.style.pointerEvents = "none";
-        cardElement.style.opacity = "0.3";
-        setTimeout(() => cardElement.remove(), 200);
-      }
-
-      try {
-        const withdrawalRef = doc(db, "withdrawals", withdrawalId);
-
-        await runTransaction(db, async (transaction) => {
-          const wSnap = await transaction.get(withdrawalRef);
-          if (!wSnap.exists()) throw new Error("ALREADY_PROCESSED");
-
-          const wData = wSnap.data();
-          if (wData.status !== "pending") {
-            throw new Error("ALREADY_PROCESSED");
-          }
-
-          transaction.update(withdrawalRef, {
-            status: action === "approve" ? "approved" : "rejected",
-            processedAt: serverTimestamp(),
-            processedBy: currentUser.uid
-          });
-
-          if (action === "reject") {
-            const userRef = doc(db, "users", wData.userId);
-            const userSnap = await transaction.get(userRef);
-
-            if (userSnap.exists()) {
-              const uData = userSnap.data();
-              const currentCoins = Number(uData.balance ?? uData.coins ?? 0);
-              const refundAmount = Number(wData.amount);
-
-              transaction.update(userRef, { balance: currentCoins + refundAmount });
-
-              const txRef = doc(collection(db, "transactions"));
-              transaction.set(txRef, {
-                user_ref: wData.userId,
-                from_uid: currentUser.uid,
-                from_email: currentUser.email,
-                amount: refundAmount,
-                type: "income",
-                title: "Reembolso por retiro rechazado",
-                created_at: serverTimestamp()
-              });
-
-              const notiRef = doc(collection(db, "notifications"));
-              transaction.set(notiRef, {
-                userId: wData.userId,
-                title: "❌ Retiro Rechazado",
-                message: `Tu solicitud de retiro de ${refundAmount} MC fue rechazada. Se te reembolsaron tus monedas.`,
-                read: false,
-                created_at: serverTimestamp()
-              });
-            }
-          } else {
-            const notiRef = doc(collection(db, "notifications"));
-            transaction.set(notiRef, {
-              userId: wData.userId,
-              title: "✅ Retiro Aprobado",
-              message: `Mamá aprobó tu retiro de ${wData.amount} MC ($${(wData.amountARS || 0).toLocaleString("es-AR")} ARS).`,
-              read: false,
-              created_at: serverTimestamp()
-            });
-          }
-        });
-
-        showToast(action === "approve" ? "Retiro aprobado con éxito." : "Retiro rechazado. Monedas devueltas.");
-      } catch (error) {
-        if (error.message === "ALREADY_PROCESSED") {
-          console.warn("La solicitud ya había sido procesada previamente.");
-        } else {
-          console.error("Action withdrawal error:", error);
-          showToast("Ocurrió un error al procesar el retiro.");
-        }
-      }
-    }
-
-    // CHAT & TRANSCRIPCIONES EN VIVO
     function getChatId(uid1, uid2) {
       return [uid1, uid2].sort().join("_");
     }
 
-    async function getMomUser() {
-      const q = query(collection(db, "users"), where("email", "==", "gabyhuchy@gmail.com"));
-      const snapshot = await getDocs(q);
-      if (snapshot.empty) throw new Error("No se encontró la cuenta de Mamá.");
-      return { uid: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+    async function getUserUidByEmail(email) {
+      try {
+        const q = query(collection(db, "users"), where("email", "==", email.toLowerCase()));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          return snapshot.docs[0].id;
+        }
+      } catch (err) {
+        console.warn("Could not query user by email:", err);
+      }
+      return null;
     }
 
+    async function getChatTargetUid() {
+      if (!currentUser) return null;
+
+      if (isAdmin(currentUser)) {
+        const targetEmail = momChatRecipientSelect.value;
+        const targetUid = await getUserUidByEmail(targetEmail);
+        return targetUid || targetEmail;
+      } else {
+        const momUid = await getUserUidByEmail("gabyhuchy@gmail.com") || await getUserUidByEmail("gabyhuchy@hotmail.com");
+        return momUid || "gabyhuchy_admin";
+      }
+    }
+
+    /* MESSAGES & CHAT SYSTEM WITH 12H AUTO-EXPIRE & STARRING */
     async function sendMessage(text) {
       if (!currentUser || !text.trim()) return;
-      const mom = await getMomUser();
+
+      const recipientId = await getChatTargetUid();
+      if (!recipientId) {
+        showToast("No se pudo determinar el destinatario del mensaje.");
+        return;
+      }
 
       const message = {
-        chatId: getChatId(currentUser.uid, mom.uid),
+        chatId: getChatId(currentUser.uid, recipientId),
         senderId: currentUser.uid,
         senderName: currentUser.displayName || currentUser.email.split('@')[0],
-        recipientId: mom.uid,
-        participants: [currentUser.uid, mom.uid],
+        recipientId: recipientId,
+        participants: [currentUser.uid, recipientId],
         text: text.trim(),
         type: "text",
-        starred: false,
         read: false,
+        starred: false,
         created_at: serverTimestamp()
       };
 
-      await addDoc(collection(db, "messages"), message);
+      try {
+        await addDoc(collection(db, "messages"), message);
 
-      await addDoc(collection(db, "notifications"), {
-        userId: mom.uid,
-        title: "💬 Nuevo mensaje",
-        message: `${currentUser.displayName || currentUser.email.split('@')[0]} te envió un mensaje`,
-        read: false,
-        created_at: serverTimestamp()
-      });
+        if (recipientId !== currentUser.uid) {
+          await addDoc(collection(db, "notifications"), {
+            userId: recipientId,
+            title: "💬 Nuevo mensaje",
+            message: `${currentUser.displayName || currentUser.email.split('@')[0]} te envió un mensaje`,
+            read: false,
+            created_at: serverTimestamp()
+          });
+        }
+      } catch (err) {
+        console.error("Error sending message:", err);
+        showToast("No se pudo enviar el mensaje.");
+      }
     }
 
     sendMessageBtn.addEventListener("click", async () => {
       const text = messageInput.value.trim();
       if (!text) return;
+
       try {
         await sendMessage(text);
         messageInput.value = "";
       } catch (error) {
         console.error(error);
-        showToast("No se pudo enviar el mensaje.");
       }
     });
 
@@ -1237,6 +1301,10 @@
         event.preventDefault();
         sendMessageBtn.click();
       }
+    });
+
+    momChatRecipientSelect.addEventListener("change", () => {
+      loadMessages();
     });
 
     function renderTranscript(words) {
@@ -1275,6 +1343,7 @@
         showToast("Tu navegador no soporta texto a voz.");
         return;
       }
+
       speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "es-AR";
@@ -1283,12 +1352,34 @@
       speechSynthesis.speak(utterance);
     }
 
+    async function toggleStarMessage(msgId, currentStarred) {
+      try {
+        await updateDoc(doc(db, "messages", msgId), {
+          starred: !currentStarred
+        });
+        showToast(!currentStarred ? "⭐ Mensaje destacado (no se borrará)" : "Estrella removida");
+      } catch (err) {
+        console.error("Star toggle error:", err);
+        showToast("No se pudo actualizar el destacado.");
+      }
+    }
+
+    async function deleteMessage(msgId) {
+      try {
+        await deleteDoc(doc(db, "messages", msgId));
+        showToast("🗑️ Mensaje eliminado");
+      } catch (err) {
+        console.error("Delete message error:", err);
+        showToast("No se pudo borrar el mensaje.");
+      }
+    }
+
     async function loadMessages() {
       if (!currentUser) return;
 
       try {
-        const mom = await getMomUser();
-        const chatId = getChatId(currentUser.uid, mom.uid);
+        const targetUid = await getChatTargetUid();
+        const activeChatId = targetUid ? getChatId(currentUser.uid, targetUid) : null;
 
         const messagesQuery = query(
           collection(db, "messages"),
@@ -1296,102 +1387,117 @@
           orderBy("created_at", "asc")
         );
 
-        if (messagesUnsubscribe) messagesUnsubscribe();
+        if (messagesUnsubscribe) {
+          messagesUnsubscribe();
+        }
 
         messagesUnsubscribe = onSnapshot(messagesQuery, (snapshot) => {
           messagesList.innerHTML = "";
           let unread = 0;
           const now = Date.now();
+          const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
           snapshot.forEach((messageDoc) => {
             const msg = messageDoc.data();
             const msgId = messageDoc.id;
 
-            if (msg.chatId !== chatId) return;
+            if (activeChatId && msg.chatId !== activeChatId) return;
 
-            // ELIMINACIÓN AUTOMÁTICA TRAS 12 HORAS (A menos que esté destacado ⭐)
+            // 12-Hour Expiration Check (unless starred)
             let msgTime = now;
             if (msg.created_at?.toMillis) {
               msgTime = msg.created_at.toMillis();
+            } else if (msg.created_at) {
+              msgTime = new Date(msg.created_at).getTime();
             }
 
-            if (!msg.starred && (now - msgTime > MESSAGE_EXPIRY_MS)) {
-              deleteDoc(doc(db, "messages", msgId)).catch(() => {});
+            const isExpired = (now - msgTime > TWELVE_HOURS_MS) && !msg.starred;
+            if (isExpired) {
+              // Automatically hide expired unstarred messages
               return;
             }
 
-            if (msg.recipientId === currentUser.uid && !msg.read) unread++;
+            if (msg.recipientId === currentUser.uid && !msg.read) {
+              unread++;
+            }
 
             const bubble = document.createElement("div");
             const mine = msg.senderId === currentUser.uid;
 
+            bubble.className = "message-bubble";
             bubble.style.cssText = `
               align-self:${mine ? "flex-end" : "flex-start"};
               max-width:85%;
               padding:10px 14px;
               border-radius:16px;
               background:${mine ? "#2563eb" : "#e5e7eb"};
-              color:${mine ? "white" : "black"};
-              position:relative;
+              color:${mine ? "white" : "#111827"};
             `;
 
-            const starredClass = msg.starred ? "starred" : "";
+            let innerHTMLContent = `
+              <div style="font-size:12px;opacity:.8;display:flex;justify-content:space-between;gap:8px;">
+                <span>${escapeHTML(msg.senderName || "Usuario")}</span>
+                ${msg.starred ? '<span>⭐</span>' : ''}
+              </div>
+            `;
 
             if (msg.type === "voice") {
-              const audioSrc = msg.audioBase64 || msg.audioUrl || "";
-              bubble.innerHTML = `
-                <div style="font-size:11px;opacity:.8;">🎙️ ${escapeHTML(msg.senderName || "Usuario")}</div>
-                ${renderTranscript(msg.transcript || [])}
-                <audio controls src="${audioSrc}" style="width:100%;margin-top:6px;max-width:240px;"></audio>
-                <div class="msg-actions">
-                  <button class="msg-btn btn-star ${starredClass}" title="Destacar">⭐</button>
-                  <button class="msg-btn btn-delete" title="Borrar">🗑️</button>
+              innerHTMLContent += `
+                <div style="margin-top:5px;">
+                  ${renderTranscript(msg.transcript || [])}
+                </div>
+                <audio controls src="${msg.audioUrl}" style="width:100%;margin-top:8px;"></audio>
+              `;
+            } else {
+              innerHTMLContent += `
+                <div style="margin-top:3px;word-break:break-word;">
+                  ${escapeHTML(msg.text || "")}
                 </div>
               `;
+            }
+
+            // Message action buttons (Read text, Star, Delete)
+            innerHTMLContent += `
+              <div class="message-actions">
+                ${msg.type !== "voice" ? `<button class="action-btn speak-btn" title="Escuchar">🔊</button>` : ''}
+                <button class="action-btn star-btn ${msg.starred ? 'starred' : ''}" title="${msg.starred ? 'Quitar estrella' : 'Destacar (Guardar)'}">
+                  ${msg.starred ? '⭐' : '☆'}
+                </button>
+                <button class="action-btn delete-btn" title="Borrar mensaje">🗑️</button>
+              </div>
+            `;
+
+            bubble.innerHTML = innerHTMLContent;
+
+            // Event Listeners for actions
+            const speakBtn = bubble.querySelector(".speak-btn");
+            if (speakBtn) {
+              speakBtn.addEventListener("click", () => speakText(msg.text || ""));
+            }
+
+            const starBtn = bubble.querySelector(".star-btn");
+            if (starBtn) {
+              starBtn.addEventListener("click", () => toggleStarMessage(msgId, !!msg.starred));
+            }
+
+            const deleteBtn = bubble.querySelector(".delete-btn");
+            if (deleteBtn) {
+              deleteBtn.addEventListener("click", () => deleteMessage(msgId));
+            }
+
+            if (msg.type === "voice") {
               const audioEl = bubble.querySelector("audio");
               if (audioEl && msg.transcript) {
                 syncVoiceTranscript(audioEl, bubble, msg.transcript);
               }
-            } else {
-              bubble.innerHTML = `
-                <div style="font-size:11px;opacity:.8;">${escapeHTML(msg.senderName || "Usuario")}</div>
-                <div style="margin-top:3px;word-break:break-word;font-size:14px;">${escapeHTML(msg.text || "")}</div>
-                <div class="msg-actions">
-                  <button class="msg-btn btn-speak" title="Escuchar">🔊</button>
-                  <button class="msg-btn btn-star ${starredClass}" title="Destacar">⭐</button>
-                  <button class="msg-btn btn-delete" title="Borrar">🗑️</button>
-                </div>
-              `;
-              const speakBtn = bubble.querySelector(".btn-speak");
-              if (speakBtn) {
-                speakBtn.addEventListener("click", () => speakText(msg.text || ""));
-              }
             }
-
-            // Botón Destacar (Star)
-            const starBtn = bubble.querySelector(".btn-star");
-            starBtn.addEventListener("click", async () => {
-              try {
-                await updateDoc(doc(db, "messages", msgId), { starred: !msg.starred });
-              } catch (e) {
-                console.error(e);
-              }
-            });
-
-            // Botón Borrar (Delete)
-            const deleteBtn = bubble.querySelector(".btn-delete");
-            deleteBtn.addEventListener("click", async () => {
-              try {
-                await deleteDoc(doc(db, "messages", msgId));
-                showToast("Mensaje eliminado.");
-              } catch (e) {
-                console.error(e);
-                showToast("No se pudo eliminar el mensaje.");
-              }
-            });
 
             messagesList.appendChild(bubble);
           });
+
+          if (messagesList.children.length === 0) {
+            messagesList.innerHTML = `<div class="empty">No hay mensajes recientes.</div>`;
+          }
 
           messagesList.scrollTop = messagesList.scrollHeight;
 
@@ -1402,16 +1508,22 @@
           } else {
             badge.style.display = "none";
           }
+        }, (error) => {
+          console.error("Error en listener del chat:", error);
+          messagesList.innerHTML = `<div class="empty">Error al cargar el chat.</div>`;
         });
       } catch (err) {
         console.error("Error loading chat:", err);
       }
     }
 
-    // RECONOCIMIENTO DE VOZ EN VIVO
+    /* VOICE RECORDING WITH 1-MINUTE MAX LIMIT */
     function startSpeechRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) return;
+
+      if (!SpeechRecognition) {
+        return;
+      }
 
       recognition = new SpeechRecognition();
       recognition.lang = "es-AR";
@@ -1421,6 +1533,7 @@
       recognition.onresult = event => {
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (!event.results[i].isFinal) continue;
+
           const text = event.results[i][0].transcript.trim();
           if (!text) continue;
 
@@ -1438,11 +1551,13 @@
         }
       };
 
-      recognition.onerror = error => console.warn("Speech error:", error.error);
+      recognition.onerror = error => {
+        console.warn("Speech recognition error:", error.error);
+      };
+
       recognition.start();
     }
 
-    // GRABACIÓN DE VOZ (MÁX 1 MINUTO)
     recordVoiceBtn.addEventListener("click", async () => {
       if (mediaRecorder?.state === "recording") {
         stopRecording();
@@ -1451,20 +1566,27 @@
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
         audioChunks = [];
         transcriptWords = [];
 
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.ondataavailable = event => {
-          if (event.data.size > 0) audioChunks.push(event.data);
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
         };
 
         mediaRecorder.onstop = async () => {
           stream.getTracks().forEach(track => track.stop());
+
           if (recognition) {
-            try { recognition.stop(); } catch {}
+            try {
+              recognition.stop();
+            } catch {}
           }
+
           await saveVoiceMessage();
         };
 
@@ -1478,9 +1600,10 @@
         recordingTimer = setInterval(() => {
           const seconds = Math.floor((Date.now() - recordingStart) / 1000);
 
-          if (seconds >= MAX_VOICE_SECONDS) {
+          // Check for 1-minute limit (60s)
+          if (seconds >= MAX_RECORDING_SECONDS) {
             stopRecording();
-            showToast("Límite de 1 minuto alcanzado.");
+            showToast("⏱️ Límite máximo alcanzado (1 minuto).");
             return;
           }
 
@@ -1498,134 +1621,176 @@
     function stopRecording() {
       if (!mediaRecorder) return;
       clearInterval(recordingTimer);
-      if (mediaRecorder.state === "recording") mediaRecorder.stop();
+      if (mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
       recordingStatus.style.display = "none";
       recordVoiceBtn.textContent = "🎙️ Grabar (Máx 1m)";
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
     }
 
     async function saveVoiceMessage() {
       if (!audioChunks.length || !currentUser) return;
 
       try {
+        const recipientId = await getChatTargetUid();
         const blob = new Blob(audioChunks, { type: "audio/webm" });
-        const reader = new FileReader();
+        const audioUrl = await blobToBase64(blob);
 
-        reader.readAsDataURL(blob);
-        reader.onloadend = async () => {
-          const base64Audio = reader.result;
-          const mom = await getMomUser();
+        await addDoc(collection(db, "messages"), {
+          chatId: getChatId(currentUser.uid, recipientId),
+          senderId: currentUser.uid,
+          senderName: currentUser.displayName || currentUser.email.split('@')[0],
+          recipientId: recipientId,
+          participants: [currentUser.uid, recipientId],
+          type: "voice",
+          audioUrl,
+          transcript: transcriptWords,
+          read: false,
+          starred: false,
+          created_at: serverTimestamp()
+        });
 
-          await addDoc(collection(db, "messages"), {
-            chatId: getChatId(currentUser.uid, mom.uid),
-            senderId: currentUser.uid,
-            senderName: currentUser.displayName || currentUser.email.split('@')[0],
-            recipientId: mom.uid,
-            participants: [currentUser.uid, mom.uid],
-            type: "voice",
-            audioBase64: base64Audio,
-            transcript: transcriptWords,
-            starred: false,
-            read: false,
-            created_at: serverTimestamp()
-          });
-
+        if (recipientId !== currentUser.uid) {
           await addDoc(collection(db, "notifications"), {
-            userId: mom.uid,
-            title: "🎙️ Nuevo audio",
+            userId: recipientId,
+            title: "🎙️ Nuevo mensaje de voz",
             message: `${currentUser.displayName || currentUser.email.split('@')[0]} te envió un mensaje de voz`,
             read: false,
             created_at: serverTimestamp()
           });
+        }
 
-          showToast("Mensaje de voz enviado 🎙️");
-        };
+        showToast("Mensaje de voz enviado 🎙️");
       } catch (error) {
         console.error(error);
-        showToast("No se pudo enviar el audio.");
+        showToast("No se pudo enviar el mensaje de voz.");
       }
     }
 
-    // NOTIFICACIONES NAVEGADOR
+    /* NOTIFICATIONS */
     notificationBtn.addEventListener("click", async () => {
-      if (!("Notification" in window)) return showToast("Navegador no soporta notificaciones.");
+      if (!("Notification" in window)) {
+        showToast("Tu navegador no soporta notificaciones.");
+        return;
+      }
+
       const permission = await Notification.requestPermission();
+
       if (permission === "granted") {
-        new Notification("🔔 Mom Coin Wallet", { body: "Notificaciones activadas." });
+        new Notification("🔔 Mom Coin Wallet", {
+          body: "Las notificaciones están activadas."
+        });
         showToast("Notificaciones activadas 🔔");
       } else {
-        showToast("Notificaciones bloqueadas.");
+        showToast("Las notificaciones fueron bloqueadas.");
       }
     });
 
     function listenNotifications() {
       if (!currentUser) return;
-      const q = query(collection(db, "notifications"), where("userId", "==", currentUser.uid), orderBy("created_at", "desc"));
+
+      const q = query(
+        collection(db, "notifications"),
+        where("userId", "==", currentUser.uid),
+        orderBy("created_at", "desc")
+      );
 
       onSnapshot(q, snapshot => {
         snapshot.docChanges().forEach(change => {
-          if (change.type !== "added" || firstNotificationSnapshot) return;
+          if (change.type !== "added" || firstNotificationSnapshot) {
+            return;
+          }
+
           const notification = change.doc.data();
+
           if ("Notification" in window && Notification.permission === "granted") {
-            new Notification(notification.title || "Nueva notificación", { body: notification.message || "" });
+            new Notification(notification.title || "Nueva notificación", {
+              body: notification.message || ""
+            });
           }
         });
+
         firstNotificationSnapshot = false;
+      }, err => {
+        console.warn("Notifications listener error:", err);
       });
     }
 
-    // SOLICITUD DE RETIRO DE MOM COINS
+    /* WITHDRAWAL SYSTEM (REQUEST, ACCEPT & REJECT WITH COIN DEDUCTION / REFUND) */
     if (withdrawAmount) {
       withdrawAmount.addEventListener("input", () => {
         const amount = Number(withdrawAmount.value) || 0;
-        withdrawCalc.textContent = `Valor estimado: $${(amount * MC_VALUE_ARS).toLocaleString("es-AR")} ARS`;
+        const amountARS = amount * MC_VALUE_ARS;
+        withdrawCalc.textContent = `Valor estimado: $${amountARS.toLocaleString("es-AR")} ARS`;
       });
     }
 
     if (requestWithdrawBtn) {
       requestWithdrawBtn.addEventListener("click", async () => {
-        const amount = Number(withdrawAmount.value);
+        const amount = Math.floor(Number(withdrawAmount.value));
 
-        if (!amount || amount <= 0) return showToast("Ingresá una cantidad válida.");
-        if (amount > MAX_WITHDRAWAL_MC) return showToast("El máximo de retiro es 10 MC.");
+        if (!amount || amount <= 0) {
+          showToast("Ingresá una cantidad válida.");
+          return;
+        }
 
+        if (amount > MAX_WITHDRAWAL_MC) {
+          showToast("El máximo de retiro es 10 MC.");
+          return;
+        }
+
+        if (amount > currentBalance) {
+          showToast("No tenés suficiente saldo.");
+          return;
+        }
+
+        const amountARS = amount * MC_VALUE_ARS;
         requestWithdrawBtn.disabled = true;
-        requestWithdrawBtn.textContent = "Enviando...";
 
         try {
           const userRef = doc(db, "users", currentUser.uid);
 
+          // Deduct MC immediately upon request using transaction
           await runTransaction(db, async (transaction) => {
             const userSnap = await transaction.get(userRef);
-            if (!userSnap.exists()) throw new Error("NO_USER");
+            if (!userSnap.exists()) throw new Error("USER_NOT_FOUND");
 
             const userData = userSnap.data();
-            const currentCoins = Number(userData.balance ?? userData.coins ?? 0);
+            const balance = Number(userData.balance ?? userData.coins ?? 0);
 
-            if (currentCoins < amount) {
+            if (balance < amount) {
               throw new Error("INSUFFICIENT_BALANCE");
             }
 
-            // Descuenta las monedas del usuario de inmediato
-            transaction.update(userRef, { balance: currentCoins - amount });
+            // Deduct balance immediately
+            transaction.update(userRef, { balance: balance - amount });
 
-            // Crea la solicitud de retiro pendiente
-            const withdrawRef = doc(collection(db, "withdrawals"));
-            transaction.set(withdrawRef, {
+            // Create pending withdrawal document
+            const withdrawalRef = doc(collection(db, "withdrawals"));
+            transaction.set(withdrawalRef, {
               userId: currentUser.uid,
               userName: currentUser.displayName || currentUser.email.split('@')[0],
               userEmail: currentUser.email,
               amount: amount,
-              amountARS: amount * MC_VALUE_ARS,
+              amountARS: amountARS,
               status: "pending",
               created_at: serverTimestamp()
             });
 
-            // Movimiento de retiro
-            const txRef = doc(collection(db, "transactions"));
-            transaction.set(txRef, {
+            // Create transaction log for user
+            const transactionRef = doc(collection(db, "transactions"));
+            transaction.set(transactionRef, {
               user_ref: currentUser.uid,
               from_uid: currentUser.uid,
-              from_email: currentUser.email,
               amount: -amount,
               type: "expense",
               title: `Solicitud de retiro (${amount} MC)`,
@@ -1633,25 +1798,252 @@
             });
           });
 
-          showToast(`Solicitud de retiro enviada (${amount} MC). Se descontaron de tu saldo.`);
+          // Notify Mamá (admin)
+          const momUid = await getUserUidByEmail("gabyhuchy@gmail.com") || "admin";
+          await addDoc(collection(db, "notifications"), {
+            userId: momUid,
+            title: "💰 Nueva Solicitud de Retiro",
+            message: `${currentUser.displayName || currentUser.email.split('@')[0]} solicitó retirar ${amount} MC ($${amountARS.toLocaleString("es-AR")} ARS), Por favor solo presione Rechazar/Aceptar UNA SOLA VEZ`,
+            read: false,
+            created_at: serverTimestamp()
+          });
+
+          showToast(`Solicitud enviada (${amount} MC descontados). Esperando a Mamá...`);
           withdrawAmount.value = "";
           withdrawCalc.textContent = "Valor estimado: $0 ARS";
           await loadBalance(currentUser);
+
         } catch (error) {
           console.error("Withdraw request error:", error);
           if (error.message === "INSUFFICIENT_BALANCE") {
             showToast("No tenés suficiente saldo.");
           } else {
-            showToast("Error al procesar el retiro.");
+            showToast("No se pudo enviar la solicitud de retiro.");
           }
         } finally {
           requestWithdrawBtn.disabled = false;
-          requestWithdrawBtn.textContent = "Solicitar Retiro en Efectivo";
         }
       });
     }
 
-    // CARGAR SALDO
+    /* MAMÁ ADMIN: LISTEN & HANDLE WITHDRAWAL REQUESTS */
+    let lastWithdrawalCount = 0;
+
+    function playAlertSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch (e) {
+        console.warn("Audio alert error:", e);
+      }
+    }
+
+    function listenAdminWithdrawalRequests() {
+      if (!currentUser || !isAdmin(currentUser)) return;
+
+      const q = query(
+        collection(db, "withdrawals"),
+        where("status", "==", "pending"),
+        orderBy("created_at", "desc")
+      );
+
+      if (unsubscribeWithdrawals) {
+        unsubscribeWithdrawals();
+      }
+
+      unsubscribeWithdrawals = onSnapshot(q, snapshot => {
+        if (snapshot.empty) {
+          adminWithdrawalsCard.style.display = "none";
+          withdrawalRequestsList.innerHTML = "";
+          lastWithdrawalCount = 0;
+          return;
+        }
+
+        // Trigger sound sound and alert toast when a new request arrives
+        if (snapshot.size > lastWithdrawalCount) {
+          playAlertSound();
+          showToast("🚨 ¡Atención Mamá! Nueva solicitud de retiro recibida.");
+        }
+        lastWithdrawalCount = snapshot.size;
+
+        adminWithdrawalsCard.style.display = "block";
+        withdrawalRequestsList.innerHTML = "";
+
+        // Update top title with animated alert badge
+        const headerTitle = adminWithdrawalsCard.querySelector("h3");
+        if (headerTitle) {
+          headerTitle.innerHTML = `
+            <span>⚠️ Solicitud de Retiro Pendiente</span>
+            <span class="alert-badge">🚨 ${snapshot.size} PENDIENTE${snapshot.size > 1 ? 'S' : ''}</span>
+          `;
+        }
+
+        snapshot.forEach(requestDoc => {
+          const req = requestDoc.data();
+          const reqId = requestDoc.id;
+
+          if (processingWithdrawals.has(reqId)) return;
+
+          const item = document.createElement("div");
+          item.className = "withdrawal-request-item";
+          item.innerHTML = `
+            <div class="request-details">
+              <span class="request-user">👤 ${escapeHTML(req.userName || req.userEmail)}</span>
+              <span class="request-amount">💸 ${req.amount} MC = $${Number(req.amountARS || 0).toLocaleString("es-AR")} ARS</span>
+              <span style="font-size:11px;color:var(--muted);">${formatTransactionDate(req.created_at)}</span>
+            </div>
+            <div class="request-actions">
+              <button class="btn-accept" data-id="${reqId}">✅ Aceptar</button>
+              <button class="btn-reject" data-id="${reqId}">❌ Rechazar</button>
+            </div>
+          `;
+
+          const acceptBtn = item.querySelector(".btn-accept");
+          acceptBtn.addEventListener("click", () => acceptWithdrawal(reqId, req, item));
+
+          const rejectBtn = item.querySelector(".btn-reject");
+          rejectBtn.addEventListener("click", () => rejectWithdrawal(reqId, req, item));
+
+          withdrawalRequestsList.appendChild(item);
+        });
+
+        if (withdrawalRequestsList.children.length === 0) {
+          adminWithdrawalsCard.style.display = "none";
+        }
+
+        // Smooth scroll to top to ensure immediate visibility
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, err => {
+        console.warn("Error listening withdrawals:", err);
+      });
+    }
+
+    async function acceptWithdrawal(reqId, req, item) {
+      if (processingWithdrawals.has(reqId)) return;
+      processingWithdrawals.add(reqId);
+
+      // Instantly hide and remove from UI so it cannot be double-clicked
+      if (item) item.remove();
+      if (withdrawalRequestsList.children.length === 0) {
+        adminWithdrawalsCard.style.display = "none";
+      }
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const withdrawalRef = doc(db, "withdrawals", reqId);
+          const withdrawalSnap = await transaction.get(withdrawalRef);
+
+          if (!withdrawalSnap.exists() || withdrawalSnap.data().status !== "pending") {
+            throw new Error("ALREADY_PROCESSED");
+          }
+
+          transaction.update(withdrawalRef, {
+            status: "accepted",
+            handled_at: serverTimestamp()
+          });
+        });
+
+        // Notify user that withdrawal was accepted
+        await addDoc(collection(db, "notifications"), {
+          userId: req.userId,
+          title: "✅ Retiro Aprobado",
+          message: `Mamá aprobó tu retiro de ${req.amount} MC ($${Number(req.amountARS).toLocaleString("es-AR")} ARS).`,
+          read: false,
+          created_at: serverTimestamp()
+        });
+
+        showToast(`Retiro de ${req.userName} aceptado correctamente.`);
+      } catch (err) {
+        console.error("Accept withdrawal error:", err);
+        if (err.message === "ALREADY_PROCESSED") {
+          showToast("Esta solicitud ya fue procesada.");
+        } else {
+          showToast("Error al aceptar el retiro.");
+          processingWithdrawals.delete(reqId);
+        }
+      }
+    }
+
+    async function rejectWithdrawal(reqId, req, item) {
+      if (processingWithdrawals.has(reqId)) return;
+      processingWithdrawals.add(reqId);
+
+      // Instantly hide and remove from UI so it cannot be double-clicked
+      if (item) item.remove();
+      if (withdrawalRequestsList.children.length === 0) {
+        adminWithdrawalsCard.style.display = "none";
+      }
+
+      try {
+        const userRef = doc(db, "users", req.userId);
+        const withdrawalRef = doc(db, "withdrawals", reqId);
+
+        // Refund coins back to user balance inside a transaction with status check
+        await runTransaction(db, async (transaction) => {
+          const withdrawalSnap = await transaction.get(withdrawalRef);
+          if (!withdrawalSnap.exists() || withdrawalSnap.data().status !== "pending") {
+            throw new Error("ALREADY_PROCESSED");
+          }
+
+          const userSnap = await transaction.get(userRef);
+          if (!userSnap.exists()) throw new Error("USER_NOT_FOUND");
+
+          const userData = userSnap.data();
+          const currentBal = Number(userData.balance ?? userData.coins ?? 0);
+
+          // Refund coins
+          transaction.update(userRef, { balance: currentBal + req.amount });
+
+          // Mark withdrawal as rejected
+          transaction.update(withdrawalRef, {
+            status: "rejected",
+            handled_at: serverTimestamp()
+          });
+
+          // Log refund transaction
+          const transRef = doc(collection(db, "transactions"));
+          transaction.set(transRef, {
+            user_ref: req.userId,
+            from_uid: currentUser.uid,
+            amount: req.amount,
+            type: "income",
+            title: `Retiro rechazado (Reembolso de ${req.amount} MC)`,
+            created_at: serverTimestamp()
+          });
+        });
+
+        // Notify user
+        await addDoc(collection(db, "notifications"), {
+          userId: req.userId,
+          title: "❌ Retiro Rechazado",
+          message: `Tu solicitud de retiro de ${req.amount} MC fue rechazada. Se te reembolsaron las monedas a tu cuenta.`,
+          read: false,
+          created_at: serverTimestamp()
+        });
+
+        showToast(`Retiro rechazado. Se le devolvieron ${req.amount} MC a ${req.userName}.`);
+      } catch (err) {
+        console.error("Reject withdrawal error:", err);
+        if (err.message === "ALREADY_PROCESSED") {
+          showToast("Esta solicitud ya fue procesada.");
+        } else {
+          showToast("Error al rechazar el retiro.");
+          processingWithdrawals.delete(reqId);
+        }
+      }
+    }
+
+    /* LOAD BALANCE & TRANSACTIONS */
     async function loadBalance(user) {
       try {
         const userRef = doc(db, "users", user.uid);
@@ -1664,36 +2056,62 @@
         }
 
         const data = snapshot.data();
-        currentBalance = typeof data.balance === "number" ? data.balance : (typeof data.coins === "number" ? data.coins : 0);
+
+        if (typeof data.balance === "number") {
+          currentBalance = data.balance;
+        } else if (typeof data.coins === "number") {
+          currentBalance = data.coins;
+        } else {
+          currentBalance = 0;
+        }
+
         updateBalanceUI();
       } catch (error) {
         console.error("Balance error:", error);
+        balanceElement.textContent = "0.00";
       }
     }
 
-    // MOVIMIENTOS
     function listenToTransactions(user) {
-      if (unsubscribeTransactions) unsubscribeTransactions();
+      if (unsubscribeTransactions) {
+        unsubscribeTransactions();
+      }
 
-      const q = query(collection(db, "transactions"), where("user_ref", "==", user.uid), orderBy("created_at", "desc"));
+      const transactionsQuery = query(
+        collection(db, "transactions"),
+        where("user_ref", "==", user.uid),
+        orderBy("created_at", "desc")
+      );
 
-      unsubscribeTransactions = onSnapshot(q, (snapshot) => {
-        transactionsList.innerHTML = "";
-        transactionCount.textContent = `${snapshot.size} ${snapshot.size === 1 ? "movimiento" : "movimientos"}`;
+      unsubscribeTransactions = onSnapshot(
+        transactionsQuery,
+        snapshot => {
+          transactionsList.innerHTML = "";
+          transactionCount.textContent = `${snapshot.size} ${
+            snapshot.size === 1 ? "movimiento" : "movimientos"
+          }`;
 
-        if (snapshot.empty) {
-          transactionsList.innerHTML = `<div class="empty">No hay movimientos todavía.</div>`;
-          return;
+          if (snapshot.empty) {
+            transactionsList.innerHTML = `<div class="empty">No hay movimientos todavía.</div>`;
+            return;
+          }
+
+          snapshot.forEach(transactionDoc => {
+            renderTransaction(transactionDoc.data());
+          });
+        },
+        error => {
+          console.error("Transactions listener:", error);
+          transactionsList.innerHTML = `<div class="empty">No se pudieron cargar los movimientos.</div>`;
         }
-
-        snapshot.forEach((docSnap) => renderTransaction(docSnap.data()));
-      });
+      );
     }
 
     function renderTransaction(data) {
       const amount = Number(data.amount || 0);
-      const isIncome = amount >= 0;
-      const title = data.title || "Movimiento";
+      const type = data.type || (amount >= 0 ? "income" : "expense");
+      const isIncome = type === "income" || type === "deposit" || type === "credit" || amount > 0;
+      const title = data.title || data.description || "Movimiento";
       const icon = isIncome ? "↓" : "↑";
       const sign = isIncome ? "+" : "";
 
@@ -1711,52 +2129,73 @@
           ${sign}${amount.toLocaleString("es-AR")} MC
         </div>
       `;
+
       transactionsList.appendChild(element);
     }
 
-    // NOTIFICACIONES
     function listenToNotificationsUI(user) {
-      if (unsubscribeNotifications) unsubscribeNotifications();
+      if (unsubscribeNotifications) {
+        unsubscribeNotifications();
+      }
 
-      const q = query(collection(db, "notifications"), where("userId", "==", user.uid), orderBy("created_at", "desc"));
+      const notificationsQuery = query(
+        collection(db, "notifications"),
+        where("userId", "==", user.uid),
+        orderBy("created_at", "desc")
+      );
 
-      unsubscribeNotifications = onSnapshot(q, (snapshot) => {
-        notificationsList.innerHTML = "";
-        notificationCount.textContent = snapshot.size;
+      unsubscribeNotifications = onSnapshot(
+        notificationsQuery,
+        snapshot => {
+          notificationsList.innerHTML = "";
+          notificationCount.textContent = snapshot.size;
 
-        if (snapshot.empty) {
-          notificationsList.innerHTML = `<div class="empty">No tenés notificaciones todavía. 🔔</div>`;
-          return;
-        }
+          if (snapshot.empty) {
+            notificationsList.innerHTML = `<div class="empty">No tenés notificaciones todavía. 🔔</div>`;
+            return;
+          }
 
-        snapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          const element = document.createElement("div");
-          element.className = "transaction";
-          element.innerHTML = `
-            <div class="transaction-left">
-              <div class="transaction-icon">🔔</div>
-              <div class="transaction-info">
-                <div class="transaction-title">${escapeHTML(data.title || "Notificación")}</div>
-                <div class="transaction-date">${escapeHTML(data.message || "")}</div>
+          snapshot.forEach(notificationDoc => {
+            const data = notificationDoc.data();
+            const element = document.createElement("div");
+            element.className = "transaction";
+            element.innerHTML = `
+              <div class="transaction-left">
+                <div class="transaction-icon">🔔</div>
+                <div class="transaction-info">
+                  <div class="transaction-title">${escapeHTML(data.title || "Notificación")}</div>
+                  <div class="transaction-date">${escapeHTML(data.message || "")}</div>
+                </div>
               </div>
-            </div>
-          `;
-          notificationsList.appendChild(element);
-        });
-      });
+            `;
+            notificationsList.appendChild(element);
+          });
+        },
+        error => {
+          console.error("Notifications UI listener:", error);
+        }
+      );
     }
 
-    // TRANSFERIR MONEDAS (ADMIN)
     sendCoinsButton.addEventListener("click", async () => {
-      if (!currentUser || !isAdmin(currentUser)) return showToast("Sin permisos de administrador.");
+      if (!currentUser || !isAdmin(currentUser)) {
+        showToast("No tenés permisos de administrador.");
+        return;
+      }
 
       const email = recipientEmail.value.trim().toLowerCase();
       const amount = Number(sendAmount.value);
       const reason = sendReason.value.trim() || "Mom Coins recibidos";
 
-      if (!email) return showToast("Seleccioná un destinatario.");
-      if (!amount || amount <= 0) return showToast("Ingresá una cantidad válida.");
+      if (!email) {
+        showToast("Seleccioná un destinatario.");
+        return;
+      }
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        showToast("Ingresá una cantidad válida.");
+        return;
+      }
 
       sendCoinsButton.disabled = true;
       sendCoinsButton.textContent = "Enviando...";
@@ -1765,28 +2204,38 @@
         const usersQuery = query(collection(db, "users"), where("email", "==", email));
         const usersSnapshot = await getDocs(usersQuery);
 
-        if (usersSnapshot.empty) return showToast("El usuario no existe.");
+        if (usersSnapshot.empty) {
+          showToast("Ese usuario todavía no existe en Firebase.");
+          return;
+        }
 
         const recipientDoc = usersSnapshot.docs[0];
         const recipientRef = recipientDoc.ref;
         const senderRef = doc(db, "users", currentUser.uid);
 
-        await runTransaction(db, async (transaction) => {
-          const senderSnap = await transaction.get(senderRef);
-          const recipientSnap = await transaction.get(recipientRef);
+        await runTransaction(db, async transaction => {
+          const senderSnapshot = await transaction.get(senderRef);
+          const recipientSnapshot = await transaction.get(recipientRef);
 
-          if (!senderSnap.exists() || !recipientSnap.exists()) throw new Error("USER_NOT_FOUND");
+          if (!senderSnapshot.exists() || !recipientSnapshot.exists()) {
+            throw new Error("USER_NOT_FOUND");
+          }
 
-          const senderCoins = Number(senderSnap.data().balance ?? senderSnap.data().coins ?? 0);
-          const recipientCoins = Number(recipientSnap.data().balance ?? recipientSnap.data().coins ?? 0);
+          const senderData = senderSnapshot.data();
+          const recipientData = recipientSnapshot.data();
 
-          if (senderCoins < amount) throw new Error("INSUFFICIENT_BALANCE");
+          const senderBalance = Number(senderData.balance ?? senderData.coins ?? 0);
+          const recipientBalance = Number(recipientData.balance ?? recipientData.coins ?? 0);
 
-          transaction.update(senderRef, { balance: senderCoins - amount });
-          transaction.update(recipientRef, { balance: recipientCoins + amount });
+          if (senderBalance < amount) {
+            throw new Error("INSUFFICIENT_BALANCE");
+          }
 
-          const txRef = doc(collection(db, "transactions"));
-          transaction.set(txRef, {
+          transaction.update(senderRef, { balance: senderBalance - amount });
+          transaction.update(recipientRef, { balance: recipientBalance + amount });
+
+          const transactionRef = doc(collection(db, "transactions"));
+          transaction.set(transactionRef, {
             user_ref: recipientDoc.id,
             from_uid: currentUser.uid,
             from_email: currentUser.email,
@@ -1796,8 +2245,8 @@
             created_at: serverTimestamp()
           });
 
-          const notiRef = doc(collection(db, "notifications"));
-          transaction.set(notiRef, {
+          const notificationRef = doc(collection(db, "notifications"));
+          transaction.set(notificationRef, {
             userId: recipientDoc.id,
             title: "💰 Recibiste Mom Coins",
             message: `Recibiste ${amount} Mom Coins. Motivo: ${reason}`,
@@ -1810,31 +2259,66 @@
         recipientEmail.value = "";
         sendAmount.value = "";
         sendReason.value = "";
-        await loadBalance(currentUser);
+
       } catch (error) {
-        console.error(error);
-        showToast("Error al enviar monedas.");
+        console.error("Send coins error:", error);
+        if (error.message === "INSUFFICIENT_BALANCE") {
+          showToast("Mamá no tiene suficientes Mom Coins.");
+        } else {
+          showToast("No se pudieron enviar los Mom Coins.");
+        }
       } finally {
         sendCoinsButton.disabled = false;
         sendCoinsButton.textContent = "💸 Enviar Mom Coins";
       }
     });
 
+    /* DATE FORMATTER */
     function formatTransactionDate(timestamp) {
       if (!timestamp) return "Fecha desconocida";
-      let date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-      return date.toLocaleString("es-AR", { dateStyle: "medium", timeStyle: "short" });
+
+      let date;
+      if (typeof timestamp.toDate === "function") {
+        date = timestamp.toDate();
+      } else if (timestamp instanceof Date) {
+        date = timestamp;
+      } else if (typeof timestamp === "number") {
+        date = new Date(timestamp);
+      } else {
+        return "Fecha desconocida";
+      }
+
+      return date.toLocaleString("es-AR", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      });
     }
 
-    // ESTADO DE SESIÓN
-    onAuthStateChanged(auth, async (user) => {
+    /* AUTH STATE CHANGED */
+    onAuthStateChanged(auth, async user => {
       currentUser = user;
 
       if (user) {
         if (!isAllowedUser(user)) {
-          showToast("Cuenta no autorizada.");
+          showToast("Esta cuenta no está autorizada.");
           await signOut(auth);
           return;
+        }
+
+        try {
+          const userDocRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userDocRef);
+          if (!userSnap.exists()) {
+            await setDoc(userDocRef, {
+              email: user.email.toLowerCase(),
+              displayName: user.displayName || user.email.split('@')[0],
+              balance: isAdmin(user) ? 1000 : 0,
+              role: isAdmin(user) ? "admin" : "user",
+              created_at: serverTimestamp()
+            }, { merge: true });
+          }
+        } catch (e) {
+          console.warn("Could not sync user profile:", e);
         }
 
         loginScreen.style.display = "none";
@@ -1846,26 +2330,45 @@
         listenToNotificationsUI(user);
         loadMessages();
         listenNotifications();
+
       } else {
         loginScreen.style.display = "flex";
         appScreen.style.display = "none";
         currentUser = null;
 
-        if (unsubscribeTransactions) unsubscribeTransactions();
-        if (unsubscribeNotifications) unsubscribeNotifications();
-        if (unsubscribeWithdrawals) unsubscribeWithdrawals();
-        if (messagesUnsubscribe) messagesUnsubscribe();
+        if (unsubscribeTransactions) {
+          unsubscribeTransactions();
+          unsubscribeTransactions = null;
+        }
+
+        if (unsubscribeNotifications) {
+          unsubscribeNotifications();
+          unsubscribeNotifications = null;
+        }
+
+        if (unsubscribeWithdrawals) {
+          unsubscribeWithdrawals();
+          unsubscribeWithdrawals = null;
+        }
+
+        if (messagesUnsubscribe) {
+          messagesUnsubscribe();
+          messagesUnsubscribe = null;
+        }
       }
     });
 
+    /* LOGOUT HANDLER */
     logoutButton.addEventListener("click", async () => {
       try {
         await signOut(auth);
         showToast("Sesión cerrada.");
       } catch (error) {
-        console.error(error);
+        console.error("Logout error:", error);
+        showToast("No se pudo cerrar sesión.");
       }
     });
+
   </script>
 </body>
 </html>
