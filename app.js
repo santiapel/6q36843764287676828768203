@@ -71,6 +71,38 @@ const db =
 
 
 /* =========================================
+   FUNCIONALIDADES MEDIAN / WEB (NATIVAS)
+   ========================================= */
+
+// --- CÓDIGO PARA NOTIFICACIONES ---
+function solicitarPermisoNotificaciones() {
+    // Detecta si está dentro de la app de Median
+    if (navigator.userAgent.includes('median') || typeof median !== 'undefined') {
+        // Llama al sistema de la app (Por ejemplo, OneSignal)
+        median.onesignal.register(); 
+    } else {
+        // Navegador web común (Chrome, Safari, Zen Browser, etc.)
+        Notification.requestPermission();
+    }
+}
+
+// --- CÓDIGO PARA TEXTO A VOZ ---
+function leerTexto(texto) {
+    if ('speechSynthesis' in window) {
+        const mensaje = new SpeechSynthesisUtterance(texto);
+        mensaje.lang = 'es-ES'; // Idioma español
+        window.speechSynthesis.speak(mensaje);
+    } else {
+        console.log("El navegador no soporta texto a voz.");
+    }
+}
+
+// Se exponen globalmente en window para que puedan ser invocadas desde atributos onclick="..." en el HTML
+window.solicitarPermisoNotificaciones = solicitarPermisoNotificaciones;
+window.leerTexto = leerTexto;
+
+
+/* =========================================
    CUENTAS PERMITIDAS
    ========================================= */
 
