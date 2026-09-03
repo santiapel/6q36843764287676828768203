@@ -241,23 +241,42 @@
     }
 
     /* ADMIN PENDING WITHDRAWALS BANNER FOR MAMÁ */
+    @keyframes alertPulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6), 0 12px 35px rgba(239, 68, 68, 0.25); transform: scale(1); }
+      50% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0), 0 16px 40px rgba(239, 68, 68, 0.35); transform: scale(1.01); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 12px 35px rgba(239, 68, 68, 0.25); transform: scale(1); }
+    }
+
     .admin-withdrawals-card {
       display: none;
-      background: linear-gradient(135deg, #fffbeb, #fef3c7);
-      border: 2px solid #f59e0b;
+      position: relative;
+      background: linear-gradient(135deg, #fef2f2, #fffbe0, #fef3c7);
+      border: 3px solid #ef4444;
       border-radius: var(--radius);
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+      padding: 22px 26px;
+      margin-bottom: 28px;
+      animation: alertPulse 2s infinite ease-in-out;
     }
 
     .admin-withdrawals-card h3 {
-      font-size: 18px;
-      color: #92400e;
+      font-size: 20px;
+      color: #991b1b;
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-weight: 800;
+    }
+
+    .alert-badge {
+      background: #ef4444;
+      color: white;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(239,68,68,0.3);
     }
 
     .withdrawal-requests-list {
@@ -1260,7 +1279,7 @@
         }
       } catch (err) {
         console.error("Error sending message:", err);
-        showToast("No se pudo enviar el mensaje. Revisa tu conexion a internet.");
+        showToast("No se pudo enviar el mensaje.");
       }
     }
 
@@ -1350,7 +1369,7 @@
         showToast("🗑️ Mensaje eliminado");
       } catch (err) {
         console.error("Delete message error:", err);
-        showToast("No se pudo borrar el mensaje. Revisa que sea tuyo");
+        showToast("No se pudo borrar el mensaje.");
       }
     }
 
@@ -1594,7 +1613,7 @@
 
       } catch (error) {
         console.error(error);
-        showToast("No se pudo acceder al micrófono. Revisa tu permisos concedidos a esta App");
+        showToast("No se pudo acceder al micrófono.");
       }
     });
 
@@ -1652,7 +1671,7 @@
         showToast("Mensaje de voz enviado 🎙️");
       } catch (error) {
         console.error(error);
-        showToast("No se pudo enviar el mensaje de voz. Revisa tu conexion a internet");
+        showToast("No se pudo enviar el mensaje de voz.");
       }
     }
 
@@ -1807,6 +1826,27 @@
     }
 
     /* MAMÁ ADMIN: LISTEN & HANDLE WITHDRAWAL REQUESTS */
+    let lastWithdrawalCount = 0;
+
+    function playAlertSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch (e) {
+        console.warn("Audio alert error:", e);
+      }
+    }
+
     function listenAdminWithdrawalRequests() {
       if (!currentUser || !isAdmin(currentUser)) return;
 
@@ -1824,11 +1864,28 @@
         if (snapshot.empty) {
           adminWithdrawalsCard.style.display = "none";
           withdrawalRequestsList.innerHTML = "";
+          lastWithdrawalCount = 0;
           return;
         }
 
+        // Trigger sound sound and alert toast when a new request arrives
+        if (snapshot.size > lastWithdrawalCount) {
+          playAlertSound();
+          showToast("🚨 ¡Atención Mamá! Nueva solicitud de retiro recibida.");
+        }
+        lastWithdrawalCount = snapshot.size;
+
         adminWithdrawalsCard.style.display = "block";
         withdrawalRequestsList.innerHTML = "";
+
+        // Update top title with animated alert badge
+        const headerTitle = adminWithdrawalsCard.querySelector("h3");
+        if (headerTitle) {
+          headerTitle.innerHTML = `
+            <span>⚠️ Solicitud de Retiro Pendiente</span>
+            <span class="alert-badge">🚨 ${snapshot.size} PENDIENTE${snapshot.size > 1 ? 'S' : ''}</span>
+          `;
+        }
 
         snapshot.forEach(requestDoc => {
           const req = requestDoc.data();
@@ -1856,6 +1913,9 @@
 
           withdrawalRequestsList.appendChild(item);
         });
+
+        // Smooth scroll to top to ensure immediate visibility
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }, err => {
         console.warn("Error listening withdrawals:", err);
       });
