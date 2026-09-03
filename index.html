@@ -91,6 +91,65 @@
       margin-bottom: 28px;
     }
 
+    .account-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .account-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: #f8f9fc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .account-button:hover {
+      background: #f0efff;
+      border-color: var(--primary);
+    }
+
+    .account-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #e0e7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .admin-avatar {
+      background: #fef3c7;
+    }
+
+    .account-info {
+      text-align: left;
+      flex: 1;
+      margin-left: 12px;
+    }
+
+    .account-info strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .account-info span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .account-arrow {
+      font-size: 20px;
+      color: var(--muted);
+    }
+
     .google-button {
       width: 100%;
       min-height: 52px;
@@ -109,11 +168,6 @@
     .google-button:hover {
       transform: translateY(-1px);
       box-shadow: 0 7px 20px rgba(0,0,0,.08);
-    }
-
-    .google-icon {
-      font-size: 20px;
-      font-weight: 800;
     }
 
     /* APP */
@@ -314,7 +368,7 @@
 
     /* CARDS */
 
-    .transactions-card {
+    .transactions-card, .card {
       margin-top: 24px;
       background: var(--card);
       border-radius: var(--radius);
@@ -322,14 +376,14 @@
       padding: 26px;
     }
 
-    .transactions-header {
+    .transactions-header, .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
     }
 
-    .transactions-header h2 {
+    .transactions-header h2, .section-header h2 {
       font-size: 19px;
     }
 
@@ -413,9 +467,9 @@
       color: var(--muted);
     }
 
-    /* ADMIN */
+    /* ADMIN & FORMS */
 
-    #adminPanel {
+    #adminPanel, #withdrawSection {
       display: none;
     }
 
@@ -440,7 +494,7 @@
       border-color: var(--primary);
     }
 
-    #sendCoinsButton {
+    #sendCoinsButton, #requestWithdrawBtn {
       padding: 14px;
       border-radius: 12px;
       background: var(--primary);
@@ -448,13 +502,28 @@
       font-weight: 800;
     }
 
-    #sendCoinsButton:hover {
+    #sendCoinsButton:hover, #requestWithdrawBtn:hover {
       background: var(--primary-dark);
     }
 
-    #sendCoinsButton:disabled {
+    #sendCoinsButton:disabled, #requestWithdrawBtn:disabled {
       opacity: .6;
       cursor: wait;
+    }
+
+    /* TRANSCRIPT STYLING */
+    .voice-transcript {
+      font-size: 13px;
+      line-height: 1.4;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+
+    .transcript-word {
+      transition: all 0.15s ease;
+      display: inline-block;
+      margin-right: 2px;
     }
 
     /* TOAST */
@@ -498,7 +567,7 @@
         padding: 24px;
       }
 
-      .transactions-card {
+      .transactions-card, .card {
         padding: 20px;
       }
     }
@@ -509,192 +578,192 @@
 
   <!-- LOGIN -->
 
-<section id="loginScreen">
+  <section id="loginScreen">
 
-  <div class="login-card">
+    <div class="login-card">
 
-    <div class="logo">
-      MC
-    </div>
+      <div class="logo">
+        MC
+      </div>
 
-    <div id="accountSelection">
+      <div id="accountSelection">
 
-      <h1>¿Quién eres?</h1>
+        <h1>¿Quién eres?</h1>
 
-      <p>
-        Seleccioná tu cuenta para continuar.
-      </p>
+        <p>
+          Seleccioná tu cuenta para continuar.
+        </p>
 
-      <div class="account-list">
+        <div class="account-list">
 
-        <!-- SANTI -->
+          <!-- SANTI -->
 
-        <button
-          class="account-button"
-          data-name="Santi"
-          data-email="santipapel16@gmail.com"
+          <button
+            class="account-button"
+            data-name="Santi"
+            data-email="santipapel16@gmail.com"
+          >
+
+            <div class="account-avatar">
+              👤
+            </div>
+
+            <div class="account-info">
+              <strong>Santi</strong>
+              <span>santipapel16@gmail.com</span>
+            </div>
+
+            <div class="account-arrow">
+              ›
+            </div>
+
+          </button>
+
+
+          <!-- LEONEL -->
+
+          <button
+            class="account-button"
+            data-name="Leonel"
+            data-email="leoxdfunes@gmail.com"
+          >
+
+            <div class="account-avatar">
+              👤
+            </div>
+
+            <div class="account-info">
+              <strong>Leonel</strong>
+              <span>leoxdfunes@gmail.com</span>
+            </div>
+
+            <div class="account-arrow">
+              ›
+            </div>
+
+          </button>
+
+
+          <!-- GABRIELA -->
+
+          <button
+            class="account-button"
+            data-name="Gabriela"
+            data-email="gabyhuchy@gmail.com"
+          >
+
+            <div class="account-avatar admin-avatar">
+              👑
+            </div>
+
+            <div class="account-info">
+              <strong>Gabriela</strong>
+              <span>ADMIN</span>
+            </div>
+
+            <div class="account-arrow">
+              ›
+            </div>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONFIRMAR CUENTA -->
+
+      <div
+        id="emailConfirmation"
+        style="display:none;"
+      >
+
+        <h1>Confirmar cuenta</h1>
+
+        <p>
+          Vas a iniciar sesión como:
+        </p>
+
+        <div
+          id="selectedAccount"
+          style="
+            padding:15px;
+            background:#f5f5f8;
+            border-radius:14px;
+            margin-bottom:18px;
+          "
+        ></div>
+
+        <input
+          id="pinInput"
+          type="password"
+          inputmode="text"
+          maxlength="30"
+          autocomplete="current-password"
+          placeholder="Ingresá tu PIN"
+          style="
+            width:100%;
+            padding:15px;
+            border:1px solid #ddd;
+            border-radius:14px;
+            margin-bottom:12px;
+            font-size:18px;
+            text-align:center;
+            box-sizing:border-box;
+          "
         >
 
-          <div class="account-avatar">
-            👤
-          </div>
-
-          <div class="account-info">
-            <strong>Santi</strong>
-            <span>santipapel16@gmail.com</span>
-          </div>
-
-          <div class="account-arrow">
-            ›
-          </div>
-
+        <button
+          id="pinLoginButton"
+          class="google-button"
+          style="
+            background:#6c4df6;
+            color:white;
+          "
+        >
+          🔐 Iniciar sesión
         </button>
-
-
-        <!-- LEONEL -->
 
         <button
-          class="account-button"
-          data-name="Leonel"
-          data-email="leoxdfunes@gmail.com"
+          id="backAccounts"
+          style="
+            margin-top:14px;
+            background:none;
+            color:#6c4df6;
+            font-weight:700;
+          "
         >
-
-          <div class="account-avatar">
-            👤
-          </div>
-
-          <div class="account-info">
-            <strong>Leonel</strong>
-            <span>leoxdfunes@gmail.com</span>
-          </div>
-
-          <div class="account-arrow">
-            ›
-          </div>
-
+          ← Cambiar cuenta
         </button>
 
+      </div>
 
-        <!-- GABRIELA -->
 
-        <button
-          class="account-button"
-          data-name="Gabriela"
-          data-email="gabyhuchy@gmail.com"
-        >
+      <!-- CORREO ENVIADO -->
 
-          <div class="account-avatar admin-avatar">
-            👑
-          </div>
+      <div
+        id="emailSent"
+        style="display:none;"
+      >
 
-          <div class="account-info">
-            <strong>Gabriela</strong>
-            <span>ADMIN</span>
-          </div>
+        <h1>📬 Correo enviado</h1>
 
-          <div class="account-arrow">
-            ›
-          </div>
+        <p>
+          Mandamos un enlace de confirmación a:
+        </p>
 
-        </button>
+        <strong id="sentEmail"></strong>
+
+        <p style="margin-top:15px;">
+          Abrí el correo y tocá el enlace para entrar.
+        </p>
 
       </div>
 
     </div>
 
-
-    <!-- CONFIRMAR CUENTA -->
-
-    <div
-      id="emailConfirmation"
-      style="display:none;"
-    >
-
-      <h1>Confirmar cuenta</h1>
-
-      <p>
-        Vas a iniciar sesión como:
-      </p>
-
-      <div
-        id="selectedAccount"
-        style="
-          padding:15px;
-          background:#f5f5f8;
-          border-radius:14px;
-          margin-bottom:18px;
-        "
-      ></div>
-
-      <input
-        id="pinInput"
-        type="password"
-        inputmode="text"
-        maxlength="30"
-        autocomplete="current-password"
-        placeholder="Ingresá tu PIN"
-        style="
-          width:100%;
-          padding:15px;
-          border:1px solid #ddd;
-          border-radius:14px;
-          margin-bottom:12px;
-          font-size:18px;
-          text-align:center;
-          box-sizing:border-box;
-        "
-      >
-
-      <button
-        id="pinLoginButton"
-        class="google-button"
-        style="
-          background:#6c4df6;
-          color:white;
-        "
-      >
-        🔐 Iniciar sesión
-      </button>
-
-      <button
-        id="backAccounts"
-        style="
-          margin-top:14px;
-          background:none;
-          color:#6c4df6;
-          font-weight:700;
-        "
-      >
-        ← Cambiar cuenta
-      </button>
-
-    </div>
-
-
-    <!-- CORREO ENVIADO -->
-
-    <div
-      id="emailSent"
-      style="display:none;"
-    >
-
-      <h1>📬 Correo enviado</h1>
-
-      <p>
-        Mandamos un enlace de confirmación a:
-      </p>
-
-      <strong id="sentEmail"></strong>
-
-      <p style="margin-top:15px;">
-        Abrí el correo y tocá el enlace para entrar.
-      </p>
-
-    </div>
-
-  </div>
-
-</section>
+  </section>
 
   <!-- APP -->
 
@@ -818,6 +887,80 @@
 
         </article>
 
+      </section>
+
+
+      <!-- CHAT DE MENSAJES -->
+
+      <section id="messagesSection" class="card">
+        <div class="section-header">
+            <div>
+                <h2>💬 Mensajes</h2>
+                <p style="color:var(--muted);font-size:13px;">Chat con Mamá</p>
+            </div>
+
+            <span id="unreadMessagesBadge"
+                  style="display:none;background:#ef4444;color:white;
+                         border-radius:999px;padding:4px 9px;font-size:12px;font-weight:bold;">
+                0
+            </span>
+        </div>
+
+        <div id="messagesList"
+             style="
+                display:flex;
+                flex-direction:column;
+                gap:10px;
+                max-height:400px;
+                overflow-y:auto;
+                padding:10px 0;
+             ">
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px;">
+            <input
+                id="messageInput"
+                type="text"
+                maxlength="500"
+                placeholder="Escribí un mensaje..."
+                style="flex:1;padding:12px;border:1px solid var(--border);border-radius:12px;outline:none;"
+            >
+
+            <button id="sendMessageBtn" style="padding:12px 18px;background:var(--primary);color:white;border-radius:12px;font-weight:bold;">
+                ➤
+            </button>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+            <button id="recordVoiceBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">
+                🎙️ Grabar
+            </button>
+
+            <button id="notificationBtn" style="padding:10px 14px;background:#f2f3f7;color:#333;border-radius:10px;font-weight:600;">
+                🔔 Activar notificaciones
+            </button>
+        </div>
+
+        <div id="recordingStatus"
+             style="display:none;margin-top:8px;color:#ef4444;font-weight:600;">
+            🔴 Grabando...
+            <span id="recordingTime">0:00</span>
+        </div>
+      </section>
+
+
+      <!-- SOLICITAR RETIRO (USUARIO) -->
+
+      <section id="withdrawSection" class="transactions-card">
+        <div class="transactions-header">
+          <h2>💸 Solicitar Retiro</h2>
+          <span class="transaction-count">Máx 10 MC = $5.000 ARS</span>
+        </div>
+        <div class="admin-form">
+          <input id="withdrawAmount" type="number" min="1" max="10" step="1" placeholder="Cantidad de MC a retirar (Máx 10)">
+          <div id="withdrawCalc" style="font-size:13px;color:var(--muted);">Valor estimado: $0 ARS</div>
+          <button id="requestWithdrawBtn">Solicitar Retiro en Efectivo</button>
+        </div>
       </section>
 
 
@@ -984,9 +1127,19 @@
       orderBy,
       onSnapshot,
       serverTimestamp,
-      runTransaction
+      runTransaction,
+      addDoc
     } from
       "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from
+      "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 
 
     /* =========================
@@ -1016,62 +1169,42 @@
     };
 
 
-    const app =
-      initializeApp(firebaseConfig);
-
-    const auth =
-      getAuth(app);
-
-    const db =
-      getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
     /* =========================
-       USUARIOS
+       CONSTANTES Y REGLAS
        ========================= */
 
+    const MAX_WITHDRAWAL_MC = 10;
+    const MC_VALUE_ARS = 500;
+
     const ADMIN_EMAILS = [
-
       "gabyhuchy@hotmail.com",
-
       "gabyhuchy@gmail.com"
-
     ];
-
 
     const ALLOWED_USERS = [
-
       "santipapel16@gmail.com",
-
       "gabyhuchy@hotmail.com",
-
       "gabyhuchy@gmail.com",
-
       "leoxdfunes@gmail.com"
-
     ];
 
-
     function isAdmin(user) {
-
       return Boolean(
         user?.email &&
-        ADMIN_EMAILS.includes(
-          user.email.toLowerCase()
-        )
+        ADMIN_EMAILS.includes(user.email.toLowerCase())
       );
-
     }
 
-
     function isAllowedUser(user) {
-
       return Boolean(
         user?.email &&
-        ALLOWED_USERS.includes(
-          user.email.toLowerCase()
-        )
+        ALLOWED_USERS.includes(user.email.toLowerCase())
       );
-
     }
 
 
@@ -1079,45 +1212,14 @@
        DOM
        ========================= */
 
-    const loginScreen =
-      document.getElementById(
-        "loginScreen"
-      );
-
-    const appScreen =
-      document.getElementById(
-        "app"
-      );
-
-    const accountSelection =
-      document.getElementById(
-        "accountSelection"
-      );
-
-    const emailConfirmation =
-      document.getElementById(
-        "emailConfirmation"
-      );
-
-    const selectedAccount =
-      document.getElementById(
-        "selectedAccount"
-      );
-
-    const backAccounts =
-      document.getElementById(
-        "backAccounts"
-      );
-
-    const pinInput =
-      document.getElementById(
-        "pinInput"
-      );
-
-    const pinLoginButton =
-      document.getElementById(
-        "pinLoginButton"
-      );
+    const loginScreen = document.getElementById("loginScreen");
+    const appScreen = document.getElementById("app");
+    const accountSelection = document.getElementById("accountSelection");
+    const emailConfirmation = document.getElementById("emailConfirmation");
+    const selectedAccount = document.getElementById("selectedAccount");
+    const backAccounts = document.getElementById("backAccounts");
+    const pinInput = document.getElementById("pinInput");
+    const pinLoginButton = document.getElementById("pinLoginButton");
 
     let selectedEmail = "";
     let selectedName = "";
@@ -1128,105 +1230,41 @@
       "Gabriela": "Chanchuly2014"
     };
 
-    const logoutButton =
-      document.getElementById(
-        "logoutButton"
-      );
+    const logoutButton = document.getElementById("logoutButton");
+    const balanceElement = document.getElementById("balance");
+    const privacyButton = document.getElementById("privacyButton");
+    const transactionsList = document.getElementById("transactionsList");
+    const transactionCount = document.getElementById("transactionCount");
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const headerName = document.getElementById("headerName");
+    const headerAvatar = document.getElementById("headerAvatar");
+    const headerRole = document.getElementById("headerRole");
+    const roleBadge = document.getElementById("roleBadge");
+    const adminPanel = document.getElementById("adminPanel");
+    const toast = document.getElementById("toast");
+    const recipientEmail = document.getElementById("recipientEmail");
+    const sendAmount = document.getElementById("sendAmount");
+    const sendReason = document.getElementById("sendReason");
+    const sendCoinsButton = document.getElementById("sendCoinsButton");
+    const notificationsList = document.getElementById("notificationsList");
+    const notificationCount = document.getElementById("notificationCount");
 
-    const balanceElement =
-      document.getElementById(
-        "balance"
-      );
+    // Chat Elements
+    const messagesList = document.getElementById("messagesList");
+    const messageInput = document.getElementById("messageInput");
+    const sendMessageBtn = document.getElementById("sendMessageBtn");
+    const recordVoiceBtn = document.getElementById("recordVoiceBtn");
+    const recordingStatus = document.getElementById("recordingStatus");
+    const recordingTime = document.getElementById("recordingTime");
+    const notificationBtn = document.getElementById("notificationBtn");
 
-    const privacyButton =
-      document.getElementById(
-        "privacyButton"
-      );
-
-    const transactionsList =
-      document.getElementById(
-        "transactionsList"
-      );
-
-    const transactionCount =
-      document.getElementById(
-        "transactionCount"
-      );
-
-    const profileName =
-      document.getElementById(
-        "profileName"
-      );
-
-    const profileEmail =
-      document.getElementById(
-        "profileEmail"
-      );
-
-    const profileAvatar =
-      document.getElementById(
-        "profileAvatar"
-      );
-
-    const headerName =
-      document.getElementById(
-        "headerName"
-      );
-
-    const headerAvatar =
-      document.getElementById(
-        "headerAvatar"
-      );
-
-    const headerRole =
-      document.getElementById(
-        "headerRole"
-      );
-
-    const roleBadge =
-      document.getElementById(
-        "roleBadge"
-      );
-
-    const adminPanel =
-      document.getElementById(
-        "adminPanel"
-      );
-
-    const toast =
-      document.getElementById(
-        "toast"
-      );
-
-    const recipientEmail =
-      document.getElementById(
-        "recipientEmail"
-      );
-
-    const sendAmount =
-      document.getElementById(
-        "sendAmount"
-      );
-
-    const sendReason =
-      document.getElementById(
-        "sendReason"
-      );
-
-    const sendCoinsButton =
-      document.getElementById(
-        "sendCoinsButton"
-      );
-
-    const notificationsList =
-      document.getElementById(
-        "notificationsList"
-      );
-
-    const notificationCount =
-      document.getElementById(
-        "notificationCount"
-      );
+    // Withdrawal Elements
+    const withdrawSection = document.getElementById("withdrawSection");
+    const withdrawAmount = document.getElementById("withdrawAmount");
+    const withdrawCalc = document.getElementById("withdrawCalc");
+    const requestWithdrawBtn = document.getElementById("requestWithdrawBtn");
 
 
     /* =========================
@@ -1234,37 +1272,37 @@
        ========================= */
 
     let currentUser = null;
-
     let currentBalance = 0;
-
     let privateMode = false;
-
     let unsubscribeTransactions = null;
-
     let unsubscribeNotifications = null;
+    let messagesUnsubscribe = null;
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recognition = null;
+    let transcriptWords = [];
+    let recordingStart = 0;
+    let recordingTimer = null;
+    let firstNotificationSnapshot = true;
 
 
     /* =========================
-       TOAST
+       TOAST & FORMAT
        ========================= */
 
     function showToast(message) {
-
-      toast.textContent =
-        message;
-
-      toast.classList.add(
-        "show"
-      );
-
+      toast.textContent = message;
+      toast.classList.add("show");
       setTimeout(() => {
-
-        toast.classList.remove(
-          "show"
-        );
-
+        toast.classList.remove("show");
       }, 3000);
+    }
 
+    function escapeHTML(text) {
+      const div = document.createElement("div");
+      div.textContent = text || "";
+      return div.innerHTML;
     }
 
 
@@ -1273,51 +1311,23 @@
        ========================= */
 
     function formatBalance(value) {
-
       if (privateMode) {
-
         return "••••••";
-
       }
-
-      return Number(
-        value || 0
-      ).toLocaleString(
-        "es-AR",
-        {
-          maximumFractionDigits: 2
-        }
-      );
-
+      return Number(value || 0).toLocaleString("es-AR", {
+        maximumFractionDigits: 2
+      });
     }
-
 
     function updateBalanceUI() {
-
-      balanceElement.textContent =
-        formatBalance(
-          currentBalance
-        );
-
-      privacyButton.textContent =
-        privateMode
-          ? "🙈 Mostrar"
-          : "👁 Ocultar";
-
+      balanceElement.textContent = formatBalance(currentBalance);
+      privacyButton.textContent = privateMode ? "🙈 Mostrar" : "👁 Ocultar";
     }
 
-
-    privacyButton.addEventListener(
-      "click",
-      () => {
-
-        privateMode =
-          !privateMode;
-
-        updateBalanceUI();
-
-      }
-    );
+    privacyButton.addEventListener("click", () => {
+      privateMode = !privateMode;
+      updateBalanceUI();
+    });
 
 
     /* =========================
@@ -1329,9 +1339,7 @@
         selectedName = button.dataset.name;
         selectedEmail = button.dataset.email;
 
-        selectedAccount.textContent =
-          `${selectedName} · ${selectedEmail}`;
-
+        selectedAccount.textContent = `${selectedName} · ${selectedEmail}`;
         accountSelection.style.display = "none";
         emailConfirmation.style.display = "block";
         pinInput.value = "";
@@ -1364,14 +1372,10 @@
       pinLoginButton.textContent = "Entrando...";
 
       try {
-        await signInWithEmailAndPassword(
-          auth,
-          selectedEmail,
-          pin
-        );
+        await signInWithEmailAndPassword(auth, selectedEmail, pin);
       } catch (error) {
         console.error("PIN Auth:", error);
-        showToast("No se pudo iniciar sesión. Verificá que la cuenta tenga ese PIN configurado en Firebase.");
+        showToast("No se pudo iniciar sesión. Verificá tu configuración en Firebase.");
       } finally {
         pinLoginButton.disabled = false;
         pinLoginButton.textContent = "🔐 Iniciar sesión";
@@ -1386,79 +1390,491 @@
 
 
     /* =========================
-       PERFIL
+       PERFIL & ROL
        ========================= */
 
     function loadUserProfile(user) {
+      const name = user.displayName || user.email.split('@')[0] || "Usuario";
+      const email = user.email || "Sin correo";
+      const avatar = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6c4df6&color=fff`;
 
-      const name =
-        user.displayName ||
-        "Usuario";
-
-      const email =
-        user.email ||
-        "Sin correo";
-
-      const avatar =
-        user.photoURL ||
-        "https://ui-avatars.com/api/?name=User";
-
-
-      profileName.textContent =
-        name;
-
-      profileEmail.textContent =
-        email;
-
-      headerName.textContent =
-        name;
-
-      profileAvatar.src =
-        avatar;
-
-      headerAvatar.src =
-        avatar;
-
+      profileName.textContent = name;
+      profileEmail.textContent = email;
+      headerName.textContent = name;
+      profileAvatar.src = avatar;
+      headerAvatar.src = avatar;
 
       if (isAdmin(user)) {
-
-        roleBadge.textContent =
-          "👑 ADMIN";
-
-        headerRole.textContent =
-          "Administrador";
-
+        roleBadge.textContent = "👑 ADMIN";
+        headerRole.textContent = "Administrador";
+        adminPanel.style.display = "block";
+        withdrawSection.style.display = "none";
       } else {
-
-        roleBadge.textContent =
-          "USUARIO";
-
-        headerRole.textContent =
-          "Wallet personal";
-
+        roleBadge.textContent = "USUARIO";
+        headerRole.textContent = "Wallet personal";
+        adminPanel.style.display = "none";
+        withdrawSection.style.display = "block";
       }
-
     }
 
 
     /* =========================
-       PANEL ADMIN
+       CHAT & MENSAJES
        ========================= */
 
-    function updateAdminUI(user) {
+    function getChatId(uid1, uid2) {
+      return [uid1, uid2].sort().join("_");
+    }
 
-      if (isAdmin(user)) {
+    async function getMomUser() {
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", "gabyhuchy@gmail.com")
+      );
 
-        adminPanel.style.display =
-          "block";
+      const snapshot = await getDocs(q);
 
-      } else {
-
-        adminPanel.style.display =
-          "none";
-
+      if (snapshot.empty) {
+        throw new Error("No se encontró la cuenta de Mamá.");
       }
 
+      return {
+        uid: snapshot.docs[0].id,
+        ...snapshot.docs[0].data()
+      };
+    }
+
+    async function sendMessage(text) {
+      if (!currentUser || !text.trim()) return;
+
+      const mom = await getMomUser();
+
+      const message = {
+        chatId: getChatId(currentUser.uid, mom.uid),
+        senderId: currentUser.uid,
+        senderName: currentUser.displayName || currentUser.email,
+        recipientId: mom.uid,
+        text: text.trim(),
+        type: "text",
+        read: false,
+        created_at: serverTimestamp()
+      };
+
+      await addDoc(collection(db, "messages"), message);
+
+      await addDoc(collection(db, "notifications"), {
+        userId: mom.uid,
+        title: "💬 Nuevo mensaje",
+        message: `${currentUser.displayName || currentUser.email} te envió un mensaje`,
+        read: false,
+        created_at: serverTimestamp()
+      });
+    }
+
+    sendMessageBtn.addEventListener("click", async () => {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      try {
+        await sendMessage(text);
+        messageInput.value = "";
+      } catch (error) {
+        console.error(error);
+        showToast("No se pudo enviar el mensaje");
+      }
+    });
+
+    messageInput.addEventListener("keydown", async (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessageBtn.click();
+      }
+    });
+
+    function renderTranscript(words) {
+      if (!words || !words.length) return "";
+      return `
+        <div class="voice-transcript">
+          ${words.map((word, index) => `
+            <span class="transcript-word" data-index="${index}">
+              ${escapeHTML(word.text)}
+            </span>
+          `).join(" ")}
+        </div>
+      `;
+    }
+
+    function syncVoiceTranscript(audio, container, wordsData) {
+      const words = container.querySelectorAll(".transcript-word");
+      audio.addEventListener("timeupdate", () => {
+        const time = audio.currentTime;
+        words.forEach((word, index) => {
+          const data = wordsData[index];
+          if (!data) return;
+          if (time >= data.start && time <= data.end) {
+            word.style.fontWeight = "bold";
+            word.style.textDecoration = "underline";
+          } else {
+            word.style.fontWeight = "normal";
+            word.style.textDecoration = "none";
+          }
+        });
+      });
+    }
+
+    function speakText(text) {
+      if (!("speechSynthesis" in window)) {
+        showToast("Tu navegador no soporta texto a voz.");
+        return;
+      }
+
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "es-AR";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+    }
+
+    async function loadMessages() {
+      if (!currentUser) return;
+
+      try {
+        const mom = await getMomUser();
+        const chatId = getChatId(currentUser.uid, mom.uid);
+
+        const messagesQuery = query(
+          collection(db, "messages"),
+          where("chatId", "==", chatId),
+          orderBy("created_at", "asc")
+        );
+
+        if (messagesUnsubscribe) {
+          messagesUnsubscribe();
+        }
+
+        messagesUnsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+          messagesList.innerHTML = "";
+          let unread = 0;
+
+          snapshot.forEach((messageDoc) => {
+            const msg = messageDoc.data();
+
+            if (msg.recipientId === currentUser.uid && !msg.read) {
+              unread++;
+            }
+
+            const bubble = document.createElement("div");
+            const mine = msg.senderId === currentUser.uid;
+
+            bubble.style.cssText = `
+              align-self:${mine ? "flex-end" : "flex-start"};
+              max-width:80%;
+              padding:10px 14px;
+              border-radius:16px;
+              background:${mine ? "#2563eb" : "#e5e7eb"};
+              color:${mine ? "white" : "black"};
+            `;
+
+            if (msg.type === "voice") {
+              bubble.innerHTML = `
+                <div style="font-size:12px;opacity:.8;">
+                  🎙️ ${escapeHTML(msg.senderName || "Usuario")}
+                </div>
+                <div style="margin-top:5px;">
+                  ${renderTranscript(msg.transcript || [])}
+                </div>
+                <audio controls src="${msg.audioUrl}" style="width:100%;margin-top:8px;"></audio>
+              `;
+              const audioEl = bubble.querySelector("audio");
+              if (audioEl && msg.transcript) {
+                syncVoiceTranscript(audioEl, bubble, msg.transcript);
+              }
+            } else {
+              bubble.innerHTML = `
+                <div style="font-size:12px;opacity:.8;">
+                  ${escapeHTML(msg.senderName || "Usuario")}
+                </div>
+                <div style="margin-top:3px;word-break:break-word;">
+                  ${escapeHTML(msg.text || "")}
+                </div>
+                <button class="speak-btn" style="margin-top:6px;background:none;border:none;cursor:pointer;font-size:16px;">
+                  🔊
+                </button>
+              `;
+              const speakBtn = bubble.querySelector(".speak-btn");
+              if (speakBtn) {
+                speakBtn.addEventListener("click", () => speakText(msg.text || ""));
+              }
+            }
+
+            messagesList.appendChild(bubble);
+          });
+
+          messagesList.scrollTop = messagesList.scrollHeight;
+
+          const badge = document.getElementById("unreadMessagesBadge");
+          if (unread > 0) {
+            badge.textContent = unread;
+            badge.style.display = "inline-block";
+          } else {
+            badge.style.display = "none";
+          }
+        });
+      } catch (err) {
+        console.error("Error loading chat:", err);
+      }
+    }
+
+
+    /* =========================
+       GRABACIÓN Y TRANSCRIPCIÓN DE VOZ
+       ========================= */
+
+    function startSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        console.warn("Este navegador no soporta reconocimiento de voz.");
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "es-AR";
+      recognition.continuous = true;
+      recognition.interimResults = false;
+
+      recognition.onresult = event => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (!event.results[i].isFinal) continue;
+
+          const text = event.results[i][0].transcript.trim();
+          if (!text) continue;
+
+          const words = text.split(/\s+/);
+          const elapsed = (Date.now() - recordingStart) / 1000;
+          const start = elapsed - Math.max(words.length * 0.35, 0.5);
+
+          words.forEach((word, index) => {
+            transcriptWords.push({
+              text: word,
+              start: Math.max(0, start + index * 0.35),
+              end: Math.max(0, start + (index + 1) * 0.35)
+            });
+          });
+        }
+      };
+
+      recognition.onerror = error => {
+        console.warn("Speech recognition error:", error.error);
+      };
+
+      recognition.start();
+    }
+
+    recordVoiceBtn.addEventListener("click", async () => {
+      if (mediaRecorder?.state === "recording") {
+        stopRecording();
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        audioChunks = [];
+        transcriptWords = [];
+
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = event => {
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(track => track.stop());
+
+          if (recognition) {
+            try {
+              recognition.stop();
+            } catch {}
+          }
+
+          await saveVoiceMessage();
+        };
+
+        mediaRecorder.start();
+        startSpeechRecognition();
+
+        recordingStart = Date.now();
+        recordingStatus.style.display = "block";
+        recordVoiceBtn.textContent = "⏹️ Detener";
+
+        recordingTimer = setInterval(() => {
+          const seconds = Math.floor((Date.now() - recordingStart) / 1000);
+          const min = Math.floor(seconds / 60);
+          const sec = String(seconds % 60).padStart(2, "0");
+          recordingTime.textContent = `${min}:${sec}`;
+        }, 500);
+
+      } catch (error) {
+        console.error(error);
+        showToast("No se pudo acceder al micrófono.");
+      }
+    });
+
+    function stopRecording() {
+      if (!mediaRecorder) return;
+      clearInterval(recordingTimer);
+      mediaRecorder.stop();
+      recordingStatus.style.display = "none";
+      recordVoiceBtn.textContent = "🎙️ Grabar";
+    }
+
+    async function saveVoiceMessage() {
+      if (!audioChunks.length || !currentUser) return;
+
+      try {
+        const mom = await getMomUser();
+        const blob = new Blob(audioChunks, { type: "audio/webm" });
+        const fileName = `voice_messages/${currentUser.uid}/${Date.now()}.webm`;
+        const storageRef = ref(storage, fileName);
+
+        await uploadBytes(storageRef, blob);
+        const audioUrl = await getDownloadURL(storageRef);
+
+        await addDoc(collection(db, "messages"), {
+          chatId: getChatId(currentUser.uid, mom.uid),
+          senderId: currentUser.uid,
+          senderName: currentUser.displayName || currentUser.email,
+          recipientId: mom.uid,
+          type: "voice",
+          audioUrl,
+          transcript: transcriptWords,
+          read: false,
+          created_at: serverTimestamp()
+        });
+
+        await addDoc(collection(db, "notifications"), {
+          userId: mom.uid,
+          title: "🎙️ Nuevo mensaje de voz",
+          message: `${currentUser.displayName || currentUser.email} te envió un mensaje de voz`,
+          read: false,
+          created_at: serverTimestamp()
+        });
+
+        showToast("Mensaje de voz enviado 🎙️");
+      } catch (error) {
+        console.error(error);
+        showToast("No se pudo enviar el mensaje de voz.");
+      }
+    }
+
+
+    /* =========================
+       NOTIFICACIONES NAVEGADOR
+       ========================= */
+
+    notificationBtn.addEventListener("click", async () => {
+      if (!("Notification" in window)) {
+        showToast("Tu navegador no soporta notificaciones.");
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+
+      if (permission === "granted") {
+        new Notification("🔔 Mom Coin Wallet", {
+          body: "Las notificaciones están activadas."
+        });
+        showToast("Notificaciones activadas 🔔");
+      } else {
+        showToast("Las notificaciones fueron bloqueadas.");
+      }
+    });
+
+    function listenNotifications() {
+      if (!currentUser) return;
+
+      const q = query(
+        collection(db, "notifications"),
+        where("userId", "==", currentUser.uid),
+        orderBy("created_at", "desc")
+      );
+
+      onSnapshot(q, snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type !== "added" || firstNotificationSnapshot) {
+            return;
+          }
+
+          const notification = change.doc.data();
+
+          if ("Notification" in window && Notification.permission === "granted") {
+            new Notification(notification.title || "Nueva notificación", {
+              body: notification.message || ""
+            });
+          }
+        });
+
+        firstNotificationSnapshot = false;
+      });
+    }
+
+
+    /* =========================
+       SOLICITUD DE RETIRO
+       ========================= */
+
+    if (withdrawAmount) {
+      withdrawAmount.addEventListener("input", () => {
+        const amount = Number(withdrawAmount.value) || 0;
+        const amountARS = amount * MC_VALUE_ARS;
+        withdrawCalc.textContent = `Valor estimado: $${amountARS.toLocaleString("es-AR")} ARS`;
+      });
+    }
+
+    if (requestWithdrawBtn) {
+      requestWithdrawBtn.addEventListener("click", async () => {
+        const amount = Number(withdrawAmount.value);
+
+        if (!amount || amount <= 0) {
+          showToast("Ingresá una cantidad válida.");
+          return;
+        }
+
+        if (amount > MAX_WITHDRAWAL_MC) {
+          showToast("El máximo de retiro es 10 MC.");
+          return;
+        }
+
+        if (amount > currentBalance) {
+          showToast("No tenés suficiente saldo.");
+          return;
+        }
+
+        const amountARS = amount * MC_VALUE_ARS;
+
+        try {
+          const mom = await getMomUser();
+
+          await addDoc(collection(db, "notifications"), {
+            userId: mom.uid,
+            title: "💰 Solicitud de Retiro",
+            message: `${currentUser.displayName || currentUser.email} solicita retirar ${amount} MC ($${amountARS.toLocaleString("es-AR")} ARS) en efectivo/transferencia.`,
+            read: false,
+            created_at: serverTimestamp()
+          });
+
+          showToast(`Solicitud de retiro enviada (${amount} MC = $${amountARS.toLocaleString("es-AR")} ARS)`);
+          withdrawAmount.value = "";
+          withdrawCalc.textContent = "Valor estimado: $0 ARS";
+        } catch (error) {
+          console.error(error);
+          showToast("No se pudo enviar la solicitud de retiro.");
+        }
+      });
     }
 
 
@@ -1467,80 +1883,33 @@
        ========================= */
 
     async function loadBalance(user) {
-
       try {
-
-        const userRef =
-          doc(
-            db,
-            "users",
-            user.uid
-          );
-
-        const snapshot =
-          await getDoc(userRef);
-
+        const userRef = doc(db, "users", user.uid);
+        const snapshot = await getDoc(userRef);
 
         if (!snapshot.exists()) {
-
           currentBalance = 0;
-
           updateBalanceUI();
-
-          showToast(
-            "Tu usuario todavía no tiene saldo configurado."
-          );
-
+          showToast("Tu usuario todavía no tiene saldo configurado.");
           return;
-
         }
 
+        const data = snapshot.data();
 
-        const data =
-          snapshot.data();
-
-
-        if (
-          typeof data.balance ===
-          "number"
-        ) {
-
-          currentBalance =
-            data.balance;
-
-        } else if (
-          typeof data.coins ===
-          "number"
-        ) {
-
-          currentBalance =
-            data.coins;
-
+        if (typeof data.balance === "number") {
+          currentBalance = data.balance;
+        } else if (typeof data.coins === "number") {
+          currentBalance = data.coins;
         } else {
-
           currentBalance = 0;
-
         }
-
 
         updateBalanceUI();
-
       } catch (error) {
-
-        console.error(
-          "Balance:",
-          error
-        );
-
-        balanceElement.textContent =
-          "Error";
-
-        showToast(
-          "No se pudo cargar el saldo."
-        );
-
+        console.error("Balance:", error);
+        balanceElement.textContent = "Error";
+        showToast("No se pudo cargar el saldo.");
       }
-
     }
 
 
@@ -1549,898 +1918,302 @@
        ========================= */
 
     function listenToTransactions(user) {
-
       if (unsubscribeTransactions) {
-
         unsubscribeTransactions();
-
       }
 
-
-      const transactionsRef =
-        collection(
-          db,
-          "transactions"
-        );
-
-
-      const transactionsQuery =
-        query(
-          transactionsRef,
-
-          where(
-            "user_ref",
-            "==",
-            user.uid
-          ),
-
-          orderBy(
-            "created_at",
-            "desc"
-          )
-        );
-
-
-      unsubscribeTransactions =
-        onSnapshot(
-          transactionsQuery,
-
-          snapshot => {
-
-            transactionsList.innerHTML =
-              "";
-
-            transactionCount.textContent =
-              `${snapshot.size} ${
-                snapshot.size === 1
-                  ? "movimiento"
-                  : "movimientos"
-              }`;
-
-
-            if (snapshot.empty) {
-
-              transactionsList.innerHTML = `
-                <div class="empty">
-                  No hay movimientos todavía.
-                </div>
-              `;
-
-              return;
-
-            }
-
-
-            snapshot.forEach(
-              transactionDoc => {
-
-                renderTransaction(
-                  transactionDoc.data()
-                );
-
-              }
-            );
-
-          },
-
-          error => {
-
-            console.error(
-              "Transactions:",
-              error
-            );
-
-            transactionsList.innerHTML = `
-              <div class="empty">
-                No se pudieron cargar los movimientos.
-              </div>
-            `;
-
-          }
-        );
-
-    }
-
-
-    function renderTransaction(data) {
-
-      const amount =
-        Number(
-          data.amount || 0
-        );
-
-
-      const type =
-        data.type ||
-        (
-          amount >= 0
-            ? "income"
-            : "expense"
-        );
-
-
-      const isIncome =
-        type === "income" ||
-        type === "deposit" ||
-        type === "credit";
-
-
-      const title =
-        data.title ||
-        data.description ||
-        "Movimiento";
-
-
-      const icon =
-        isIncome
-          ? "↓"
-          : "↑";
-
-
-      const sign =
-        isIncome
-          ? "+"
-          : "-";
-
-
-      const element =
-        document.createElement(
-          "div"
-        );
-
-
-      element.className =
-        "transaction";
-
-
-      element.innerHTML = `
-
-        <div class="transaction-left">
-
-          <div class="transaction-icon">
-            ${icon}
-          </div>
-
-          <div class="transaction-info">
-
-            <div class="transaction-title">
-              ${escapeHTML(title)}
-            </div>
-
-            <div class="transaction-date">
-              ${formatTransactionDate(
-                data.created_at
-              )}
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="transaction-amount ${
-          isIncome
-            ? "income"
-            : "expense"
-        }">
-
-          ${sign}${Math.abs(
-            amount
-          ).toLocaleString(
-            "es-AR"
-          )} MC
-
-        </div>
-
-      `;
-
-
-      transactionsList.appendChild(
-        element
+      const transactionsQuery = query(
+        collection(db, "transactions"),
+        where("user_ref", "==", user.uid),
+        orderBy("created_at", "desc")
       );
 
-    }
-
-
-    /* =========================
-       NOTIFICACIONES
-       ========================= */
-
-    function listenToNotifications(user) {
-
-      if (unsubscribeNotifications) {
-
-        unsubscribeNotifications();
-
-      }
-
-
-      const notificationsRef =
-        collection(
-          db,
-          "notifications"
-        );
-
-
-      const notificationsQuery =
-        query(
-          notificationsRef,
-
-          where(
-            "userId",
-            "==",
-            user.uid
-          ),
-
-          orderBy(
-            "created_at",
-            "desc"
-          )
-        );
-
-
-      unsubscribeNotifications =
-        onSnapshot(
-          notificationsQuery,
-
-          snapshot => {
-
-            notificationsList.innerHTML =
-              "";
-
-            notificationCount.textContent =
-              snapshot.size;
-
-
-            if (snapshot.empty) {
-
-              notificationsList.innerHTML = `
-                <div class="empty">
-                  No tenés notificaciones todavía. 🔔
-                </div>
-              `;
-
-              return;
-
-            }
-
-
-            snapshot.forEach(
-              notificationDoc => {
-
-                const data =
-                  notificationDoc.data();
-
-
-                const element =
-                  document.createElement(
-                    "div"
-                  );
-
-
-                element.className =
-                  "transaction";
-
-
-                element.innerHTML = `
-
-                  <div class="transaction-left">
-
-                    <div class="transaction-icon">
-                      🔔
-                    </div>
-
-                    <div class="transaction-info">
-
-                      <div class="transaction-title">
-                        ${escapeHTML(
-                          data.title ||
-                          "Notificación"
-                        )}
-                      </div>
-
-                      <div class="transaction-date">
-                        ${escapeHTML(
-                          data.message ||
-                          ""
-                        )}
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                `;
-
-
-                notificationsList.appendChild(
-                  element
-                );
-
-              }
-            );
-
-          },
-
-          error => {
-
-            console.error(
-              "Notifications:",
-              error
-            );
-
-          }
-        );
-
-    }
-
-
-    /* =========================
-       ENVIAR MOM COINS
-       ========================= */
-
-    sendCoinsButton.addEventListener(
-      "click",
-      async () => {
-
-        if (
-          !currentUser ||
-          !isAdmin(currentUser)
-        ) {
-
-          showToast(
-            "No tenés permisos de administrador."
-          );
-
-          return;
-
-        }
-
-
-        const email =
-          recipientEmail.value
-            .trim()
-            .toLowerCase();
-
-
-        const amount =
-          Number(
-            sendAmount.value
-          );
-
-
-        const reason =
-          sendReason.value.trim() ||
-          "Mom Coins recibidos";
-
-
-        if (!email) {
-
-          showToast(
-            "Seleccioná un destinatario."
-          );
-
-          return;
-
-        }
-
-
-        if (
-          !Number.isFinite(amount) ||
-          amount <= 0
-        ) {
-
-          showToast(
-            "Ingresá una cantidad válida."
-          );
-
-          return;
-
-        }
-
-
-        sendCoinsButton.disabled =
-          true;
-
-        sendCoinsButton.textContent =
-          "Enviando...";
-
-
-        try {
-
-          const usersQuery =
-            query(
-              collection(
-                db,
-                "users"
-              ),
-
-              where(
-                "email",
-                "==",
-                email
-              )
-            );
-
-
-          const usersSnapshot =
-            await getDocs(
-              usersQuery
-            );
-
-
-          if (
-            usersSnapshot.empty
-          ) {
-
-            showToast(
-              "Ese usuario todavía no existe en Firebase."
-            );
-
+      unsubscribeTransactions = onSnapshot(
+        transactionsQuery,
+        snapshot => {
+          transactionsList.innerHTML = "";
+          transactionCount.textContent = `${snapshot.size} ${
+            snapshot.size === 1 ? "movimiento" : "movimientos"
+          }`;
+
+          if (snapshot.empty) {
+            transactionsList.innerHTML = `<div class="empty">No hay movimientos todavía.</div>`;
             return;
-
           }
 
-
-          const recipientDoc =
-            usersSnapshot.docs[0];
-
-
-          const recipientRef =
-            recipientDoc.ref;
-
-
-          const senderRef =
-            doc(
-              db,
-              "users",
-              currentUser.uid
-            );
-
-
-          await runTransaction(
-            db,
-            async transaction => {
-
-              const senderSnapshot =
-                await transaction.get(
-                  senderRef
-                );
-
-
-              const recipientSnapshot =
-                await transaction.get(
-                  recipientRef
-                );
-
-
-              if (
-                !senderSnapshot.exists() ||
-                !recipientSnapshot.exists()
-              ) {
-
-                throw new Error(
-                  "USER_NOT_FOUND"
-                );
-
-              }
-
-
-              const senderData =
-                senderSnapshot.data();
-
-
-              const recipientData =
-                recipientSnapshot.data();
-
-
-              const senderBalance =
-                Number(
-                  senderData.balance ??
-                  senderData.coins ??
-                  0
-                );
-
-
-              const recipientBalance =
-                Number(
-                  recipientData.balance ??
-                  recipientData.coins ??
-                  0
-                );
-
-
-              if (
-                senderBalance < amount
-              ) {
-
-                throw new Error(
-                  "INSUFFICIENT_BALANCE"
-                );
-
-              }
-
-
-              transaction.update(
-                senderRef,
-                {
-                  balance:
-                    senderBalance -
-                    amount
-                }
-              );
-
-
-              transaction.update(
-                recipientRef,
-                {
-                  balance:
-                    recipientBalance +
-                    amount
-                }
-              );
-
-
-              const transactionRef =
-                doc(
-                  collection(
-                    db,
-                    "transactions"
-                  )
-                );
-
-
-              transaction.set(
-                transactionRef,
-                {
-
-                  user_ref:
-                    recipientDoc.id,
-
-                  from_uid:
-                    currentUser.uid,
-
-                  from_email:
-                    currentUser.email,
-
-                  amount:
-                    amount,
-
-                  type:
-                    "income",
-
-                  title:
-                    reason,
-
-                  created_at:
-                    serverTimestamp()
-
-                }
-              );
-
-
-              const notificationRef =
-                doc(
-                  collection(
-                    db,
-                    "notifications"
-                  )
-                );
-
-
-              transaction.set(
-                notificationRef,
-                {
-
-                  userId:
-                    recipientDoc.id,
-
-                  title:
-                    "💰 Recibiste Mom Coins",
-
-                  message:
-                    `Recibiste ${amount} Mom Coins. Motivo: ${reason}`,
-
-                  read:
-                    false,
-
-                  created_at:
-                    serverTimestamp()
-
-                }
-              );
-
-            }
-          );
-
-
-          showToast(
-            "💰 Mom Coins enviados correctamente."
-          );
-
-
-          recipientEmail.value =
-            "";
-
-          sendAmount.value =
-            "";
-
-          sendReason.value =
-            "";
-
-
-        } catch (error) {
-
-          console.error(
-            "Send coins:",
-            error
-          );
-
-
-          if (
-            error.message ===
-            "INSUFFICIENT_BALANCE"
-          ) {
-
-            showToast(
-              "Mamá no tiene suficientes Mom Coins."
-            );
-
-          } else {
-
-            showToast(
-              "No se pudieron enviar los Mom Coins."
-            );
-
+          snapshot.forEach(transactionDoc => {
+            renderTransaction(transactionDoc.data());
+          });
+        },
+        error => {
+          console.error("Transactions:", error);
+          transactionsList.innerHTML = `<div class="empty">No se pudieron cargar los movimientos.</div>`;
+        }
+      );
+    }
+
+    function renderTransaction(data) {
+      const amount = Number(data.amount || 0);
+      const type = data.type || (amount >= 0 ? "income" : "expense");
+      const isIncome = type === "income" || type === "deposit" || type === "credit";
+      const title = data.title || data.description || "Movimiento";
+      const icon = isIncome ? "↓" : "↑";
+      const sign = isIncome ? "+" : "-";
+
+      const element = document.createElement("div");
+      element.className = "transaction";
+      element.innerHTML = `
+        <div class="transaction-left">
+          <div class="transaction-icon">${icon}</div>
+          <div class="transaction-info">
+            <div class="transaction-title">${escapeHTML(title)}</div>
+            <div class="transaction-date">${formatTransactionDate(data.created_at)}</div>
+          </div>
+        </div>
+        <div class="transaction-amount ${isIncome ? "income" : "expense"}">
+          ${sign}${Math.abs(amount).toLocaleString("es-AR")} MC
+        </div>
+      `;
+
+      transactionsList.appendChild(element);
+    }
+
+
+    /* =========================
+       NOTIFICACIONES FIRESTORE
+       ========================= */
+
+    function listenToNotificationsUI(user) {
+      if (unsubscribeNotifications) {
+        unsubscribeNotifications();
+      }
+
+      const notificationsQuery = query(
+        collection(db, "notifications"),
+        where("userId", "==", user.uid),
+        orderBy("created_at", "desc")
+      );
+
+      unsubscribeNotifications = onSnapshot(
+        notificationsQuery,
+        snapshot => {
+          notificationsList.innerHTML = "";
+          notificationCount.textContent = snapshot.size;
+
+          if (snapshot.empty) {
+            notificationsList.innerHTML = `<div class="empty">No tenés notificaciones todavía. 🔔</div>`;
+            return;
           }
 
-        } finally {
+          snapshot.forEach(notificationDoc => {
+            const data = notificationDoc.data();
+            const element = document.createElement("div");
+            element.className = "transaction";
+            element.innerHTML = `
+              <div class="transaction-left">
+                <div class="transaction-icon">🔔</div>
+                <div class="transaction-info">
+                  <div class="transaction-title">${escapeHTML(data.title || "Notificación")}</div>
+                  <div class="transaction-date">${escapeHTML(data.message || "")}</div>
+                </div>
+              </div>
+            `;
+            notificationsList.appendChild(element);
+          });
+        },
+        error => {
+          console.error("Notifications:", error);
+        }
+      );
+    }
 
-          sendCoinsButton.disabled =
-            false;
 
-          sendCoinsButton.textContent =
-            "💸 Enviar Mom Coins";
+    /* =========================
+       ENVIAR MOM COINS (ADMIN)
+       ========================= */
 
+    sendCoinsButton.addEventListener("click", async () => {
+      if (!currentUser || !isAdmin(currentUser)) {
+        showToast("No tenés permisos de administrador.");
+        return;
+      }
+
+      const email = recipientEmail.value.trim().toLowerCase();
+      const amount = Number(sendAmount.value);
+      const reason = sendReason.value.trim() || "Mom Coins recibidos";
+
+      if (!email) {
+        showToast("Seleccioná un destinatario.");
+        return;
+      }
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        showToast("Ingresá una cantidad válida.");
+        return;
+      }
+
+      sendCoinsButton.disabled = true;
+      sendCoinsButton.textContent = "Enviando...";
+
+      try {
+        const usersQuery = query(collection(db, "users"), where("email", "==", email));
+        const usersSnapshot = await getDocs(usersQuery);
+
+        if (usersSnapshot.empty) {
+          showToast("Ese usuario todavía no existe en Firebase.");
+          return;
         }
 
+        const recipientDoc = usersSnapshot.docs[0];
+        const recipientRef = recipientDoc.ref;
+        const senderRef = doc(db, "users", currentUser.uid);
+
+        await runTransaction(db, async transaction => {
+          const senderSnapshot = await transaction.get(senderRef);
+          const recipientSnapshot = await transaction.get(recipientRef);
+
+          if (!senderSnapshot.exists() || !recipientSnapshot.exists()) {
+            throw new Error("USER_NOT_FOUND");
+          }
+
+          const senderData = senderSnapshot.data();
+          const recipientData = recipientSnapshot.data();
+
+          const senderBalance = Number(senderData.balance ?? senderData.coins ?? 0);
+          const recipientBalance = Number(recipientData.balance ?? recipientData.coins ?? 0);
+
+          if (senderBalance < amount) {
+            throw new Error("INSUFFICIENT_BALANCE");
+          }
+
+          transaction.update(senderRef, { balance: senderBalance - amount });
+          transaction.update(recipientRef, { balance: recipientBalance + amount });
+
+          const transactionRef = doc(collection(db, "transactions"));
+          transaction.set(transactionRef, {
+            user_ref: recipientDoc.id,
+            from_uid: currentUser.uid,
+            from_email: currentUser.email,
+            amount: amount,
+            type: "income",
+            title: reason,
+            created_at: serverTimestamp()
+          });
+
+          const notificationRef = doc(collection(db, "notifications"));
+          transaction.set(notificationRef, {
+            userId: recipientDoc.id,
+            title: "💰 Recibiste Mom Coins",
+            message: `Recibiste ${amount} Mom Coins. Motivo: ${reason}`,
+            read: false,
+            created_at: serverTimestamp()
+          });
+        });
+
+        showToast("💰 Mom Coins enviados correctamente.");
+        recipientEmail.value = "";
+        sendAmount.value = "";
+        sendReason.value = "";
+
+      } catch (error) {
+        console.error("Send coins:", error);
+        if (error.message === "INSUFFICIENT_BALANCE") {
+          showToast("Mamá no tiene suficientes Mom Coins.");
+        } else {
+          showToast("No se pudieron enviar los Mom Coins.");
+        }
+      } finally {
+        sendCoinsButton.disabled = false;
+        sendCoinsButton.textContent = "💸 Enviar Mom Coins";
       }
-    );
+    });
 
 
     /* =========================
        FECHAS
        ========================= */
 
-    function formatTransactionDate(
-      timestamp
-    ) {
-
-      if (!timestamp) {
-
-        return "Fecha desconocida";
-
-      }
-
+    function formatTransactionDate(timestamp) {
+      if (!timestamp) return "Fecha desconocida";
 
       let date;
+      if (typeof timestamp.toDate === "function") {
+        date = timestamp.toDate();
+      } else if (timestamp instanceof Date) {
+        date = timestamp;
+      } else if (typeof timestamp === "number") {
+        date = new Date(timestamp);
+      } else {
+        return "Fecha desconocida";
+      }
+
+      return date.toLocaleString("es-AR", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      });
+    }
 
 
-      if (
-        typeof timestamp.toDate ===
-        "function"
-      ) {
+    /* =========================
+       ESTADO DE SESIÓN
+       ========================= */
 
-        date =
-          timestamp.toDate();
+    onAuthStateChanged(auth, async user => {
+      currentUser = user;
 
-      } else if (
-        timestamp instanceof Date
-      ) {
+      if (user) {
+        if (!isAllowedUser(user)) {
+          showToast("Esta cuenta no está autorizada.");
+          await signOut(auth);
+          return;
+        }
 
-        date =
-          timestamp;
+        loginScreen.style.display = "none";
+        appScreen.style.display = "block";
 
-      } else if (
-        typeof timestamp ===
-        "number"
-      ) {
-
-        date =
-          new Date(timestamp);
+        loadUserProfile(user);
+        await loadBalance(user);
+        listenToTransactions(user);
+        listenToNotificationsUI(user);
+        loadMessages();
+        listenNotifications();
 
       } else {
+        loginScreen.style.display = "flex";
+        appScreen.style.display = "none";
+        currentUser = null;
 
-        return "Fecha desconocida";
-
-      }
-
-
-      return date.toLocaleString(
-        "es-AR",
-        {
-          dateStyle: "medium",
-          timeStyle: "short"
-        }
-      );
-
-    }
-
-
-    /* =========================
-       ESCAPE HTML
-       ========================= */
-
-    function escapeHTML(value) {
-
-      return String(value)
-
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
-
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
-
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
-
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
-
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
-
-    }
-
-
-    /* =========================
-       SESIÓN
-       ========================= */
-
-    onAuthStateChanged(
-      auth,
-      async user => {
-
-        currentUser =
-          user;
-
-
-        if (user) {
-
-          if (
-            !isAllowedUser(user)
-          ) {
-
-            showToast(
-              "Esta cuenta no está autorizada."
-            );
-
-            await signOut(
-              auth
-            );
-
-            return;
-
-          }
-
-
-          loginScreen.style.display =
-            "none";
-
-          appScreen.style.display =
-            "block";
-
-
-          loadUserProfile(
-            user
-          );
-
-
-          updateAdminUI(
-            user
-          );
-
-
-          await loadBalance(
-            user
-          );
-
-
-          listenToTransactions(
-            user
-          );
-
-
-          listenToNotifications(
-            user
-          );
-
-
-        } else {
-
-          loginScreen.style.display =
-            "flex";
-
-          appScreen.style.display =
-            "none";
-
-
-          currentUser =
-            null;
-
-
-          if (
-            unsubscribeTransactions
-          ) {
-
-            unsubscribeTransactions();
-
-            unsubscribeTransactions =
-              null;
-
-          }
-
-
-          if (
-            unsubscribeNotifications
-          ) {
-
-            unsubscribeNotifications();
-
-            unsubscribeNotifications =
-              null;
-
-          }
-
+        if (unsubscribeTransactions) {
+          unsubscribeTransactions();
+          unsubscribeTransactions = null;
         }
 
+        if (unsubscribeNotifications) {
+          unsubscribeNotifications();
+          unsubscribeNotifications = null;
+        }
+
+        if (messagesUnsubscribe) {
+          messagesUnsubscribe();
+          messagesUnsubscribe = null;
+        }
       }
-    );
+    });
 
 
     /* =========================
        CERRAR SESIÓN
        ========================= */
 
-    logoutButton.addEventListener(
-      "click",
-      async () => {
-
-        try {
-
-          await signOut(
-            auth
-          );
-
-          showToast(
-            "Sesión cerrada."
-          );
-
-        } catch (error) {
-
-          console.error(
-            "Logout:",
-            error
-          );
-
-          showToast(
-            "No se pudo cerrar sesión."
-          );
-
-        }
-
+    logoutButton.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        showToast("Sesión cerrada.");
+      } catch (error) {
+        console.error("Logout:", error);
+        showToast("No se pudo cerrar sesión.");
       }
-    );
+    });
 
   </script>
 
