@@ -1260,7 +1260,7 @@
         }
       } catch (err) {
         console.error("Error sending message:", err);
-        showToast("No se pudo enviar el mensaje.");
+        showToast("No se pudo enviar el mensaje. Revisa tu conexion a internet.");
       }
     }
 
@@ -1350,7 +1350,7 @@
         showToast("🗑️ Mensaje eliminado");
       } catch (err) {
         console.error("Delete message error:", err);
-        showToast("No se pudo borrar el mensaje.");
+        showToast("No se pudo borrar el mensaje. Revisa que sea tuyo");
       }
     }
 
@@ -1594,7 +1594,7 @@
 
       } catch (error) {
         console.error(error);
-        showToast("No se pudo acceder al micrófono.");
+        showToast("No se pudo acceder al micrófono. Revisa tu permisos concedidos a esta App");
       }
     });
 
@@ -1652,7 +1652,7 @@
         showToast("Mensaje de voz enviado 🎙️");
       } catch (error) {
         console.error(error);
-        showToast("No se pudo enviar el mensaje de voz.");
+        showToast("No se pudo enviar el mensaje de voz. Revisa tu conexion a internet");
       }
     }
 
