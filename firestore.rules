@@ -1,52 +1,50 @@
 rules_version = '2';
-
 service cloud.firestore {
-
-    match /databases/{database}/documents {
-
-        /*
-         * Cada usuario solamente puede leer
-         * su propio documento.
-         */
-
-        match /users/{userId} {
-
-            allow read:
-                if request.auth != null
-                && request.auth.uid == userId;
-
-            /*
-             * El frontend NO puede modificar
-             * el balance.
-             *
-             * Las modificaciones deberían hacerse
-             * desde un backend seguro / Cloud Functions.
-             */
-
-            allow write:
-                if false;
-        }
-
-
-        /*
-         * Cada usuario solamente puede leer
-         * transacciones cuyo user_ref sea su UID.
-         */
-
-        match /transactions/{transactionId} {
-
-            allow read:
-                if request.auth != null
-                && resource.data.user_ref
-                    == request.auth.uid;
-
-            /*
-             * Los clientes tampoco pueden crear
-             * o modificar movimientos.
-             */
-
-            allow write:
-                if false;
-        }
+  match /databases/{database}/documents {
+    
+    // Reglas para usuarios (lectura general para autenticados, escritura propia o de admin)
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (
+        request.auth.uid == userId || 
+        request.auth.token.email in ['gabyhuchy@gmail.com', 'gabyhuchy@hotmail.com']
+      );
     }
+
+    // Reglas para el Chat
+    match /messages/{messageId} {
+      allow read: if request.auth != null && (
+        request.auth.uid in resource.data.participants
+      );
+      allow create: if request.auth != null && (
+        request.auth.uid in request.resource.data.participants
+      );
+      allow update, delete: if request.auth != null && (
+        request.auth.uid == resource.data.senderId
+      );
+    }
+
+    // Reglas para Notificaciones
+    match /notifications/{notificationId} {
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid
+      );
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && (
+        resource.data.userId == request.auth.uid
+      );
+    }
+
+    // Reglas para Movimientos / Transacciones
+    match /transactions/{transactionId} {
+      allow read: if request.auth != null && (
+        resource.data.user_ref == request.auth.uid || 
+        resource.data.from_uid == request.auth.uid || 
+        request.auth.token.email in ['gabyhuchy@gmail.com', 'gabyhuchy@hotmail.com']
+      );
+      allow create: if request.auth != null && (
+        request.auth.token.email in ['gabyhuchy@gmail.com', 'gabyhuchy@hotmail.com']
+      );
+    }
+  }
 }
