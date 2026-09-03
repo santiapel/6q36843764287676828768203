@@ -1454,6 +1454,7 @@
         senderId: currentUser.uid,
         senderName: currentUser.displayName || currentUser.email,
         recipientId: mom.uid,
+        participants: [currentUser.uid, mom.uid],
         text: text.trim(),
         type: "text",
         read: false,
@@ -1545,7 +1546,7 @@
 
         const messagesQuery = query(
           collection(db, "messages"),
-          where("chatId", "==", chatId),
+          where("participants", "array-contains", currentUser.uid),
           orderBy("created_at", "asc")
         );
 
@@ -1559,6 +1560,8 @@
 
           snapshot.forEach((messageDoc) => {
             const msg = messageDoc.data();
+
+            if (msg.chatId !== chatId) return;
 
             if (msg.recipientId === currentUser.uid && !msg.read) {
               unread++;
@@ -1749,6 +1752,7 @@
           senderId: currentUser.uid,
           senderName: currentUser.displayName || currentUser.email,
           recipientId: mom.uid,
+          participants: [currentUser.uid, mom.uid],
           type: "voice",
           audioUrl,
           transcript: transcriptWords,
