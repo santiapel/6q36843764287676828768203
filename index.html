@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mom Coin Wallet</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
 
   <style>
     * {
@@ -563,11 +564,27 @@
       cursor: wait;
     }
 
+    /* TRANSCRIPT STYLING DE VOZ */
+    .voice-transcript {
+      font-size: 13px;
+      line-height: 1.4;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+
+    .transcript-word {
+      transition: all 0.15s ease;
+      display: inline-block;
+      margin-right: 2px;
+    }
+
     /* CHAT & MENSAJES ACCIONES */
     .msg-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       margin-top: 6px;
     }
 
@@ -671,6 +688,13 @@
         <button id="pinLoginButton" class="google-button" style="background:#6c4df6;color:white;">🔐 Iniciar sesión</button>
         <button id="backAccounts" style="margin-top:14px;background:none;color:#6c4df6;font-weight:700;">← Cambiar cuenta</button>
       </div>
+
+      <div id="emailSent" style="display:none;">
+        <h1>📬 Correo enviado</h1>
+        <p>Mandamos un enlace de confirmación a:</p>
+        <strong id="sentEmail"></strong>
+        <p style="margin-top:15px;">Abrí el correo y tocá el enlace para entrar.</p>
+      </div>
     </div>
   </section>
 
@@ -732,7 +756,7 @@
         <div class="section-header">
           <div>
             <h2>💬 Mensajes</h2>
-            <p style="color:var(--muted);font-size:13px;">Chat en tiempo real</p>
+            <p style="color:var(--muted);font-size:13px;">Chat con Mamá</p>
           </div>
           <span id="unreadMessagesBadge" style="display:none;background:#ef4444;color:white;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:bold;">0</span>
         </div>
@@ -914,6 +938,8 @@
 
     let mediaRecorder = null;
     let audioChunks = [];
+    let recognition = null;
+    let transcriptWords = [];
     let recordingStart = 0;
     let recordingTimer = null;
     let firstNotificationSnapshot = true;
@@ -1073,11 +1099,9 @@
 
     // MANEJO ATÓMICO DE ACEPTAR/RECHAZAR RETIRO (CANDADO ANTI-CLIC DUPLICADO)
     async function handleWithdrawalAction(withdrawalId, action, cardElement) {
-      // 1. Candado inmediato en cliente
       if (processingWithdrawals.has(withdrawalId)) return;
       processingWithdrawals.add(withdrawalId);
 
-      // 2. Ocultar y deshabilitar elemento visual inmediatamente (UI optimista)
       if (cardElement) {
         cardElement.style.pointerEvents = "none";
         cardElement.style.opacity = "0.3";
@@ -1096,7 +1120,6 @@
             throw new Error("ALREADY_PROCESSED");
           }
 
-          // Marcar como procesado atómicamente
           transaction.update(withdrawalRef, {
             status: action === "approve" ? "approved" : "rejected",
             processedAt: serverTimestamp(),
@@ -1104,7 +1127,6 @@
           });
 
           if (action === "reject") {
-            // Reembolso automático
             const userRef = doc(db, "users", wData.userId);
             const userSnap = await transaction.get(userRef);
 
@@ -1115,7 +1137,6 @@
 
               transaction.update(userRef, { balance: currentCoins + refundAmount });
 
-              // Movimiento de reembolso
               const txRef = doc(collection(db, "transactions"));
               transaction.set(txRef, {
                 user_ref: wData.userId,
@@ -1127,7 +1148,6 @@
                 created_at: serverTimestamp()
               });
 
-              // Notificación
               const notiRef = doc(collection(db, "notifications"));
               transaction.set(notiRef, {
                 userId: wData.userId,
@@ -1138,7 +1158,6 @@
               });
             }
           } else {
-            // Aprobación
             const notiRef = doc(collection(db, "notifications"));
             transaction.set(notiRef, {
               userId: wData.userId,
@@ -1161,7 +1180,7 @@
       }
     }
 
-    // CHAT
+    // CHAT & TRANSCRIPCIONES EN VIVO
     function getChatId(uid1, uid2) {
       return [uid1, uid2].sort().join("_");
     }
@@ -1220,6 +1239,50 @@
       }
     });
 
+    function renderTranscript(words) {
+      if (!words || !words.length) return "";
+      return `
+        <div class="voice-transcript">
+          ${words.map((word, index) => `
+            <span class="transcript-word" data-index="${index}">
+              ${escapeHTML(word.text)}
+            </span>
+          `).join(" ")}
+        </div>
+      `;
+    }
+
+    function syncVoiceTranscript(audio, container, wordsData) {
+      const words = container.querySelectorAll(".transcript-word");
+      audio.addEventListener("timeupdate", () => {
+        const time = audio.currentTime;
+        words.forEach((word, index) => {
+          const data = wordsData[index];
+          if (!data) return;
+          if (time >= data.start && time <= data.end) {
+            word.style.fontWeight = "bold";
+            word.style.textDecoration = "underline";
+          } else {
+            word.style.fontWeight = "normal";
+            word.style.textDecoration = "none";
+          }
+        });
+      });
+    }
+
+    function speakText(text) {
+      if (!("speechSynthesis" in window)) {
+        showToast("Tu navegador no soporta texto a voz.");
+        return;
+      }
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "es-AR";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+    }
+
     async function loadMessages() {
       if (!currentUser) return;
 
@@ -1253,7 +1316,6 @@
             }
 
             if (!msg.starred && (now - msgTime > MESSAGE_EXPIRY_MS)) {
-              // Eliminar de Firestore silenciosamente
               deleteDoc(doc(db, "messages", msgId)).catch(() => {});
               return;
             }
@@ -1276,23 +1338,34 @@
             const starredClass = msg.starred ? "starred" : "";
 
             if (msg.type === "voice") {
+              const audioSrc = msg.audioBase64 || msg.audioUrl || "";
               bubble.innerHTML = `
                 <div style="font-size:11px;opacity:.8;">🎙️ ${escapeHTML(msg.senderName || "Usuario")}</div>
-                <audio controls src="${msg.audioBase64}" style="width:100%;margin-top:6px;max-width:240px;"></audio>
+                ${renderTranscript(msg.transcript || [])}
+                <audio controls src="${audioSrc}" style="width:100%;margin-top:6px;max-width:240px;"></audio>
                 <div class="msg-actions">
                   <button class="msg-btn btn-star ${starredClass}" title="Destacar">⭐</button>
                   <button class="msg-btn btn-delete" title="Borrar">🗑️</button>
                 </div>
               `;
+              const audioEl = bubble.querySelector("audio");
+              if (audioEl && msg.transcript) {
+                syncVoiceTranscript(audioEl, bubble, msg.transcript);
+              }
             } else {
               bubble.innerHTML = `
                 <div style="font-size:11px;opacity:.8;">${escapeHTML(msg.senderName || "Usuario")}</div>
                 <div style="margin-top:3px;word-break:break-word;font-size:14px;">${escapeHTML(msg.text || "")}</div>
                 <div class="msg-actions">
+                  <button class="msg-btn btn-speak" title="Escuchar">🔊</button>
                   <button class="msg-btn btn-star ${starredClass}" title="Destacar">⭐</button>
                   <button class="msg-btn btn-delete" title="Borrar">🗑️</button>
                 </div>
               `;
+              const speakBtn = bubble.querySelector(".btn-speak");
+              if (speakBtn) {
+                speakBtn.addEventListener("click", () => speakText(msg.text || ""));
+              }
             }
 
             // Botón Destacar (Star)
@@ -1335,7 +1408,41 @@
       }
     }
 
-    // GRABACIÓN DE VOZ BASE64 (MÁX 1 MINUTO)
+    // RECONOCIMIENTO DE VOZ EN VIVO
+    function startSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "es-AR";
+      recognition.continuous = true;
+      recognition.interimResults = false;
+
+      recognition.onresult = event => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (!event.results[i].isFinal) continue;
+          const text = event.results[i][0].transcript.trim();
+          if (!text) continue;
+
+          const words = text.split(/\s+/);
+          const elapsed = (Date.now() - recordingStart) / 1000;
+          const start = elapsed - Math.max(words.length * 0.35, 0.5);
+
+          words.forEach((word, index) => {
+            transcriptWords.push({
+              text: word,
+              start: Math.max(0, start + index * 0.35),
+              end: Math.max(0, start + (index + 1) * 0.35)
+            });
+          });
+        }
+      };
+
+      recognition.onerror = error => console.warn("Speech error:", error.error);
+      recognition.start();
+    }
+
+    // GRABACIÓN DE VOZ (MÁX 1 MINUTO)
     recordVoiceBtn.addEventListener("click", async () => {
       if (mediaRecorder?.state === "recording") {
         stopRecording();
@@ -1345,6 +1452,8 @@
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         audioChunks = [];
+        transcriptWords = [];
+
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.ondataavailable = event => {
@@ -1353,17 +1462,22 @@
 
         mediaRecorder.onstop = async () => {
           stream.getTracks().forEach(track => track.stop());
+          if (recognition) {
+            try { recognition.stop(); } catch {}
+          }
           await saveVoiceMessage();
         };
 
         mediaRecorder.start();
+        startSpeechRecognition();
+
         recordingStart = Date.now();
         recordingStatus.style.display = "block";
         recordVoiceBtn.textContent = "⏹️ Detener";
 
         recordingTimer = setInterval(() => {
           const seconds = Math.floor((Date.now() - recordingStart) / 1000);
-          
+
           if (seconds >= MAX_VOICE_SECONDS) {
             stopRecording();
             showToast("Límite de 1 minuto alcanzado.");
@@ -1409,6 +1523,7 @@
             participants: [currentUser.uid, mom.uid],
             type: "voice",
             audioBase64: base64Audio,
+            transcript: transcriptWords,
             starred: false,
             read: false,
             created_at: serverTimestamp()
@@ -1430,7 +1545,35 @@
       }
     }
 
-    // SOLICITUD DE RETIRO DE MOM COINS POR USUARIO
+    // NOTIFICACIONES NAVEGADOR
+    notificationBtn.addEventListener("click", async () => {
+      if (!("Notification" in window)) return showToast("Navegador no soporta notificaciones.");
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        new Notification("🔔 Mom Coin Wallet", { body: "Notificaciones activadas." });
+        showToast("Notificaciones activadas 🔔");
+      } else {
+        showToast("Notificaciones bloqueadas.");
+      }
+    });
+
+    function listenNotifications() {
+      if (!currentUser) return;
+      const q = query(collection(db, "notifications"), where("userId", "==", currentUser.uid), orderBy("created_at", "desc"));
+
+      onSnapshot(q, snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type !== "added" || firstNotificationSnapshot) return;
+          const notification = change.doc.data();
+          if ("Notification" in window && Notification.permission === "granted") {
+            new Notification(notification.title || "Nueva notificación", { body: notification.message || "" });
+          }
+        });
+        firstNotificationSnapshot = false;
+      });
+    }
+
+    // SOLICITUD DE RETIRO DE MOM COINS
     if (withdrawAmount) {
       withdrawAmount.addEventListener("input", () => {
         const amount = Number(withdrawAmount.value) || 0;
@@ -1702,6 +1845,7 @@
         listenToTransactions(user);
         listenToNotificationsUI(user);
         loadMessages();
+        listenNotifications();
       } else {
         loginScreen.style.display = "flex";
         appScreen.style.display = "none";
