@@ -691,7 +691,6 @@
 
 <body>
 
-  <!-- LOGIN -->
   <section id="loginScreen">
     <div class="login-card">
       <div class="logo">MC</div>
@@ -728,7 +727,6 @@
         </div>
       </div>
 
-      <!-- CONFIRMAR CUENTA -->
       <div id="emailConfirmation" style="display:none;">
         <h1>Confirmar cuenta</h1>
         <p>Vas a iniciar sesión como:</p>
@@ -740,7 +738,6 @@
     </div>
   </section>
 
-  <!-- MODAL DE AJUSTES (QoL) -->
   <div id="settingsModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -752,7 +749,7 @@
         <input type="checkbox" id="darkModeToggle" style="width:20px;height:20px;cursor:pointer;">
       </div>
       <div class="setting-item">
-        <span>🔔 Notificaciones Push (FCM Simulado)</span>
+        <span>🔔 Notificaciones Push (FCM Real)</span>
         <input type="checkbox" id="pushNotifToggle" checked style="width:20px;height:20px;cursor:pointer;">
       </div>
       <div class="setting-item">
@@ -762,11 +759,9 @@
     </div>
   </div>
 
-  <!-- APP -->
   <main id="app">
     <div class="app-container">
 
-      <!-- ALERTA RETIRO MAMÁ -->
       <div id="adminWithdrawAlert" class="admin-withdraw-alert" style="display: none;">
         <div class="admin-withdraw-header">
           <span>🚨 SOLICITUDES DE RETIRO PENDIENTES</span>
@@ -775,7 +770,6 @@
         <div id="withdrawAlertList"></div>
       </div>
 
-      <!-- HEADER -->
       <header class="topbar">
         <div class="brand">
           <div class="brand-logo">MC</div>
@@ -793,7 +787,6 @@
         </div>
       </header>
 
-      <!-- DASHBOARD -->
       <section class="dashboard">
         <article class="balance-card">
           <div class="balance-header">
@@ -818,7 +811,6 @@
         </article>
       </section>
 
-      <!-- CHAT -->
       <section id="messagesSection" class="card">
         <div class="section-header">
           <div>
@@ -845,7 +837,6 @@
         </div>
       </section>
 
-      <!-- SOLICITAR RETIRO -->
       <section id="withdrawSection" class="transactions-card">
         <div class="transactions-header">
           <h2>💸 Solicitar Retiro</h2>
@@ -858,7 +849,6 @@
         </div>
       </section>
 
-      <!-- ADMIN PANEL -->
       <section id="adminPanel" class="transactions-card">
         <div class="transactions-header">
           <h2>👑 Panel de mamá</h2>
@@ -876,7 +866,6 @@
         </div>
       </section>
 
-      <!-- NOTIFICACIONES -->
       <section class="transactions-card">
         <div class="transactions-header">
           <h2>🔔 Historial de Notificaciones</h2>
@@ -887,7 +876,6 @@
         </div>
       </section>
 
-      <!-- MOVIMIENTOS -->
       <section class="transactions-card">
         <div class="transactions-header">
           <h2>Movimientos Bancarios</h2>
@@ -903,11 +891,11 @@
 
   <div id="toast"></div>
 
-  <!-- FIREBASE MODULES -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
@@ -921,6 +909,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const messaging = getMessaging(app);
 
     const MAX_WITHDRAWAL_MC = 10;
     const MC_VALUE_ARS = 500;
@@ -1149,14 +1138,13 @@
     // BONO AUTOMÁTICO DE 3 MOM COINS CADA VIERNES
     async function checkWeeklyStipend(user) {
       const today = new Date();
-      // Viernes es el día 5 de la semana (Domingo=0, Lunes=1, ..., Viernes=5)
       if (today.getDay() !== 5) return;
 
-      const todayStr = today.toISOString().split("T")[0]; // YYYY-MM-DD
+      const todayStr = today.toISOString().split("T")[0];
       const lastClaimKey = `momcoin_stipend_${user.uid}`;
       const lastClaimDate = localStorage.getItem(lastClaimKey);
 
-      if (lastClaimDate === todayStr) return; // Ya reclamó este viernes
+      if (lastClaimDate === todayStr) return;
 
       try {
         const userRef = doc(db, "users", user.uid);
@@ -1630,13 +1618,47 @@
       };
     }
 
-    // NOTIFICACIONES FCM SIMULADAS
+    // CONFIGURACIÓN DE FIREBASE CLOUD MESSAGING (FCM)
+    async function initializeCloudMessaging() {
+      try {
+        if (!("serviceWorker" in navigator)) return;
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        
+        const currentToken = await getToken(messaging, {
+          vapidKey: "AQUÍ_TU_VAPID_KEY_DE_LA_CONSOLA_DE_FIREBASE", 
+          serviceWorkerRegistration: registration
+        });
+
+        if (currentToken) {
+          console.log("Token FCM obtenido con éxito:", currentToken);
+        } else {
+          console.log("No se pudo obtener el token de registro.");
+        }
+      } catch (err) {
+        console.error("Error al registrar FCM:", err);
+      }
+    }
+
+    // ESCUCHAR MENSAJES EN PRIMER PLANO (FOREGROUND)
+    onMessage(messaging, (payload) => {
+      console.log("Mensaje recibido en primer plano: ", payload);
+      if ("Notification" in window && Notification.permission === "granted" && pushNotifToggle.checked) {
+        new Notification(payload.notification.title, {
+          body: payload.notification.body,
+          icon: payload.notification.icon || 'https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png'
+        });
+      }
+    });
+
     notificationBtn.addEventListener("click", async () => {
       if (!("Notification" in window)) return showToast("Navegador no soporta notificaciones.");
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
-        new Notification("🏦 Mom Coin Bank", { body: "Canal de notificaciones FCM conectado con éxito." });
+        await initializeCloudMessaging();
+        new Notification("🏦 Mom Coin Bank", { body: "Canal de notificaciones Push conectado con éxito." });
         showToast("Notificaciones Web Push activadas 🔔");
+      } else {
+        showToast("Permiso de notificaciones denegado.");
       }
     });
 
@@ -1902,6 +1924,9 @@
         listenToNotificationsUI(user);
         loadMessages();
         listenNotifications();
+
+        // Inicializar Cloud Messaging de forma automática tras iniciar sesión
+        initializeCloudMessaging();
       } else {
         loginScreen.style.display = "flex";
         appScreen.style.display = "none";
