@@ -749,7 +749,7 @@
         <input type="checkbox" id="darkModeToggle" style="width:20px;height:20px;cursor:pointer;">
       </div>
       <div class="setting-item">
-        <span>🔔 Notificaciones Push (FCM Real)</span>
+        <span>🔔 Notificaciones Push (FCM)</span>
         <input type="checkbox" id="pushNotifToggle" checked style="width:20px;height:20px;cursor:pointer;">
       </div>
       <div class="setting-item">
@@ -829,7 +829,7 @@
 
         <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
           <button id="recordVoiceBtn" style="padding:10px 14px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;">🎙️ Grabar (Máx 1m)</button>
-          <button id="notificationBtn" style="padding:10px 14px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;">🔔 Activar Web Push</button>
+          <button id="notificationBtn" style="padding:10px 14px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;">🔔 Activar Notificaciones</button>
         </div>
 
         <div id="recordingStatus" style="display:none;margin-top:8px;color:#ef4444;font-weight:600;">
@@ -1618,30 +1618,26 @@
       };
     }
 
-    // CONFIGURACIÓN DE FIREBASE CLOUD MESSAGING (FCM)
+    // CLOUD MESSAGING (FCM) CONFIGURACIÓN
     async function initializeCloudMessaging() {
       try {
         if (!("serviceWorker" in navigator)) return;
         const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
         
         const currentToken = await getToken(messaging, {
-          vapidKey: "AQUÍ_TU_VAPID_KEY_DE_LA_CONSOLA_DE_FIREBASE", 
+          vapidKey: "BPAcGedS15TO_n12OKHGf2m-c1j5sCfjt4xMTk04JSubZZOXYnaO_EIioLToi_6BEtCk03A_zQKBCFC86_9f-Ok", 
           serviceWorkerRegistration: registration
         });
 
         if (currentToken) {
-          console.log("Token FCM obtenido con éxito:", currentToken);
-        } else {
-          console.log("No se pudo obtener el token de registro.");
+          console.log("Token FCM obtenido:", currentToken);
         }
       } catch (err) {
         console.error("Error al registrar FCM:", err);
       }
     }
 
-    // ESCUCHAR MENSAJES EN PRIMER PLANO (FOREGROUND)
     onMessage(messaging, (payload) => {
-      console.log("Mensaje recibido en primer plano: ", payload);
       if ("Notification" in window && Notification.permission === "granted" && pushNotifToggle.checked) {
         new Notification(payload.notification.title, {
           body: payload.notification.body,
@@ -1655,10 +1651,10 @@
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
         await initializeCloudMessaging();
-        new Notification("🏦 Mom Coin Bank", { body: "Canal de notificaciones Push conectado con éxito." });
-        showToast("Notificaciones Web Push activadas 🔔");
+        new Notification("🏦 Mom Coin Bank", { body: "Notificaciones Web Push activadas." });
+        showToast("Notificaciones Push activadas 🔔");
       } else {
-        showToast("Permiso de notificaciones denegado.");
+        showToast("Notificaciones bloqueadas.");
       }
     });
 
@@ -1924,8 +1920,6 @@
         listenToNotificationsUI(user);
         loadMessages();
         listenNotifications();
-
-        // Inicializar Cloud Messaging de forma automática tras iniciar sesión
         initializeCloudMessaging();
       } else {
         loginScreen.style.display = "flex";
