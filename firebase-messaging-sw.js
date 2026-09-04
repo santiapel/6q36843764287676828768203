@@ -1,8 +1,8 @@
-// Importa los scripts de Firebase necesarios para el Service Worker
-importScripts('https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging-compat.js');
+// Importa los scripts de Firebase Compat (versión estable 10.8.0)
+importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
 
-// Inicializa Firebase en el Service Worker con tu configuración
+// Inicializa Firebase en el Service Worker
 firebase.initializeApp({
   apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
   authDomain: "banco-de-mama.firebaseapp.com",
@@ -14,13 +14,13 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// Manejador opcional para notificaciones en segundo plano
+// Manejador de notificaciones en segundo plano
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Mensaje en segundo plano recibido: ', payload);
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: 'https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png'
+    icon: payload.notification.icon || 'https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png'
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
