@@ -1622,10 +1622,18 @@
     async function initializeCloudMessaging() {
       try {
         if (!("serviceWorker" in navigator)) return;
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        
+        // Verificamos si podemos registrar el service worker sin romper la ejecución si el archivo no existe en el host externo
+        let registration;
+        try {
+          registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        } catch (swErr) {
+          console.warn("Service Worker externo no disponible en este entorno, omitiendo FCM push nativo:", swErr);
+          return;
+        }
         
         const currentToken = await getToken(messaging, {
-          vapidKey: "BPAcGedS15TO_n12OKHGf2m-c1j5sCfjt4xMTk04JSubZZOXYnaO_EIioLToi_6BEtCk03A_zQKBCFC86_9f-Ok", 
+          vapidKey: "AQUÍ_TU_VAPID_KEY_DE_LA_CONSOLA_DE_FIREBASE", 
           serviceWorkerRegistration: registration
         });
 
@@ -1633,7 +1641,7 @@
           console.log("Token FCM obtenido:", currentToken);
         }
       } catch (err) {
-        console.error("Error al registrar FCM:", err);
+        console.warn("Aviso de FCM:", err);
       }
     }
 
