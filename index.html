@@ -940,6 +940,79 @@
     let unsubscribeWithdrawals = null;
     let messagesUnsubscribe = null;
 
+    // ─────────────────────────────────────────────
+    // NOTIFICACIONES PUSH PARA MEDIAN.CO / ONESIGNAL
+    // ─────────────────────────────────────────────
+    // En la app nativa de Median, OneSignal se encarga de
+    // entregar las notificaciones incluso cuando la app está cerrada.
+    // En un navegador normal usamos Notification como respaldo.
+    let notificationPermissionRequested = false;
+
+    function isMedianApp() {
+      return typeof window.median !== "undefined";
+    }
+
+    async function setupPushNotifications(user) {
+      try {
+        if (isMedianApp()) {
+          // Mostrar notificaciones también cuando la app está abierta.
+          if (window.median.onesignal?.enableForegroundNotifications) {
+            try {
+              await window.median.onesignal.enableForegroundNotifications(true);
+            } catch (_) {}
+          }
+
+          // Vincula el dispositivo con el usuario de Mom Coin.
+          if (window.median.onesignal?.login && user?.email) {
+            try {
+              await window.median.onesignal.login(user.email);
+            } catch (err) {
+              console.warn("OneSignal login:", err);
+            }
+          }
+
+          // Pide permiso al entrar a la app.
+          // El sistema operativo no vuelve a mostrar el diálogo si el
+          // usuario ya respondió anteriormente; en ese caso se respeta
+          // la decisión del sistema.
+          if (!notificationPermissionRequested && window.median.onesignal?.register) {
+            notificationPermissionRequested = true;
+            try {
+              await window.median.onesignal.register();
+            } catch (err) {
+              console.warn("OneSignal permission:", err);
+            }
+          }
+          return;
+        }
+
+        // Respaldo para abrir la web directamente en Chrome/Opera.
+        if ("Notification" in window && Notification.permission === "default") {
+          if (!notificationPermissionRequested) {
+            notificationPermissionRequested = true;
+            try {
+              await Notification.requestPermission();
+            } catch (err) {
+              console.warn("Web notification permission:", err);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Push setup:", err);
+      }
+    }
+
+    async function logoutPushNotifications() {
+      if (!isMedianApp()) return;
+      try {
+        if (window.median.onesignal?.logout) {
+          await window.median.onesignal.logout();
+        }
+      } catch (err) {
+        console.warn("OneSignal logout:", err);
+      }
+    }
+
     function triggerHaptic() {
       if (navigator.vibrate) {
         navigator.vibrate(15);
@@ -1639,6 +1712,9 @@
         await loadBalance(user);
         listenTransactions(user);
         setupTaskUI();
+
+        // Configura las notificaciones al entrar a la app.
+        await setupPushNotifications(user);
       } else {
         if (loginScreen) loginScreen.style.display = "flex";
         if (appContainer) appContainer.style.display = "none";
@@ -1654,6 +1730,7 @@
     if (logoutButton) {
       logoutButton.addEventListener("click", async () => {
         triggerHaptic();
+        await logoutPushNotifications();
         await signOut(auth);
         showToast("Sesión cerrada");
       });
