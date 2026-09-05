@@ -8,6 +8,14 @@
 
   <!-- OneSignal Web Push SDK -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "f57ce516-611b-4500-a009-c323db4f4840",
+      });
+    });
+  </script>
 
   <style>
     * {
@@ -1016,28 +1024,8 @@
 
     const PushManager = {
       init: function() {
-        // Safe check for valid OneSignal App ID before initializing Web Push
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        window.OneSignalDeferred.push(async function(OneSignal) {
-          try {
-            const appId = "b85a3fd4-e13d-4c3e-8c81-onesignal-app";
-            // Check for real hex UUID and ensure placeholder string is skipped
-            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(appId) && !appId.includes("onesignal");
-            
-            if (!isUuid) {
-              console.info("OneSignal Web Push: Modo desarrollo / ID de ejemplo detectado. Omitiendo registro de Web Push.");
-              return;
-            }
-
-            await OneSignal.init({
-              appId: appId,
-              safari_web_id: "web.onesignal.auto",
-              notifyButton: { enable: false }
-            });
-          } catch(e) {
-            console.info("OneSignal Web status:", e.message || e);
-          }
-        });
+        // OneSignal ya se inicializa una sola vez desde el <head> con el App ID real.
+        // Esta función se deja como no-op para no pisar esa inicialización.
       },
 
       syncUser: function(email, name) {
