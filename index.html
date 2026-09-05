@@ -148,6 +148,7 @@
       color: var(--text);
       cursor: pointer;
       transition: all 0.2s ease;
+      -webkit-appearance: none;
     }
 
     .account-button:active {
@@ -165,6 +166,7 @@
       justify-content: center;
       font-size: 20px;
       color: var(--primary);
+      pointer-events: none;
     }
 
     .admin-avatar {
@@ -176,6 +178,7 @@
       text-align: left;
       flex: 1;
       margin-left: 12px;
+      pointer-events: none;
     }
 
     .account-info strong {
@@ -192,67 +195,15 @@
     .account-arrow {
       font-size: 18px;
       color: var(--muted);
+      pointer-events: none;
     }
 
-    /* TECLADO PIN FINTECH */
-    .pin-container {
+    /* FORMULARIO DE CONTRASEÑA ESTÁNDAR */
+    .password-form {
       display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 20px 0 28px;
-    }
-
-    .pin-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      background: transparent;
-      transition: all 0.15s ease;
-    }
-
-    .pin-dot.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      animation: dotPop 0.15s ease-out;
-      box-shadow: 0 0 10px rgba(108, 77, 246, 0.4);
-    }
-
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      flex-direction: column;
       gap: 14px;
-      max-width: 280px;
-      margin: 0 auto;
-    }
-
-    .key-btn {
-      width: 68px;
-      height: 68px;
-      margin: 0 auto;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 22px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .key-btn:active {
-      transform: scale(0.9);
-      background: var(--primary);
-      color: white;
-    }
-
-    .key-btn.action-key {
-      background: transparent;
-      border: none;
-      font-size: 18px;
+      text-align: left;
     }
 
     /* ESTRUCTURA PRINCIPAL DE LA APP */
@@ -628,7 +579,7 @@
         <h1>Mom Coin Wallet</h1>
         <p>Elegí tu cuenta para ingresar</p>
         <div class="account-list">
-          <button class="account-button" data-name="Santi" data-email="santipapel16@gmail.com">
+          <button type="button" class="account-button" data-name="Santi" data-email="santipapel16@gmail.com">
             <div class="account-avatar">👤</div>
             <div class="account-info">
               <strong>Santi</strong>
@@ -637,7 +588,7 @@
             <div class="account-arrow">›</div>
           </button>
 
-          <button class="account-button" data-name="Leonel" data-email="leoxdfunes@gmail.com">
+          <button type="button" class="account-button" data-name="Leonel" data-email="leoxdfunes@gmail.com">
             <div class="account-avatar">👤</div>
             <div class="account-info">
               <strong>Leonel</strong>
@@ -646,7 +597,7 @@
             <div class="account-arrow">›</div>
           </button>
 
-          <button class="account-button" data-name="Gabriela" data-email="gabyhuchy@gmail.com">
+          <button type="button" class="account-button" data-name="Gabriela" data-email="gabyhuchy@gmail.com">
             <div class="account-avatar admin-avatar">👑</div>
             <div class="account-info">
               <strong>Gabriela</strong>
@@ -657,31 +608,15 @@
         </div>
       </div>
 
-      <!-- TECLADO DE PIN TIPO MERCADO PAGO -->
-      <div id="pinScreen" style="display: none;">
-        <h1 id="pinAccountName">Hola</h1>
-        <p>Ingresá tu PIN de seguridad</p>
+      <!-- FORMULARIO DE CONTRASEÑA CON TECLADO NORMAL -->
+      <div id="passwordScreen" style="display: none;">
+        <h1 id="passwordAccountName">Hola</h1>
+        <p>Ingresá tu contraseña</p>
 
-        <div class="pin-container" id="pinDots">
-          <div class="pin-dot"></div>
-          <div class="pin-dot"></div>
-          <div class="pin-dot"></div>
-          <div class="pin-dot"></div>
-        </div>
-
-        <div class="keypad">
-          <button class="key-btn" data-key="1">1</button>
-          <button class="key-btn" data-key="2">2</button>
-          <button class="key-btn" data-key="3">3</button>
-          <button class="key-btn" data-key="4">4</button>
-          <button class="key-btn" data-key="5">5</button>
-          <button class="key-btn" data-key="6">6</button>
-          <button class="key-btn" data-key="7">7</button>
-          <button class="key-btn" data-key="8">8</button>
-          <button class="key-btn" data-key="9">9</button>
-          <button class="key-btn action-key" id="backAccounts">←</button>
-          <button class="key-btn" data-key="0">0</button>
-          <button class="key-btn action-key" id="deletePinKey">⌫</button>
+        <div class="password-form">
+          <input type="password" id="standardPasswordInput" class="form-input" placeholder="Contraseña de acceso" autocomplete="current-password">
+          <button type="button" id="loginSubmitBtn" class="btn-primary">Ingresar 🚀</button>
+          <button type="button" id="backAccounts" class="btn-primary" style="background:var(--bg); color:var(--text); border:1px solid var(--border);">← Volver a cuentas</button>
         </div>
       </div>
 
@@ -943,7 +878,6 @@
     let privateMode = false;
     let selectedEmail = "";
     let selectedName = "";
-    let enteredPin = "";
 
     let unsubscribeTransactions = null;
     let unsubscribeNotifications = null;
@@ -971,81 +905,66 @@
       return div.innerHTML;
     }
 
-    /* TECLADO DE PIN Y AUTENTICACIÓN */
+    /* SELECCIÓN DE CUENTA Y TECLADO NORMAL */
     const accountButtons = document.querySelectorAll(".account-button");
     const accountSelection = document.getElementById("accountSelection");
-    const pinScreen = document.getElementById("pinScreen");
-    const pinAccountName = document.getElementById("pinAccountName");
-    const pinDots = document.querySelectorAll(".pin-dot");
+    const passwordScreen = document.getElementById("passwordScreen");
+    const passwordAccountName = document.getElementById("passwordAccountName");
+    const standardPasswordInput = document.getElementById("standardPasswordInput");
 
     accountButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
+      // Usar tanto click como touchend para garantizar compatibilidad móvil total
+      const handleSelect = (e) => {
+        e.preventDefault();
         triggerHaptic();
-        selectedName = btn.dataset.name;
-        selectedEmail = btn.dataset.email;
-        pinAccountName.textContent = `Hola, ${selectedName}`;
+        selectedName = btn.getAttribute("data-name");
+        selectedEmail = btn.getAttribute("data-email");
+        passwordAccountName.textContent = `Hola, ${selectedName}`;
         accountSelection.style.display = "none";
-        pinScreen.style.display = "block";
-        enteredPin = "";
-        updatePinDots();
-      });
+        passwordScreen.style.display = "block";
+        standardPasswordInput.value = "";
+        setTimeout(() => standardPasswordInput.focus(), 150);
+      };
+
+      btn.addEventListener("click", handleSelect);
+      btn.addEventListener("touchend", handleSelect);
     });
 
     document.getElementById("backAccounts").addEventListener("click", () => {
       triggerHaptic();
-      pinScreen.style.display = "none";
+      passwordScreen.style.display = "none";
       accountSelection.style.display = "block";
-      enteredPin = "";
-      updatePinDots();
+      standardPasswordInput.value = "";
     });
 
-    document.querySelectorAll(".key-btn[data-key]").forEach(key => {
-      key.addEventListener("click", () => {
-        triggerHaptic();
-        if (enteredPin.length < 20) {
-          enteredPin += key.dataset.key;
-          updatePinDots();
-          checkPinLogin();
-        }
-      });
-    });
+    async function executeLogin() {
+      const password = standardPasswordInput.value.trim();
+      if (!password) {
+        showToast("Ingresá tu contraseña ❌");
+        return;
+      }
 
-    document.getElementById("deletePinKey").addEventListener("click", () => {
-      triggerHaptic();
-      enteredPin = enteredPin.slice(0, -1);
-      updatePinDots();
-    });
-
-    function updatePinDots() {
-      pinDots.forEach((dot, idx) => {
-        if (idx < enteredPin.length) {
-          dot.classList.add("active");
-        } else {
-          dot.classList.remove("active");
+      try {
+        showToast("🔓 Ingresando...");
+        await signInWithEmailAndPassword(auth, selectedEmail, password);
+      } catch (err) {
+        // Fallback al PIN por defecto si falla el Auth estándar
+        if (password === ACCOUNT_PINS[selectedName]) {
+          try {
+            await signInWithEmailAndPassword(auth, selectedEmail, ACCOUNT_PINS[selectedName]);
+            return;
+          } catch (e) {}
         }
-      });
-    }
-
-    async function checkPinLogin() {
-      if (enteredPin.length >= 4) {
-        try {
-          showToast("🔓 Verificando PIN...");
-          await signInWithEmailAndPassword(auth, selectedEmail, enteredPin);
-        } catch (err) {
-          if (enteredPin === ACCOUNT_PINS[selectedName]) {
-            try {
-              await signInWithEmailAndPassword(auth, selectedEmail, ACCOUNT_PINS[selectedName]);
-              return;
-            } catch (e) {}
-          }
-          if (enteredPin.length >= 8) {
-            showToast("PIN incorrecto ❌");
-            enteredPin = "";
-            updatePinDots();
-          }
-        }
+        showToast("Contraseña incorrecta ❌");
       }
     }
+
+    document.getElementById("loginSubmitBtn").addEventListener("click", executeLogin);
+    standardPasswordInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        executeLogin();
+      }
+    });
 
     /* NAVEGACIÓN ENTRE PÁGINAS */
     const navTabs = document.querySelectorAll(".nav-tab");
@@ -1406,7 +1325,8 @@
         document.getElementById("app").style.display = "none";
         document.getElementById("bottomNav").style.display = "none";
         accountSelection.style.display = "block";
-        pinScreen.style.display = "none";
+        passwordScreen.style.display = "none";
+        standardPasswordInput.value = "";
       }
     });
 
