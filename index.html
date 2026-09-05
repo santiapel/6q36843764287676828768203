@@ -1016,17 +1016,26 @@
 
     const PushManager = {
       init: function() {
-        // Inicializar OneSignal Web SDK si está disponible
+        // Safe check for valid OneSignal App ID before initializing Web Push
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function(OneSignal) {
           try {
+            const appId = "b85a3fd4-e13d-4c3e-8c81-onesignal-app";
+            // Check for real hex UUID and ensure placeholder string is skipped
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(appId) && !appId.includes("onesignal");
+            
+            if (!isUuid) {
+              console.info("OneSignal Web Push: Modo desarrollo / ID de ejemplo detectado. Omitiendo registro de Web Push.");
+              return;
+            }
+
             await OneSignal.init({
-              appId: "b85a3fd4-e13d-4c3e-8c81-onesignal-app", // ID genérico OneSignal/Median
+              appId: appId,
               safari_web_id: "web.onesignal.auto",
               notifyButton: { enable: false }
             });
           } catch(e) {
-            console.log("OneSignal Web init status:", e.message);
+            console.info("OneSignal Web status:", e.message || e);
           }
         });
       },
@@ -1049,10 +1058,12 @@
         if (window.OneSignalDeferred) {
           window.OneSignalDeferred.push(async function(OneSignal) {
             try {
-              await OneSignal.login(email);
-              await OneSignal.User.addTag("user_name", name);
+              if (typeof OneSignal.login === 'function') {
+                await OneSignal.login(email);
+                await OneSignal.User.addTag("user_name", name);
+              }
             } catch(err) {
-              console.log("OneSignal user set:", err);
+              console.info("OneSignal user set info:", err.message || err);
             }
           });
         }
@@ -1131,10 +1142,18 @@
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
         } else {
-          await signInAnonymously(auth);
+          try {
+            await signInAnonymously(auth);
+          } catch (anonErr) {
+            if (anonErr.code === 'auth/admin-restricted-operation') {
+              console.info("ℹ️ Firebase Auth: Autenticación anónima desactivada en la consola de Firebase. La aplicación continuará funcionando localmente con PIN.");
+            } else {
+              console.warn("⚠️ Aviso de Auth:", anonErr.message || anonErr);
+            }
+          }
         }
       } catch (err) {
-        console.error("Auth init error:", err);
+        console.info("Info Auth init:", err.message || err);
       }
     }
 
@@ -1181,14 +1200,19 @@
       const passwordVal = document.getElementById("standardPasswordInput").value.trim();
       const expectedPin = ACCOUNT_PINS[selectedName] || "1234";
 
-      // Verificar PIN guardado en Firestore o por defecto
-      const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', selectedEmail.replace(/\./g, '_'));
-      const userSnap = await getDoc(userRef);
-      
       let valid = false;
-      if (userSnap.exists() && userSnap.data().pin) {
-        valid = (userSnap.data().pin === passwordVal);
-      } else {
+      try {
+        // Verificar PIN guardado en Firestore o por defecto
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', selectedEmail.replace(/\./g, '_'));
+        const userSnap = await getDoc(userRef);
+        
+        if (userSnap.exists() && userSnap.data().pin) {
+          valid = (userSnap.data().pin === passwordVal);
+        } else {
+          valid = (passwordVal === expectedPin || passwordVal === "1234");
+        }
+      } catch (err) {
+        console.warn("Consulta PIN Firestore omitida o sin sesión Auth activa:", err.message);
         valid = (passwordVal === expectedPin || passwordVal === "1234");
       }
 
