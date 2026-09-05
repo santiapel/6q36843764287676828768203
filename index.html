@@ -728,6 +728,10 @@
 
       <!-- BOTONES DE ACCIÓN RÁPIDA -->
       <div class="quick-actions">
+        <div class="action-item" id="quickTransfer">
+          <div class="action-icon">🔄</div>
+          <span class="action-label">Transferir</span>
+        </div>
         <div class="action-item" id="quickWithdraw">
           <div class="action-icon">💸</div>
           <span class="action-label">Retirar</span>
@@ -735,10 +739,6 @@
         <div class="action-item" id="quickChat">
           <div class="action-icon">💬</div>
           <span class="action-label">Chat</span>
-        </div>
-        <div class="action-item" id="quickAdmin" style="display:none;">
-          <div class="action-icon">👑</div>
-          <span class="action-label">Enviar</span>
         </div>
         <div class="action-item" id="quickSettings">
           <div class="action-icon">⚙️</div>
@@ -796,6 +796,29 @@
       </div>
     </section>
 
+    <!-- SECCIÓN DE TRANSFERENCIAS ENTRE USUARIOS -->
+    <section id="pageTransfer" class="page-section">
+      <div class="card">
+        <div class="card-title">
+          <span>🔄 Transferir Mom Coins</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Envía Mom Coins a cualquier integrante del hogar de forma instantánea.</p>
+        
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Destinatario</label>
+        <select id="transferRecipientSelect" class="form-input">
+          <option value="">Cargando usuarios...</option>
+        </select>
+
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Monto (MC)</label>
+        <input id="transferAmountInput" type="number" min="0.1" step="0.1" class="form-input" placeholder="Ej: 5">
+
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Motivo o Nota (Opcional)</label>
+        <input id="transferNoteInput" type="text" maxlength="80" class="form-input" placeholder="Ej: Pago de merienda 🍕">
+
+        <button id="executeTransferBtn" class="btn-primary" style="margin-top:6px;">Enviar Mom Coins 🚀</button>
+      </div>
+    </section>
+
     <!-- SECCIÓN 4: PANEL MAMÁ (ADMIN) -->
     <section id="pageAdmin" class="page-section">
       <div class="card">
@@ -825,7 +848,22 @@
           </div>
         </div>
 
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);">
+        <!-- CAMBIAR NOMBRE DE LA CUENTA -->
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:10px;">
+          <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">✏️ Cambiar Nombre de Cuenta</h4>
+          <input id="editNameInput" type="text" class="form-input" placeholder="Nuevo nombre">
+          <button id="saveNameBtn" class="btn-primary" style="padding:10px;font-size:13px;margin-bottom:16px;">Guardar Nombre</button>
+        </div>
+
+        <!-- CAMBIAR PIN DE SEGURIDAD -->
+        <div style="border-top:1px solid var(--border);padding-top:16px;">
+          <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">🔑 Cambiar PIN de Acceso</h4>
+          <input id="newPinInput" type="password" maxlength="20" class="form-input" placeholder="Nuevo PIN">
+          <input id="confirmPinInput" type="password" maxlength="20" class="form-input" placeholder="Confirmar Nuevo PIN">
+          <button id="savePinBtn" class="btn-primary" style="padding:10px;font-size:13px;margin-bottom:16px;">Actualizar PIN</button>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
           <span style="font-size:14px;font-weight:600;">🌙 Modo Oscuro</span>
           <input type="checkbox" id="darkModeToggle" style="width:20px;height:20px;">
         </div>
@@ -841,6 +879,10 @@
     <button class="nav-tab active" data-target="pageHome">
       <span class="tab-icon">🏠</span>
       <span>Inicio</span>
+    </button>
+    <button class="nav-tab" data-target="pageTransfer">
+      <span class="tab-icon">🔄</span>
+      <span>Transferir</span>
     </button>
     <button class="nav-tab" data-target="pageChat">
       <span class="tab-icon">💬</span>
@@ -864,8 +906,8 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, updatePassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, query, where, orderBy, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
@@ -883,6 +925,12 @@
     const MAX_WITHDRAWAL_MC = 10;
     const MC_VALUE_ARS = 500;
     const ADMIN_EMAILS = ["gabyhuchy@hotmail.com", "gabyhuchy@gmail.com"];
+
+    const USER_MAP = [
+      { name: "Santi", email: "santipapel16@gmail.com" },
+      { name: "Leonel", email: "leoxdfunes@gmail.com" },
+      { name: "Gabriela", email: "gabyhuchy@gmail.com" }
+    ];
 
     const ACCOUNT_PINS = {
       "Santi": "Sanfunpro",
@@ -969,8 +1017,6 @@
     });
 
     function updatePinDots() {
-      const targetPin = ACCOUNT_PINS[selectedName] || "";
-      const maxDisplay = 4;
       pinDots.forEach((dot, idx) => {
         if (idx < enteredPin.length) {
           dot.classList.add("active");
@@ -981,22 +1027,23 @@
     }
 
     async function checkPinLogin() {
-      const expected = ACCOUNT_PINS[selectedName];
-      if (!expected) return;
-
-      if (enteredPin === expected) {
+      if (enteredPin.length >= 4) {
         try {
           showToast("🔓 Verificando PIN...");
           await signInWithEmailAndPassword(auth, selectedEmail, enteredPin);
         } catch (err) {
-          showToast("Error al conectar.");
-          enteredPin = "";
-          updatePinDots();
+          if (enteredPin === ACCOUNT_PINS[selectedName]) {
+            try {
+              await signInWithEmailAndPassword(auth, selectedEmail, ACCOUNT_PINS[selectedName]);
+              return;
+            } catch (e) {}
+          }
+          if (enteredPin.length >= 8) {
+            showToast("PIN incorrecto ❌");
+            enteredPin = "";
+            updatePinDots();
+          }
         }
-      } else if (enteredPin.length >= expected.length) {
-        showToast("PIN incorrecto ❌");
-        enteredPin = "";
-        updatePinDots();
       }
     }
 
@@ -1016,6 +1063,9 @@
       });
     });
 
+    document.getElementById("quickTransfer").addEventListener("click", () => {
+      document.querySelector('[data-target="pageTransfer"]').click();
+    });
     document.getElementById("quickWithdraw").addEventListener("click", () => {
       document.querySelector('[data-target="pageWithdraw"]').click();
     });
@@ -1059,6 +1109,10 @@
       document.getElementById("profileEmail").textContent = user.email;
       document.getElementById("profileAvatar").src = avatar;
 
+      document.getElementById("editNameInput").value = name;
+
+      populateTransferRecipients(user);
+
       if (isAdmin) {
         document.getElementById("tabAdminNav").style.display = "flex";
         document.getElementById("quickAdmin").style.display = "flex";
@@ -1070,6 +1124,172 @@
         document.getElementById("quickAdmin").style.display = "none";
       }
     }
+
+    /* POBLAR SELECCIÓN DE USUARIOS PARA TRANSFERIR */
+    function populateTransferRecipients(user) {
+      const select = document.getElementById("transferRecipientSelect");
+      select.innerHTML = `<option value="">Seleccionar destinatario</option>`;
+
+      USER_MAP.forEach(u => {
+        if (u.email.toLowerCase() !== user.email.toLowerCase()) {
+          const opt = document.createElement("option");
+          opt.value = u.email;
+          opt.textContent = `${u.name} (${u.email})`;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    /* EJECUTAR TRANSFERENCIA ENTRE USUARIOS */
+    document.getElementById("executeTransferBtn").addEventListener("click", async () => {
+      triggerHaptic();
+      if (!currentUser) return;
+
+      const recipientEmail = document.getElementById("transferRecipientSelect").value;
+      const amount = parseFloat(document.getElementById("transferAmountInput").value);
+      const note = document.getElementById("transferNoteInput").value.trim();
+
+      if (!recipientEmail) {
+        showToast("Seleccioná un destinatario ❌");
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Ingresá un monto válido ❌");
+        return;
+      }
+      if (amount > currentBalance) {
+        showToast("Saldo insuficiente ❌");
+        return;
+      }
+
+      try {
+        showToast("Enviando transferencia... ⏳");
+        
+        // Buscar el usuario destinatario en Firestore por email
+        const usersRef = collection(db, "users");
+        const qRecipient = query(usersRef, where("email", "==", recipientEmail));
+        const recipientSnap = await getDocs(qRecipient);
+
+        let recipientUid = null;
+        let recipientName = recipientEmail.split("@")[0];
+
+        if (!recipientSnap.empty) {
+          const rDoc = recipientSnap.docs[0];
+          recipientUid = rDoc.id;
+          if (rDoc.data().name) recipientName = rDoc.data().name;
+        }
+
+        if (!recipientUid) {
+          showToast("El destinatario no existe en la base de datos ❌");
+          return;
+        }
+
+        const senderName = currentUser.displayName || currentUser.email.split("@")[0];
+
+        // Transacción Firestore para asegurar consistencia
+        await runTransaction(db, async (transaction) => {
+          const senderRef = doc(db, "users", currentUser.uid);
+          const recipientRef = doc(db, "users", recipientUid);
+
+          const senderDoc = await transaction.get(senderRef);
+          const recipientDoc = await transaction.get(recipientRef);
+
+          if (!senderDoc.exists()) throw new Error("Documento remitente no encontrado.");
+          
+          const sBal = senderDoc.data().balance || senderDoc.data().coins || 0;
+          if (sBal < amount) throw new Error("Saldo insuficiente.");
+
+          const rBal = (recipientDoc.exists() ? (recipientDoc.data().balance || recipientDoc.data().coins || 0) : 0);
+
+          transaction.update(senderRef, { balance: sBal - amount });
+          if (recipientDoc.exists()) {
+            transaction.update(recipientRef, { balance: rBal + amount });
+          } else {
+            transaction.set(recipientRef, { balance: amount, email: recipientEmail, name: recipientName });
+          }
+        });
+
+        // Registrar historial para emisor
+        await addDoc(collection(db, "transactions"), {
+          user_ref: currentUser.uid,
+          amount: -amount,
+          title: `Transferencia a ${recipientName}` + (note ? ` (${note})` : ""),
+          created_at: serverTimestamp()
+        });
+
+        // Registrar historial para receptor
+        await addDoc(collection(db, "transactions"), {
+          user_ref: recipientUid,
+          amount: amount,
+          title: `Transferencia de ${senderName}` + (note ? ` (${note})` : ""),
+          created_at: serverTimestamp()
+        });
+
+        document.getElementById("transferAmountInput").value = "";
+        document.getElementById("transferNoteInput").value = "";
+        showToast("¡Transferencia enviada con éxito! 🚀");
+        await loadBalance(currentUser);
+
+      } catch (err) {
+        console.error("Error en transferencia:", err);
+        showToast("Error al transferir: " + err.message);
+      }
+    });
+
+    /* CAMBIAR NOMBRE DE LA CUENTA */
+    document.getElementById("saveNameBtn").addEventListener("click", async () => {
+      triggerHaptic();
+      if (!currentUser) return;
+
+      const newName = document.getElementById("editNameInput").value.trim();
+      if (!newName) {
+        showToast("El nombre no puede estar vacío ❌");
+        return;
+      }
+
+      try {
+        showToast("Guardando nombre... ⏳");
+        await updateProfile(currentUser, { displayName: newName });
+        await setDoc(doc(db, "users", currentUser.uid), { name: newName }, { merge: true });
+
+        loadUserProfile(currentUser);
+        showToast("¡Nombre actualizado correctamente! ✨");
+      } catch (err) {
+        console.error(err);
+        showToast("Error al cambiar nombre");
+      }
+    });
+
+    /* CAMBIAR PIN DE ACCESO */
+    document.getElementById("savePinBtn").addEventListener("click", async () => {
+      triggerHaptic();
+      if (!currentUser) return;
+
+      const newPin = document.getElementById("newPinInput").value;
+      const confirmPin = document.getElementById("confirmPinInput").value;
+
+      if (!newPin || newPin.length < 4) {
+        showToast("El PIN debe tener al menos 4 caracteres ❌");
+        return;
+      }
+      if (newPin !== confirmPin) {
+        showToast("Los PINs no coinciden ❌");
+        return;
+      }
+
+      try {
+        showToast("Actualizando PIN... ⏳");
+        await updatePassword(currentUser, newPin);
+        await setDoc(doc(db, "users", currentUser.uid), { pin: newPin }, { merge: true });
+
+        document.getElementById("newPinInput").value = "";
+        document.getElementById("confirmPinInput").value = "";
+        showToast("¡PIN actualizado con éxito! 🔑");
+      } catch (err) {
+        console.error(err);
+        showToast("Error al cambiar el PIN (posiblemente requiere reingreso)");
+      }
+    });
 
     async function loadBalance(user) {
       try {
