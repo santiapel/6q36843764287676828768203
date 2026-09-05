@@ -2,49 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Mom Coin Bank</title>
-  <meta name="description" content="Mom Coin Bank: la billetera digital familiar.">
-  <!-- Funciona como sitio web normal, como PWA instalable y dentro del WebView de Median.co -->
-  <meta name="theme-color" content="#6c4df6">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Mom Coin Bank">
-  <link rel="manifest" href="./manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mom Coin Wallet</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
-  <link rel="apple-touch-icon" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
-
-  <!--
-    NOTIFICACIONES PUSH FUERA DE LA APP (OneSignal Web SDK)
-    ---------------------------------------------------------
-    Esto habilita push real (con la pestaña/app cerrada) cuando la web
-    se abre directamente en un navegador (Chrome, Opera GX, Safari, etc).
-    Dentro de Median.co esto queda inactivo automáticamente: Median usa su
-    propio puente nativo (median.onesignal.*) que ya está conectado al MISMO
-    proyecto de OneSignal desde el panel de Median (Native Plugins > OneSignal).
-    Reemplazá TU_ONESIGNAL_APP_ID por el App ID real de tu cuenta OneSignal.
-  -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.ONESIGNAL_APP_ID = "TU_ONESIGNAL_APP_ID";
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    // Si la app corre embebida dentro de Median.co, NO inicializamos el SDK web:
-    // Median ya maneja el push nativo con su propio puente (median.onesignal.*).
-    // Se usa el user-agent (disponible de inmediato) porque "window.median"
-    // puede tardar unos milisegundos en inyectarse dentro del WebView.
-    var __runningInMedian = /median/i.test(navigator.userAgent) || typeof window.median !== "undefined";
-    if (!__runningInMedian) {
-      OneSignalDeferred.push(async function (OneSignal) {
-        await OneSignal.init({
-          appId: window.ONESIGNAL_APP_ID,
-          allowLocalhostAsSecureOrigin: true,
-          notifyButton: { enable: false }
-        });
-        window.__oneSignalReady = true;
-      });
-    }
-  </script>
 
   <style>
     * {
@@ -99,27 +59,16 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
     @keyframes pulseGlow {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-    }
-
-    @keyframes dotPop {
-      0% { transform: scale(0.8); }
-      50% { transform: scale(1.25); }
-      100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     .animated-screen {
       animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* PANTALLA LOGIN TIPO MP */
+    /* PANTALLA LOGIN */
     #loginScreen {
       min-height: 100vh;
       display: flex;
@@ -185,7 +134,6 @@
       color: var(--text);
       cursor: pointer;
       transition: all 0.2s ease;
-      -webkit-appearance: none;
     }
 
     .account-button:active {
@@ -235,7 +183,6 @@
       pointer-events: none;
     }
 
-    /* FORMULARIO DE CONTRASEÑA ESTÁNDAR */
     .password-form {
       display: flex;
       flex-direction: column;
@@ -243,7 +190,7 @@
       text-align: left;
     }
 
-    /* ESTRUCTURA PRINCIPAL DE LA APP */
+    /* APP MAIN */
     #app {
       display: none;
       width: 100%;
@@ -252,7 +199,6 @@
       padding: 16px 16px calc(var(--nav-height) + 16px);
     }
 
-    /* TOP BAR */
     .topbar {
       display: flex;
       align-items: center;
@@ -313,7 +259,7 @@
       font-weight: 700;
     }
 
-    /* TARJETA MP PRINCIPAL */
+    /* TARJETA SALDO */
     .balance-card {
       position: relative;
       padding: 24px;
@@ -374,45 +320,7 @@
       margin-top: 4px;
     }
 
-    .card-chip {
-      width: 38px;
-      height: 28px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #ffe9b8, #d9b366);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: #6b4c17;
-      margin-bottom: 14px;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
-    }
-
-    .card-footer-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 18px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .card-number {
-      font-size: 14px;
-      letter-spacing: 2px;
-      font-weight: 600;
-      opacity: 0.9;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .card-network {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      opacity: 0.85;
-    }
-
-    /* ACCIONES RÁPIDAS (ESTILO MERCADO PAGO) */
+    /* ACCIONES RÁPIDAS */
     .quick-actions {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -458,7 +366,7 @@
       text-align: center;
     }
 
-    /* SECCIONES Y TARJETAS */
+    /* CARDS */
     .card {
       background: var(--card);
       border-radius: 22px;
@@ -477,7 +385,7 @@
       justify-content: space-between;
     }
 
-    /* LISTA DE MOVIMIENTOS */
+    /* MOVIMIENTOS */
     .tx-item {
       display: flex;
       align-items: center;
@@ -528,7 +436,47 @@
     .tx-amount.income { color: var(--green); }
     .tx-amount.expense { color: var(--red); }
 
-    /* NAVEGACIÓN INFERIOR (BOTTOM NAV) */
+    /* CHAT BUBBLES */
+    .chat-bubble {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      position: relative;
+      word-wrap: break-word;
+    }
+
+    .chat-bubble.mine {
+      align-self: flex-end;
+      background: var(--primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-bubble.other {
+      align-self: flex-start;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-meta {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .audio-player {
+      width: 100%;
+      max-width: 220px;
+      margin-top: 6px;
+    }
+
+    /* NAVIGATION */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -570,7 +518,6 @@
       font-size: 20px;
     }
 
-    /* PANTALLAS DE NAVEGACIÓN */
     .page-section {
       display: none;
     }
@@ -580,7 +527,6 @@
       animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* ALERTA RETIRO MAMÁ */
     .admin-alert-banner {
       background: linear-gradient(135deg, #ef4444, #dc2626);
       color: white;
@@ -590,7 +536,6 @@
       box-shadow: 0 10px 20px rgba(239, 68, 68, 0.25);
     }
 
-    /* FORMULARIOS Y CHAT */
     .form-input {
       width: 100%;
       padding: 14px;
@@ -641,46 +586,10 @@
     #toast.show {
       transform: translate(-50%, 0);
     }
-
-
-    /* ===== MEDIAN.CO + MICROINTERACCIONES ===== */
-    html { scroll-behavior: smooth; }
-    body { padding-top: env(safe-area-inset-top); padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 18px); }
-    button, .action-item, .nav-tab, .account-button, input, select { touch-action: manipulation; }
-    button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid rgba(108,77,246,.25); outline-offset: 2px; }
-    .card, .balance-card, .action-item, .profile-pill { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
-    .card:hover, .action-item:hover { transform: translateY(-2px); }
-    .balance-card { animation: cardIn .5s cubic-bezier(.16,1,.3,1); }
-    .action-item { animation: popIn .4s cubic-bezier(.16,1,.3,1) both; }
-    .action-item:nth-child(2){animation-delay:.04s}.action-item:nth-child(3){animation-delay:.08s}.action-item:nth-child(4){animation-delay:.12s}
-    @keyframes cardIn { from { opacity:0; transform: translateY(12px) scale(.98); } to { opacity:1; transform:none; } }
-    @keyframes popIn { from { opacity:0; transform:translateY(8px) scale(.96); } to { opacity:1; transform:none; } }
-    @keyframes shimmer { 0% { transform:translateX(-120%); } 100% { transform:translateX(120%); } }
-    @keyframes bellRing { 0%,100%{transform:rotate(0)} 20%{transform:rotate(12deg)} 40%{transform:rotate(-10deg)} 60%{transform:rotate(7deg)} 80%{transform:rotate(-4deg)} }
-    .notification-dot { width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;box-shadow:0 0 0 4px rgba(239,68,68,.12);animation:dotPop 1.4s infinite; }
-    .withdraw-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; margin-top:10px; box-shadow:var(--shadow); animation:slideUp .25s ease; }
-    .withdraw-actions { display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; margin-top:10px; }
-    .mini-btn { border:0; border-radius:11px; padding:9px 6px; font-weight:800; font-size:11px; cursor:pointer; transition:transform .15s ease, opacity .15s ease; }
-    .mini-btn:active { transform:scale(.95); }
-    .mini-btn.accept { background:#dcfce7;color:#15803d; }.mini-btn.reject{background:#fee2e2;color:#b91c1c}.mini-btn.schedule{background:#ede9fe;color:#6d28d9}
-    .task-item { padding:14px; border:1px solid var(--border); border-radius:16px; margin-bottom:10px; background:var(--bg); animation:slideUp .25s ease; }
-    .task-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .task-title { font-size:14px;font-weight:800; }.task-meta{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
-    .reward-chip { flex:none; background:var(--green-bg);color:#059669;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900; }
-    .task-progress { height:7px;background:var(--border);border-radius:99px;overflow:hidden;margin:10px 0; }.task-progress > span{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .5s ease;}
-    .task-btn { width:100%;padding:10px;border:0;border-radius:12px;background:var(--primary);color:#fff;font-weight:800;cursor:pointer; }
-    .task-btn.secondary{background:var(--primary-light);color:var(--primary);}.task-btn:disabled{opacity:.55;cursor:not-allowed}
-    .empty-state { text-align:center;padding:24px 12px;color:var(--muted);font-size:13px; }
-    .floating-notice { position:fixed; right:16px; top:calc(16px + env(safe-area-inset-top)); z-index:10001; background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:0 18px 45px rgba(0,0,0,.16);display:flex;align-items:center;gap:10px;animation:slideUp .3s ease;max-width:min(340px,calc(100vw - 32px)); }
-    .floating-notice .notice-icon{font-size:22px;animation:bellRing 1s ease;}
-    @media (max-width: 430px) { .quick-actions{gap:7px}.action-item{padding:12px 5px}.action-label{font-size:10px}.bottom-nav{overflow-x:auto}.nav-tab{min-width:72px}.withdraw-actions{grid-template-columns:1fr 1fr 1fr} }
-    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }
-
   </style>
 </head>
 
 <body>
-
   <section id="loginScreen">
     <div class="login-card animated-screen">
       <div class="app-logo">MC</div>
@@ -718,7 +627,7 @@
         </div>
       </div>
 
-      <!-- FORMULARIO DE CONTRASEÑA CON TECLADO NORMAL -->
+      <!-- FORMULARIO DE CONTRASEÑA -->
       <div id="passwordScreen" style="display: none;">
         <h1 id="passwordAccountName">Hola</h1>
         <p>Ingresá tu contraseña</p>
@@ -761,19 +670,14 @@
         <div id="withdrawAlertList"></div>
       </div>
 
-      <!-- TARJETA SALDO ESTILO TARJETA BANCARIA -->
+      <!-- TARJETA SALDO -->
       <article class="balance-card">
-        <div class="card-chip">▤</div>
         <div class="balance-header">
           <span class="balance-label">Saldo disponible</span>
           <button id="privacyButton" class="eye-btn">👁 Ocultar</button>
         </div>
         <div id="balance" class="balance-amount">Cargando...</div>
         <div class="balance-sub">Mom Coins (MC)</div>
-        <div class="card-footer-row">
-          <span id="cardMaskedNumber" class="card-number">•••• •••• •••• ••••</span>
-          <span class="card-network">MOM COIN</span>
-        </div>
       </article>
 
       <!-- BOTONES DE ACCIÓN RÁPIDA -->
@@ -790,9 +694,9 @@
           <div class="action-icon">💬</div>
           <span class="action-label">Chat</span>
         </div>
-        <div class="action-item" id="quickTasks">
-          <div class="action-icon">✅</div>
-          <span class="action-label">Tareas</span>
+        <div class="action-item" id="quickSettings">
+          <div class="action-icon">⚙️</div>
+          <span class="action-label">Ajustes</span>
         </div>
       </div>
 
@@ -808,27 +712,31 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 2: CHAT BANCARIO -->
+    <!-- SECCIÓN 2: CHAT BANCARIO CON AUDIO -->
     <section id="pageChat" class="page-section">
       <div class="card">
         <div class="card-title">
-          <span>💬 Chat con Mamá</span>
+          <span>💬 Chat Familiar</span>
           <span id="unreadMessagesBadge" style="display:none;background:#ef4444;color:white;border-radius:10px;padding:2px 8px;font-size:11px;">0</span>
         </div>
 
-        <div id="messagesList" style="display:flex;flex-direction:column;gap:10px;max-height:350px;overflow-y:auto;padding:10px 0;"></div>
+        <div id="messagesList" style="display:flex;flex-direction:column;gap:10px;max-height:380px;overflow-y:auto;padding:10px 5px;margin-bottom:10px;">
+          <div style="text-align:center;color:var(--muted);font-size:12px;">Cargando mensajes...</div>
+        </div>
 
-        <div style="display:flex;gap:8px;margin-top:10px;">
+        <div style="display:flex;gap:8px;">
           <input id="messageInput" type="text" class="form-input" style="margin:0;" placeholder="Escribí un mensaje...">
           <button id="sendMessageBtn" class="btn-primary" style="width:auto;padding:0 18px;">➤</button>
         </div>
 
         <div style="display:flex;gap:8px;margin-top:10px;">
-          <button id="recordVoiceBtn" class="form-input" style="margin:0;cursor:pointer;font-weight:700;">🎙️ Grabar Voz</button>
+          <button id="recordVoiceBtn" class="form-input" style="margin:0;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--primary-light);color:var(--primary);border:1px solid var(--primary);">
+            🎙️ Grabar Nota de Voz
+          </button>
         </div>
 
         <div id="recordingStatus" style="display:none;margin-top:8px;color:#ef4444;font-weight:700;font-size:13px;text-align:center;">
-          🔴 Grabando... <span id="recordingTime">0:00</span>
+          🔴 Grabando audio... <span id="recordingTime">0:00</span>
         </div>
       </div>
     </section>
@@ -840,13 +748,19 @@
           <span>💸 Solicitar Retiro en Efectivo</span>
         </div>
         <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">1 MC = $500 ARS (Máximo 10 MC por solicitud)</p>
-        <input id="withdrawAmount" type="number" min="1" max="10" class="form-input" placeholder="Cantidad de MC">
-        <div id="withdrawCalc" style="font-size:13px;color:var(--primary);font-weight:700;margin-bottom:14px;">Valor estimado: $0 ARS</div>
-        <button id="requestWithdrawBtn" class="btn-primary">Solicitar Retiro</button>
+        
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Cantidad de MC a retirar</label>
+        <input id="withdrawAmount" type="number" min="1" max="10" class="form-input" placeholder="Ej: 5">
+        
+        <div id="withdrawCalc" style="font-size:14px;color:var(--primary);font-weight:800;margin-bottom:16px;background:var(--primary-light);padding:10px;border-radius:12px;text-align:center;">
+          Valor estimado: $0 ARS
+        </div>
+        
+        <button id="requestWithdrawBtn" class="btn-primary">Solicitar Retiro a Mamá 🚀</button>
       </div>
     </section>
 
-    <!-- SECCIÓN DE TRANSFERENCIAS ENTRE USUARIOS -->
+    <!-- SECCIÓN TRANSFERENCIAS ENTRE USUARIOS -->
     <section id="pageTransfer" class="page-section">
       <div class="card">
         <div class="card-title">
@@ -869,40 +783,28 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 4: TAREAS Y RECOMPENSAS -->
-    <section id="pageTasks" class="page-section">
-      <div class="card">
-        <div class="card-title">
-          <span>✅ Tareas del hogar</span>
-          <span id="taskCount" style="font-size:12px;color:var(--muted);font-weight:normal;">0 tareas</span>
-        </div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Completá tareas, marcálas como hechas y ganá Mom Coins cuando mamá las apruebe. 🪙</p>
-        <div id="tasksList"><div class="empty-state">Cargando tareas...</div></div>
-      </div>
-      <div class="card" id="adminTaskCreator" style="display:none;">
-        <div class="card-title"><span>👑 Crear tarea</span><span>🪙</span></div>
-        <input id="taskTitleInput" class="form-input" maxlength="80" placeholder="Ej: Ordenar mi habitación">
-        <input id="taskDescriptionInput" class="form-input" maxlength="160" placeholder="Descripción (opcional)">
-        <input id="taskRewardInput" type="number" min="0.1" max="100" step="0.1" class="form-input" placeholder="Recompensa en MC">
-        <select id="taskAssigneeSelect" class="form-input"><option value="">Para cualquier integrante</option></select>
-        <button id="createTaskBtn" class="btn-primary">Crear tarea ✨</button>
-      </div>
-    </section>
-
     <!-- SECCIÓN 4: PANEL MAMÁ (ADMIN) -->
     <section id="pageAdmin" class="page-section">
       <div class="card">
         <div class="card-title">
-          <span>👑 Transferir Mom Coins</span>
+          <span>👑 Enviar / Recargar Mom Coins</span>
         </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Como Administradora, podés acreditar Mom Coins por premios, tareas o recargas.</p>
+        
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Seleccionar integrante</label>
         <select id="recipientEmail" class="form-input">
           <option value="">Seleccionar destinatario</option>
           <option value="santipapel16@gmail.com">Santi</option>
           <option value="leoxdfunes@gmail.com">Leo</option>
         </select>
+
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Monto (MC)</label>
         <input id="sendAmount" type="number" min="1" class="form-input" placeholder="Cantidad de MC">
-        <input id="sendReason" type="text" maxlength="100" class="form-input" placeholder="Motivo o premio">
-        <button id="sendCoinsButton" class="btn-primary">Enviar Mom Coins</button>
+
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Motivo o premio</label>
+        <input id="sendReason" type="text" maxlength="100" class="form-input" placeholder="Ej: Premio por ordenar habitación 🌟">
+
+        <button id="sendCoinsButton" class="btn-primary">Acreditar Mom Coins ✨</button>
       </div>
     </section>
 
@@ -918,16 +820,14 @@
           </div>
         </div>
 
-        <!-- CAMBIAR NOMBRE DE LA CUENTA -->
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:10px;">
           <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">✏️ Cambiar Nombre de Cuenta</h4>
           <input id="editNameInput" type="text" class="form-input" placeholder="Nuevo nombre">
           <button id="saveNameBtn" class="btn-primary" style="padding:10px;font-size:13px;margin-bottom:16px;">Guardar Nombre</button>
         </div>
 
-        <!-- CAMBIAR PIN DE SEGURIDAD -->
         <div style="border-top:1px solid var(--border);padding-top:16px;">
-          <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">🔑 Cambiar PIN de Acceso</h4>
+          <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">🔑 Cambiar PIN / Contraseña</h4>
           <input id="newPinInput" type="password" maxlength="20" class="form-input" placeholder="Nuevo PIN">
           <input id="confirmPinInput" type="password" maxlength="20" class="form-input" placeholder="Confirmar Nuevo PIN">
           <button id="savePinBtn" class="btn-primary" style="padding:10px;font-size:13px;margin-bottom:16px;">Actualizar PIN</button>
@@ -944,7 +844,7 @@
 
   </main>
 
-  <!-- NAVEGACIÓN INFERIOR ESTILO NATIVO -->
+  <!-- NAVEGACIÓN INFERIOR -->
   <nav class="bottom-nav" id="bottomNav" style="display: none;">
     <button class="nav-tab active" data-target="pageHome">
       <span class="tab-icon">🏠</span>
@@ -966,10 +866,6 @@
       <span class="tab-icon">👑</span>
       <span>Admin</span>
     </button>
-    <button class="nav-tab" data-target="pageTasks">
-      <span class="tab-icon">✅</span>
-      <span>Tareas</span>
-    </button>
     <button class="nav-tab" data-target="pageSettings">
       <span class="tab-icon">⚙️</span>
       <span>Ajustes</span>
@@ -979,9 +875,9 @@
   <div id="toast"></div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, updatePassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, query, where, orderBy, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, updatePassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
@@ -996,7 +892,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const MAX_WITHDRAWAL_MC = 10;
     const MC_VALUE_ARS = 500;
     const ADMIN_EMAILS = ["gabyhuchy@hotmail.com", "gabyhuchy@gmail.com"];
 
@@ -1007,9 +902,9 @@
     ];
 
     const ACCOUNT_PINS = {
-      "Santi": "2014",
-      "Leonel": "2012",
-      "Gabriela": "1981"
+      "Santi": "Sanfunpro",
+      "Leonel": "Leoncito2012",
+      "Gabriela": "Chanchuly2014"
     };
 
     let currentUser = null;
@@ -1019,116 +914,20 @@
     let selectedName = "";
 
     let unsubscribeTransactions = null;
-    let unsubscribeNotifications = null;
     let unsubscribeWithdrawals = null;
-    let messagesUnsubscribe = null;
+    let unsubscribeMessages = null;
 
-    // ─────────────────────────────────────────────
-    // NOTIFICACIONES PUSH PARA MEDIAN.CO / ONESIGNAL
-    // ─────────────────────────────────────────────
-    // En la app nativa de Median, OneSignal se encarga de
-    // entregar las notificaciones incluso cuando la app está cerrada.
-    // En un navegador normal usamos Notification como respaldo.
-    let notificationPermissionRequested = false;
-
-    function isMedianApp() {
-      return typeof window.median !== "undefined" || /median/i.test(navigator.userAgent);
-    }
-
-    // Espera a que el SDK web de OneSignal termine de cargar (fuera de Median).
-    function waitForOneSignalWeb(timeoutMs = 6000) {
-      return new Promise(resolve => {
-        if (isMedianApp()) return resolve(null);
-        const start = Date.now();
-        (function check() {
-          if (window.__oneSignalReady && window.OneSignal) return resolve(window.OneSignal);
-          if (Date.now() - start > timeoutMs) return resolve(null);
-          setTimeout(check, 150);
-        })();
-      });
-    }
-
-    async function setupPushNotifications(user) {
-      try {
-        if (isMedianApp()) {
-          // Mostrar notificaciones también cuando la app está abierta (Median/OneSignal nativo).
-          if (window.median.onesignal?.enableForegroundNotifications) {
-            try {
-              await window.median.onesignal.enableForegroundNotifications(true);
-            } catch (_) {}
-          }
-
-          // Vincula el dispositivo con el usuario de Mom Coin (externalId = email).
-          if (window.median.onesignal?.login && user?.email) {
-            try {
-              await window.median.onesignal.login(user.email);
-            } catch (err) {
-              console.warn("OneSignal (Median) login:", err);
-            }
-          }
-
-          // Pide permiso al entrar a la app. Si el usuario ya respondió antes,
-          // el sistema operativo respeta esa decisión y no repite el diálogo.
-          if (!notificationPermissionRequested && window.median.onesignal?.register) {
-            notificationPermissionRequested = true;
-            try {
-              await window.median.onesignal.register();
-            } catch (err) {
-              console.warn("OneSignal (Median) permission:", err);
-            }
-          }
-          return;
-        }
-
-        // Navegador normal (Chrome, Opera GX, Safari, etc): OneSignal Web SDK.
-        // Esto permite notificaciones push reales incluso con la pestaña o
-        // el navegador cerrados, no solo mientras la página está abierta.
-        const OneSignal = await waitForOneSignalWeb();
-        if (!OneSignal) return;
-
-        try {
-          if (user?.email) await OneSignal.login(user.email);
-        } catch (err) {
-          console.warn("OneSignal (web) login:", err);
-        }
-
-        if (!notificationPermissionRequested) {
-          notificationPermissionRequested = true;
-          try {
-            const perm = OneSignal.Notifications.permission;
-            if (!perm) await OneSignal.Notifications.requestPermission();
-          } catch (err) {
-            console.warn("OneSignal (web) permission:", err);
-          }
-        }
-      } catch (err) {
-        console.warn("Push setup:", err);
-      }
-    }
-
-    async function logoutPushNotifications() {
-      try {
-        if (isMedianApp()) {
-          if (window.median.onesignal?.logout) {
-            await window.median.onesignal.logout();
-          }
-          return;
-        }
-        const OneSignal = await waitForOneSignalWeb(1500);
-        if (OneSignal) await OneSignal.logout();
-      } catch (err) {
-        console.warn("OneSignal logout:", err);
-      }
-    }
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordTimerInterval = null;
 
     function triggerHaptic() {
-      if (navigator.vibrate) {
-        navigator.vibrate(15);
-      }
+      if (navigator.vibrate) navigator.vibrate(15);
     }
 
     function showToast(msg) {
       const toast = document.getElementById("toast");
+      if (!toast) return;
       toast.textContent = msg;
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 2500);
@@ -1140,7 +939,6 @@
       return div.innerHTML;
     }
 
-    /* SELECCIÓN DE CUENTA Y TECLADO NORMAL */
     const accountButtons = document.querySelectorAll(".account-button");
     const accountSelection = document.getElementById("accountSelection");
     const passwordScreen = document.getElementById("passwordScreen");
@@ -1164,7 +962,6 @@
         };
 
         btn.addEventListener("click", handleSelect);
-        btn.addEventListener("touchend", handleSelect);
       });
     }
 
@@ -1196,23 +993,18 @@
             return;
           } catch (e) {}
         }
-        showToast("Contraseña incorrecta ❌");
+        showToast("Contraseña o PIN incorrecto ❌");
       }
     }
 
     const loginSubmitBtn = document.getElementById("loginSubmitBtn");
-    if (loginSubmitBtn) {
-      loginSubmitBtn.addEventListener("click", executeLogin);
-    }
+    if (loginSubmitBtn) loginSubmitBtn.addEventListener("click", executeLogin);
     if (standardPasswordInput) {
       standardPasswordInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          executeLogin();
-        }
+        if (e.key === "Enter") executeLogin();
       });
     }
 
-    /* NAVEGACIÓN ENTRE PÁGINAS */
     const navTabs = document.querySelectorAll(".nav-tab");
     const pageSections = document.querySelectorAll(".page-section");
 
@@ -1226,6 +1018,10 @@
         tab.classList.add("active");
         const targetSec = document.getElementById(targetId);
         if (targetSec) targetSec.classList.add("active");
+
+        if (targetId === "pageChat") {
+          scrollChatToBottom();
+        }
       });
     });
 
@@ -1242,11 +1038,8 @@
     bindClick("quickTransfer", "pageTransfer");
     bindClick("quickWithdraw", "pageWithdraw");
     bindClick("quickChat", "pageChat");
-    bindClick("quickTasks", "pageTasks");
     bindClick("quickSettings", "pageSettings");
-    bindClick("quickAdmin", "pageAdmin");
 
-    /* CONTROL DE SALDO Y PERFIL */
     function updateBalanceUI() {
       const balEl = document.getElementById("balance");
       const eyeBtn = document.getElementById("privacyButton");
@@ -1269,18 +1062,7 @@
       });
     }
 
-    function updateCardNumber(user) {
-      const el = document.getElementById("cardMaskedNumber");
-      if (!el || !user?.uid) return;
-      // Número pseudo-aleatorio pero ESTABLE derivado del uid, solo decorativo.
-      let hash = 0;
-      for (let i = 0; i < user.uid.length; i++) hash = (hash * 31 + user.uid.charCodeAt(i)) >>> 0;
-      const last4 = String(hash % 10000).padStart(4, "0");
-      el.textContent = `•••• •••• •••• ${last4}`;
-    }
-
     function loadUserProfile(user) {
-      updateCardNumber(user);
       const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
       const name = user.displayName || user.email.split('@')[0];
       const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6c4df6&color=fff`;
@@ -1302,23 +1084,19 @@
       populateTransferRecipients(user);
 
       const tabAdminNav = document.getElementById("tabAdminNav");
-      const quickAdmin = document.getElementById("quickAdmin");
       const roleBadge = document.getElementById("roleBadge");
       const headerRole = document.getElementById("headerRole");
 
       if (isAdmin) {
         if (tabAdminNav) tabAdminNav.style.display = "flex";
-        if (quickAdmin) quickAdmin.style.display = "flex";
         if (roleBadge) roleBadge.textContent = "👑 ADMIN";
         if (headerRole) headerRole.textContent = "Administradora Central";
         listenToWithdrawalAlerts();
       } else {
         if (tabAdminNav) tabAdminNav.style.display = "none";
-        if (quickAdmin) quickAdmin.style.display = "none";
       }
     }
 
-    /* POBLAR SELECCIÓN DE USUARIOS PARA TRANSFERIR */
     function populateTransferRecipients(user) {
       const select = document.getElementById("transferRecipientSelect");
       if (!select) return;
@@ -1334,7 +1112,7 @@
       });
     }
 
-    /* EJECUTAR TRANSFERENCIA ENTRE USUARIOS */
+    // TRANSFERENCIAS ENTRE USUARIOS
     const executeTransferBtn = document.getElementById("executeTransferBtn");
     if (executeTransferBtn) {
       executeTransferBtn.addEventListener("click", async () => {
@@ -1367,21 +1145,20 @@
         try {
           showToast("Enviando transferencia... ⏳");
           
-          const usersRef = collection(db, "users");
-          const qRecipient = query(usersRef, where("email", "==", recipientEmail));
-          const recipientSnap = await getDocs(qRecipient);
-
+          const usersSnap = await getDocs(collection(db, "users"));
           let recipientUid = null;
           let recipientName = recipientEmail.split("@")[0];
 
-          if (!recipientSnap.empty) {
-            const rDoc = recipientSnap.docs[0];
-            recipientUid = rDoc.id;
-            if (rDoc.data().name) recipientName = rDoc.data().name;
-          }
+          usersSnap.forEach(d => {
+            const data = d.data();
+            if (data.email && data.email.toLowerCase() === recipientEmail.toLowerCase()) {
+              recipientUid = d.id;
+              if (data.name) recipientName = data.name;
+            }
+          });
 
           if (!recipientUid) {
-            showToast("El destinatario no existe en la base de datos ❌");
+            showToast("El destinatario no existe aún en la base de datos ❌");
             return;
           }
 
@@ -1394,7 +1171,7 @@
             const senderDoc = await transaction.get(senderRef);
             const recipientDoc = await transaction.get(recipientRef);
 
-            if (!senderDoc.exists()) throw new Error("Documento remitente no encontrado.");
+            if (!senderDoc.exists()) throw new Error("Cuenta no encontrada.");
             
             const sBal = senderDoc.data().balance || senderDoc.data().coins || 0;
             if (sBal < amount) throw new Error("Saldo insuficiente.");
@@ -1402,25 +1179,21 @@
             const rBal = (recipientDoc.exists() ? (recipientDoc.data().balance || recipientDoc.data().coins || 0) : 0);
 
             transaction.update(senderRef, { balance: sBal - amount });
-            if (recipientDoc.exists()) {
-              transaction.update(recipientRef, { balance: rBal + amount });
-            } else {
-              transaction.set(recipientRef, { balance: amount, email: recipientEmail, name: recipientName });
-            }
+            transaction.update(recipientRef, { balance: rBal + amount });
           });
 
           await addDoc(collection(db, "transactions"), {
             user_ref: currentUser.uid,
             amount: -amount,
             title: `Transferencia a ${recipientName}` + (note ? ` (${note})` : ""),
-            created_at: serverTimestamp()
+            created_at: Date.now()
           });
 
           await addDoc(collection(db, "transactions"), {
             user_ref: recipientUid,
             amount: amount,
             title: `Transferencia de ${senderName}` + (note ? ` (${note})` : ""),
-            created_at: serverTimestamp()
+            created_at: Date.now()
           });
 
           amountInput.value = "";
@@ -1435,7 +1208,270 @@
       });
     }
 
-    /* CAMBIAR NOMBRE DE LA CUENTA */
+    // CALCULADORA DE RETIRO Y SOLICITUD
+    const withdrawAmountInput = document.getElementById("withdrawAmount");
+    const withdrawCalc = document.getElementById("withdrawCalc");
+    const requestWithdrawBtn = document.getElementById("requestWithdrawBtn");
+
+    if (withdrawAmountInput && withdrawCalc) {
+      withdrawAmountInput.addEventListener("input", () => {
+        const val = parseFloat(withdrawAmountInput.value) || 0;
+        const totalArs = val * MC_VALUE_ARS;
+        withdrawCalc.textContent = `Valor estimado: $${totalArs.toLocaleString("es-AR")} ARS`;
+      });
+    }
+
+    if (requestWithdrawBtn) {
+      requestWithdrawBtn.addEventListener("click", async () => {
+        triggerHaptic();
+        if (!currentUser) return;
+
+        const amount = parseFloat(withdrawAmountInput.value);
+        if (isNaN(amount) || amount <= 0) {
+          showToast("Ingresá una cantidad válida ❌");
+          return;
+        }
+        if (amount > 10) {
+          showToast("Máximo 10 MC por solicitud ❌");
+          return;
+        }
+        if (amount > currentBalance) {
+          showToast("Saldo insuficiente en Mom Coins ❌");
+          return;
+        }
+
+        try {
+          showToast("Enviando solicitud de retiro... ⏳");
+          const uName = currentUser.displayName || currentUser.email.split("@")[0];
+
+          await addDoc(collection(db, "withdrawals"), {
+            userId: currentUser.uid,
+            userName: uName,
+            userEmail: currentUser.email,
+            amount: amount,
+            arsValue: amount * MC_VALUE_ARS,
+            status: "pending",
+            created_at: Date.now()
+          });
+
+          withdrawAmountInput.value = "";
+          if (withdrawCalc) withdrawCalc.textContent = "Valor estimado: $0 ARS";
+          showToast("¡Solicitud enviada a Mamá! 💸");
+        } catch (err) {
+          console.error("Error al solicitar retiro:", err);
+          showToast("Error al solicitar retiro");
+        }
+      });
+    }
+
+    // PANEL ADMINISTRADOR (MAMÁ)
+    const sendCoinsButton = document.getElementById("sendCoinsButton");
+    if (sendCoinsButton) {
+      sendCoinsButton.addEventListener("click", async () => {
+        triggerHaptic();
+        const recipientEmail = document.getElementById("recipientEmail").value;
+        const amount = parseFloat(document.getElementById("sendAmount").value);
+        const reason = document.getElementById("sendReason").value.trim() || "Acreditación de Mamá 🌟";
+
+        if (!recipientEmail) {
+          showToast("Seleccioná un destinatario ❌");
+          return;
+        }
+        if (isNaN(amount) || amount <= 0) {
+          showToast("Ingresá un monto válido ❌");
+          return;
+        }
+
+        try {
+          showToast("Acreditando Mom Coins... ⏳");
+          const usersSnap = await getDocs(collection(db, "users"));
+          let targetUid = null;
+          let targetName = recipientEmail.split("@")[0];
+
+          usersSnap.forEach(d => {
+            const data = d.data();
+            if (data.email && data.email.toLowerCase() === recipientEmail.toLowerCase()) {
+              targetUid = d.id;
+              if (data.name) targetName = data.name;
+            }
+          });
+
+          if (!targetUid) {
+            showToast("Usuario no encontrado en la base de datos ❌");
+            return;
+          }
+
+          const targetRef = doc(db, "users", targetUid);
+          const targetDoc = await getDoc(targetRef);
+          const oldBal = targetDoc.exists() ? (targetDoc.data().balance || targetDoc.data().coins || 0) : 0;
+
+          await setDoc(targetRef, { balance: oldBal + amount, email: recipientEmail }, { merge: true });
+
+          await addDoc(collection(db, "transactions"), {
+            user_ref: targetUid,
+            amount: amount,
+            title: `Mamá: ${reason}`,
+            created_at: Date.now()
+          });
+
+          document.getElementById("sendAmount").value = "";
+          document.getElementById("sendReason").value = "";
+          showToast(`¡${amount} MC enviados a ${targetName}! ✨`);
+        } catch (err) {
+          console.error("Error enviando coins:", err);
+          showToast("Error al acreditar coins");
+        }
+      });
+    }
+
+    // CHAT FAMILIAR CON TEXTO Y NOTA DE VOZ
+    const sendMessageBtn = document.getElementById("sendMessageBtn");
+    const messageInput = document.getElementById("messageInput");
+    const messagesList = document.getElementById("messagesList");
+
+    async function sendChatMessage(text = "", audioUrl = null) {
+      if (!currentUser) return;
+      if (!text.trim() && !audioUrl) return;
+
+      try {
+        const uName = currentUser.displayName || currentUser.email.split("@")[0];
+        await addDoc(collection(db, "messages"), {
+          senderUid: currentUser.uid,
+          senderName: uName,
+          text: text.trim(),
+          audioUrl: audioUrl || null,
+          timestamp: Date.now()
+        });
+
+        if (messageInput) messageInput.value = "";
+      } catch (err) {
+        console.error("Error al enviar mensaje:", err);
+        showToast("Error al enviar mensaje");
+      }
+    }
+
+    if (sendMessageBtn && messageInput) {
+      sendMessageBtn.addEventListener("click", () => {
+        triggerHaptic();
+        sendChatMessage(messageInput.value);
+      });
+
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          sendChatMessage(messageInput.value);
+        }
+      });
+    }
+
+    function listenMessages() {
+      if (unsubscribeMessages) unsubscribeMessages();
+
+      unsubscribeMessages = onSnapshot(collection(db, "messages"), snap => {
+        if (!messagesList) return;
+        messagesList.innerHTML = "";
+
+        const msgs = [];
+        snap.forEach(d => msgs.push({ id: d.id, ...d.data() }));
+
+        msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+        if (msgs.length === 0) {
+          messagesList.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px;">No hay mensajes aún. ¡Escribí el primero!</div>`;
+          return;
+        }
+
+        msgs.forEach(m => {
+          const isMine = currentUser && m.senderUid === currentUser.uid;
+          const bubble = document.createElement("div");
+          bubble.className = `chat-bubble ${isMine ? 'mine' : 'other'}`;
+
+          let contentHtml = `<strong>${escapeHTML(m.senderName)}</strong><br>`;
+          if (m.text) {
+            contentHtml += `<span>${escapeHTML(m.text)}</span>`;
+          }
+          if (m.audioUrl) {
+            contentHtml += `<audio class="audio-player" controls src="${m.audioUrl}"></audio>`;
+          }
+
+          const dateStr = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+          contentHtml += `<div class="chat-meta">${dateStr}</div>`;
+
+          bubble.innerHTML = contentHtml;
+          messagesList.appendChild(bubble);
+        });
+
+        scrollChatToBottom();
+      });
+    }
+
+    function scrollChatToBottom() {
+      if (messagesList) {
+        setTimeout(() => {
+          messagesList.scrollTop = messagesList.scrollHeight;
+        }, 100);
+      }
+    }
+
+    // GRABADOR DE VOZ (WEB AUDIO MEDIARECORDER)
+    const recordVoiceBtn = document.getElementById("recordVoiceBtn");
+    const recordingStatus = document.getElementById("recordingStatus");
+    const recordingTime = document.getElementById("recordingTime");
+    let startTime = 0;
+
+    if (recordVoiceBtn) {
+      recordVoiceBtn.addEventListener("click", async () => {
+        triggerHaptic();
+
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          // Detener grabación
+          mediaRecorder.stop();
+          recordVoiceBtn.textContent = "🎙️ Grabar Nota de Voz";
+          if (recordingStatus) recordingStatus.style.display = "none";
+          clearInterval(recordTimerInterval);
+        } else {
+          // Iniciar grabación
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+              if (event.data.size > 0) audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+              const reader = new FileReader();
+              reader.readAsDataURL(audioBlob);
+              reader.onloadend = async () => {
+                const base64Audio = reader.result;
+                showToast("Enviando nota de voz... 🎙️");
+                await sendChatMessage("🎙️ Nota de voz", base64Audio);
+              };
+              stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            recordVoiceBtn.textContent = "⏹️ Detener y Enviar";
+            if (recordingStatus) recordingStatus.style.display = "block";
+
+            startTime = Date.now();
+            recordTimerInterval = setInterval(() => {
+              const elapsed = Math.floor((Date.now() - startTime) / 1000);
+              const mins = Math.floor(elapsed / 60);
+              const secs = elapsed % 60;
+              if (recordingTime) recordingTime.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }, 1000);
+
+          } catch (err) {
+            console.error("Error al acceder al micrófono:", err);
+            showToast("No se pudo acceder al micrófono ❌");
+          }
+        }
+      });
+    }
+
+    // EDICIÓN DE PERFIL Y PIN
     const saveNameBtn = document.getElementById("saveNameBtn");
     if (saveNameBtn) {
       saveNameBtn.addEventListener("click", async () => {
@@ -1464,7 +1500,6 @@
       });
     }
 
-    /* CAMBIAR PIN DE ACCESO */
     const savePinBtn = document.getElementById("savePinBtn");
     if (savePinBtn) {
       savePinBtn.addEventListener("click", async () => {
@@ -1497,7 +1532,7 @@
           showToast("¡PIN actualizado con éxito! 🔑");
         } catch (err) {
           console.error(err);
-          showToast("Error al cambiar el PIN (posiblemente requiere reingreso)");
+          showToast("Error al cambiar el PIN (reingresá sesión)");
         }
       });
     }
@@ -1509,28 +1544,41 @@
           const data = snap.data();
           currentBalance = typeof data.balance === "number" ? data.balance : (data.coins || 0);
           updateBalanceUI();
+        } else {
+          currentBalance = 0;
+          await setDoc(doc(db, "users", user.uid), { balance: 0, email: user.email, name: user.displayName || user.email.split('@')[0] });
+          updateBalanceUI();
         }
       } catch (err) { console.error(err); }
     }
 
     function listenTransactions(user) {
       if (unsubscribeTransactions) unsubscribeTransactions();
-      const q = query(collection(db, "transactions"), where("user_ref", "==", user.uid), orderBy("created_at", "desc"));
 
-      unsubscribeTransactions = onSnapshot(q, snap => {
+      unsubscribeTransactions = onSnapshot(collection(db, "transactions"), snap => {
         const list = document.getElementById("transactionsList");
         const txCount = document.getElementById("transactionCount");
         if (!list) return;
-        if (txCount) txCount.textContent = `${snap.size} movs`;
+
+        const userTx = [];
+        snap.forEach(d => {
+          const data = d.data();
+          if (data.user_ref === user.uid) {
+            userTx.push({ id: d.id, ...data });
+          }
+        });
+
+        userTx.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+
+        if (txCount) txCount.textContent = `${userTx.length} movs`;
         list.innerHTML = "";
 
-        if (snap.empty) {
-          list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Sin movimientos.</div>`;
+        if (userTx.length === 0) {
+          list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Sin movimientos aún.</div>`;
           return;
         }
 
-        snap.forEach(d => {
-          const data = d.data();
+        userTx.forEach(data => {
           const amount = Number(data.amount || 0);
           const isInc = amount >= 0;
           const item = document.createElement("div");
@@ -1540,7 +1588,7 @@
               <div class="tx-icon ${isInc ? 'income' : 'expense'}">${isInc ? '↓' : '↑'}</div>
               <div>
                 <div class="tx-title">${escapeHTML(data.title || "Movimiento")}</div>
-                <div class="tx-date">${data.created_at ? new Date(data.created_at.toDate()).toLocaleDateString() : 'Hoy'}</div>
+                <div class="tx-date">${data.created_at ? new Date(data.created_at).toLocaleDateString() : 'Hoy'}</div>
               </div>
             </div>
             <div class="tx-amount ${isInc ? 'income' : 'expense'}">${isInc ? '+' : ''}${amount} MC</div>
@@ -1550,251 +1598,90 @@
       });
     }
 
-    function formatScheduleDate(ts) {
-      try {
-        const d = ts?.toDate ? ts.toDate() : new Date(ts);
-        return d.toLocaleString("es-AR", { dateStyle:"short", timeStyle:"short" });
-      } catch (_) { return "fecha programada"; }
-    }
-
-    async function handleWithdrawalAction(id, action) {
-      try {
-        if (action === "schedule") {
-          const raw = prompt("¿Para qué fecha y hora querés programar el retiro?\nFormato: AAAA-MM-DDTHH:MM", "2026-09-05T18:00");
-          if (!raw) return;
-          const when = new Date(raw);
-          if (Number.isNaN(when.getTime()) || when.getTime() <= Date.now()) {
-            showToast("Elegí una fecha futura válida ❌"); return;
-          }
-          await updateDoc(doc(db, "withdrawals", id), {
-            status: "scheduled",
-            scheduledFor: when,
-            scheduledBy: currentUser.uid,
-            scheduledAt: serverTimestamp()
-          });
-          await addDoc(collection(db, "notifications"), {
-            type: "withdrawal_scheduled",
-            withdrawalId: id,
-            title: "Retiro programado 📅",
-            message: `El retiro fue programado para ${when.toLocaleString("es-AR")}.`,
-            targetEmail: currentUser.email,
-            scheduledFor: when,
-            read: false,
-            createdAt: serverTimestamp()
-          });
-          showToast("Retiro programado 📅");
-          return;
-        }
-        const newStatus = action === "accept" ? "approved" : "rejected";
-        await updateDoc(doc(db, "withdrawals", id), {
-          status: newStatus,
-          resolvedBy: currentUser.uid,
-          resolvedAt: serverTimestamp()
-        });
-        showToast(action === "accept" ? "Retiro aceptado ✅" : "Retiro rechazado ❌");
-      } catch (err) {
-        console.error("Withdrawal action:", err);
-        showToast("No se pudo actualizar el retiro");
-      }
-    }
-
     function listenToWithdrawalAlerts() {
       if (unsubscribeWithdrawals) unsubscribeWithdrawals();
-      const q = query(collection(db, "withdrawals"), where("status", "in", ["pending", "scheduled"]));
 
-      unsubscribeWithdrawals = onSnapshot(q, snap => {
+      unsubscribeWithdrawals = onSnapshot(collection(db, "withdrawals"), snap => {
         const alertBox = document.getElementById("adminWithdrawAlert");
         const alertList = document.getElementById("withdrawAlertList");
         const badge = document.getElementById("withdrawAlertBadge");
         if (!alertBox || !alertList) return;
 
-        const now = Date.now();
-        const due = [];
-        const scheduled = [];
+        const pendingList = [];
         snap.forEach(d => {
-          const w = d.data();
-          if (w.status === "scheduled") {
-            const t = w.scheduledFor?.toDate ? w.scheduledFor.toDate().getTime() : new Date(w.scheduledFor || 0).getTime();
-            if (t && t <= now) due.push({ id:d.id, ...w }); else scheduled.push({ id:d.id, ...w });
-          } else due.push({ id:d.id, ...w });
+          const data = d.data();
+          if (data.status === "pending") {
+            pendingList.push({ id: d.id, ...data });
+          }
         });
 
-        badge.textContent = due.length + (scheduled.length ? ` · ${scheduled.length} 📅` : "");
-        alertBox.style.display = (due.length || scheduled.length) ? "block" : "none";
+        if (badge) badge.textContent = pendingList.length;
+
+        if (pendingList.length === 0) {
+          alertBox.style.display = "none";
+          return;
+        }
+
+        alertBox.style.display = "block";
         alertList.innerHTML = "";
 
-        due.forEach(w => {
+        pendingList.forEach(w => {
           const div = document.createElement("div");
-          div.className = "withdraw-card";
+          div.style.cssText = "background:rgba(255,255,255,0.15);padding:10px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;";
           div.innerHTML = `
-            <div style="font-size:12px;line-height:1.5;"><strong>${escapeHTML(w.userName || "Usuario")}</strong> solicita <strong>${Number(w.amount || 0)} MC</strong><br><span style="opacity:.75">$${Number(w.amount || 0) * MC_VALUE_ARS} ARS</span></div>
-            <div class="withdraw-actions">
-              <button class="mini-btn reject" data-action="reject">Rechazar</button>
-              <button class="mini-btn accept" data-action="accept">Aceptar</button>
-              <button class="mini-btn schedule" data-action="schedule">📅 Programar</button>
-            </div>`;
-          div.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => handleWithdrawalAction(w.id, btn.dataset.action)));
+            <span style="font-size:12px;"><strong>${escapeHTML(w.userName)}</strong> solicita ${w.amount} MC ($${w.arsValue || w.amount * MC_VALUE_ARS} ARS)</span>
+            <div style="display:flex;gap:6px;">
+              <button style="background:white;color:#dc2626;border:none;padding:4px 8px;border-radius:8px;font-weight:bold;cursor:pointer;" id="approve-${w.id}">Aprobar</button>
+              <button style="background:rgba(0,0,0,0.2);color:white;border:none;padding:4px 8px;border-radius:8px;font-weight:bold;cursor:pointer;" id="reject-${w.id}">X</button>
+            </div>
+          `;
           alertList.appendChild(div);
-        });
 
-        scheduled.forEach(w => {
-          const div = document.createElement("div");
-          div.className = "withdraw-card";
-          div.innerHTML = `<div style="font-size:12px;line-height:1.5;"><strong>📅 ${escapeHTML(w.userName || "Usuario")}</strong> · ${Number(w.amount || 0)} MC<br><span style="color:var(--primary);font-weight:800;">Programado: ${escapeHTML(formatScheduleDate(w.scheduledFor))}</span></div>`;
-          alertList.appendChild(div);
-          const scheduledTime = w.scheduledFor?.toDate ? w.scheduledFor.toDate().getTime() : new Date(w.scheduledFor || 0).getTime();
-          if (scheduledTime > Date.now()) {
-            setTimeout(() => {
-              showFloatingNotice("⏰", `Retiro de ${w.userName || "usuario"} programado ahora`);
-              if (navigator.vibrate) navigator.vibrate([100,60,100]);
-              if ("Notification" in window && Notification.permission === "granted") new Notification("Mom Coin Wallet", { body: `Retiro de ${w.userName || "usuario"} listo para revisar.` });
-            }, Math.min(scheduledTime - Date.now(), 2147483647));
+          const btnApprove = div.querySelector(`#approve-${w.id}`);
+          if (btnApprove) {
+            btnApprove.addEventListener("click", async () => {
+              try {
+                showToast("Procesando retiro... ⏳");
+                const userRef = doc(db, "users", w.userId);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                  const uBal = userSnap.data().balance || 0;
+                  if (uBal < w.amount) {
+                    showToast("El usuario no tiene suficiente saldo ❌");
+                    return;
+                  }
+                  await updateDoc(userRef, { balance: uBal - w.amount });
+                }
+
+                await addDoc(collection(db, "transactions"), {
+                  user_ref: w.userId,
+                  amount: -w.amount,
+                  title: `Retiro en efectivo aprobado ($${w.arsValue || w.amount * MC_VALUE_ARS} ARS)`,
+                  created_at: Date.now()
+                });
+
+                await updateDoc(doc(db, "withdrawals", w.id), { status: "approved" });
+                showToast("Retiro aprobado con éxito ✨");
+              } catch (e) {
+                console.error(e);
+                showToast("Error al aprobar retiro");
+              }
+            });
+          }
+
+          const btnReject = div.querySelector(`#reject-${w.id}`);
+          if (btnReject) {
+            btnReject.addEventListener("click", async () => {
+              await updateDoc(doc(db, "withdrawals", w.id), { status: "rejected" });
+              showToast("Solicitud rechazada");
+            });
           }
         });
-
-        if (due.length) showFloatingNotice("🚨", `${due.length} solicitud${due.length > 1 ? "es" : ""} de retiro pendiente${due.length > 1 ? "s" : ""}`);
-      }, err => console.error("Withdrawals listener:", err));
-    }
-
-    function showFloatingNotice(icon, text) {
-      const old = document.querySelector(".floating-notice");
-      if (old) old.remove();
-      const n = document.createElement("div");
-      n.className = "floating-notice";
-      n.innerHTML = `<span class="notice-icon">${icon}</span><strong>${escapeHTML(text)}</strong>`;
-      document.body.appendChild(n);
-      setTimeout(() => n.remove(), 4200);
-    }
-
-    /* SOLICITAR RETIRO */
-    const withdrawAmountInput = document.getElementById("withdrawAmount");
-    const withdrawCalc = document.getElementById("withdrawCalc");
-    if (withdrawAmountInput) {
-      withdrawAmountInput.addEventListener("input", () => {
-        const amount = Math.max(0, Math.min(MAX_WITHDRAWAL_MC, Number(withdrawAmountInput.value || 0)));
-        if (withdrawCalc) withdrawCalc.textContent = `Valor estimado: $${(amount * MC_VALUE_ARS).toLocaleString("es-AR")} ARS`;
       });
     }
-    const requestWithdrawBtn = document.getElementById("requestWithdrawBtn");
-    if (requestWithdrawBtn) requestWithdrawBtn.addEventListener("click", async () => {
-      triggerHaptic();
-      if (!currentUser) return showToast("Iniciá sesión primero ❌");
-      const amount = Number(withdrawAmountInput?.value || 0);
-      if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_WITHDRAWAL_MC) return showToast(`El retiro debe ser de 1 a ${MAX_WITHDRAWAL_MC} MC ❌`);
-      if (amount > currentBalance) return showToast("Saldo insuficiente ❌");
-      requestWithdrawBtn.disabled = true;
-      try {
-        await addDoc(collection(db, "withdrawals"), {
-          userId: currentUser.uid,
-          userEmail: currentUser.email,
-          userName: currentUser.displayName || currentUser.email.split("@")[0],
-          amount,
-          valueARS: amount * MC_VALUE_ARS,
-          status: "pending",
-          createdAt: serverTimestamp()
-        });
-        await addDoc(collection(db, "notifications"), {
-          type: "withdrawal_request",
-          title: "Nueva solicitud de retiro 💸",
-          message: `${currentUser.displayName || currentUser.email.split("@")[0]} solicitó ${amount} MC.`,
-          targetRole: "admin",
-          withdrawalAmount: amount,
-          read: false,
-          createdAt: serverTimestamp()
-        });
-        withdrawAmountInput.value = "";
-        if (withdrawCalc) withdrawCalc.textContent = "Valor estimado: $0 ARS";
-        showToast("Solicitud enviada a mamá 📩");
-      } catch (err) {
-        console.error("Withdraw request:", err);
-        showToast("No se pudo enviar la solicitud");
-      } finally { requestWithdrawBtn.disabled = false; }
-    });
 
-    /* TAREAS */
-    let unsubscribeTasks = null;
-    function taskTimestamp(data) { return data.createdAt?.toDate ? data.createdAt.toDate().getTime() : 0; }
-    function renderTasks(snap) {
-      const list = document.getElementById("tasksList");
-      const count = document.getElementById("taskCount");
-      if (!list) return;
-      const docs = snap.docs.slice().sort((a,b) => taskTimestamp(b.data()) - taskTimestamp(a.data()));
-      if (count) count.textContent = `${docs.length} tarea${docs.length === 1 ? "" : "s"}`;
-      list.innerHTML = "";
-      if (!docs.length) { list.innerHTML = `<div class="empty-state">No hay tareas todavía. 💤</div>`; return; }
-      docs.forEach(d => {
-        const t = d.data();
-        const assigned = !t.assignedEmail || t.assignedEmail.toLowerCase() === currentUser.email.toLowerCase();
-        if (!assigned && !ADMIN_EMAILS.includes(currentUser.email.toLowerCase())) return;
-        const status = t.status || "open";
-        const progress = status === "completed" ? 66 : status === "approved" ? 100 : 20;
-        const div = document.createElement("div"); div.className = "task-item";
-        const statusText = status === "open" ? "Disponible" : status === "completed" ? "Esperando aprobación" : status === "approved" ? "Pagada ✅" : status;
-        div.innerHTML = `
-          <div class="task-head"><div><div class="task-title">${escapeHTML(t.title || "Tarea")}</div><div class="task-meta">${escapeHTML(t.description || "Sin descripción")}<br>Para: ${escapeHTML(t.assignedName || "cualquiera")}</div></div><span class="reward-chip">+${Number(t.reward || 0)} MC</span></div>
-          <div class="task-progress"><span style="width:${progress}%"></span></div>
-          <div class="task-meta" style="margin-bottom:8px;">${statusText}</div>
-          <div class="task-buttons"></div>`;
-        const buttons = div.querySelector(".task-buttons");
-        if (ADMIN_EMAILS.includes(currentUser.email.toLowerCase())) {
-          if (status === "completed") {
-            const b=document.createElement("button"); b.className="task-btn"; b.textContent="Aprobar y pagar 🪙"; b.onclick=()=>approveTask(d.id,t); buttons.appendChild(b);
-          }
-          if (status !== "approved") {
-            const del=document.createElement("button"); del.className="task-btn secondary"; del.style.marginTop="7px"; del.textContent="Eliminar tarea"; del.onclick=()=>deleteTaskSafe(d.id); buttons.appendChild(del);
-          }
-        } else if (status === "open") {
-          const b=document.createElement("button"); b.className="task-btn"; b.textContent="Marcar como hecha ✅"; b.onclick=()=>completeTask(d.id); buttons.appendChild(b);
-        } else if (status === "completed") {
-          const b=document.createElement("button"); b.className="task-btn secondary"; b.textContent="En revisión por mamá ⏳"; b.disabled=true; buttons.appendChild(b);
-        }
-        list.appendChild(div);
-      });
-    }
-    function listenTasks() {
-      if (unsubscribeTasks) unsubscribeTasks();
-      unsubscribeTasks = onSnapshot(collection(db, "tasks"), renderTasks, err => { console.error("Tasks:",err); showToast("No se pudieron cargar las tareas"); });
-    }
-    async function completeTask(id) {
-      try { await updateDoc(doc(db,"tasks",id), { status:"completed", completedBy:currentUser.uid, completedAt:serverTimestamp() }); showToast("Tarea marcada como hecha 🎉"); }
-      catch(err){ console.error(err); showToast("No se pudo completar la tarea"); }
-    }
-    async function approveTask(id,t) {
-      try {
-        const assignedEmail = t.assignedEmail;
-        let recipientUid = t.completedBy || null;
-        if (!recipientUid && assignedEmail) {
-          const usersSnap = await getDocs(query(collection(db,"users"), where("email","==",assignedEmail)));
-          if (usersSnap.empty) throw new Error("Usuario no encontrado");
-          recipientUid = usersSnap.docs[0].id;
-        }
-        if (!recipientUid) throw new Error("No se pudo determinar quién completó la tarea");
-        const reward = Number(t.reward || 0);
-        await runTransaction(db, async tx => {
-          const ref=doc(db,"users",recipientUid); const us=await tx.get(ref); if(!us.exists()) throw new Error("Cuenta inexistente");
-          const bal=Number(us.data().balance || us.data().coins || 0); tx.update(ref,{balance:bal+reward});
-        });
-        await addDoc(collection(db,"transactions"),{user_ref:recipientUid,amount:reward,title:`Recompensa: ${t.title}`,created_at:serverTimestamp()});
-        await updateDoc(doc(db,"tasks",id),{status:"approved",approvedBy:currentUser.uid,approvedAt:serverTimestamp()});
-        showToast(`Tarea aprobada: +${reward} MC 🪙`);
-      } catch(err){ console.error("Approve task:",err); showToast("No se pudo pagar la tarea"); }
-    }
-    async function deleteTaskSafe(id) { if(!confirm("¿Eliminar esta tarea?")) return; try { await deleteDoc(doc(db,"tasks",id)); showToast("Tarea eliminada"); } catch(err){ console.error(err); showToast("No se pudo eliminar"); } }
-    const createTaskBtn=document.getElementById("createTaskBtn");
-    if(createTaskBtn) createTaskBtn.addEventListener("click",async()=>{
-      const title=document.getElementById("taskTitleInput")?.value.trim(); const description=document.getElementById("taskDescriptionInput")?.value.trim(); const reward=Number(document.getElementById("taskRewardInput")?.value||0); const sel=document.getElementById("taskAssigneeSelect"); const assignedEmail=sel?.value||""; const assignedName=sel?.selectedOptions?.[0]?.textContent||"cualquiera";
-      if(!title||reward<=0) return showToast("Completá título y recompensa ❌");
-      try { await addDoc(collection(db,"tasks"),{title,description,reward,assignedEmail,assignedName,status:"open",createdBy:currentUser.uid,createdAt:serverTimestamp()}); document.getElementById("taskTitleInput").value="";document.getElementById("taskDescriptionInput").value="";document.getElementById("taskRewardInput").value="";showToast("Tarea creada ✨"); }
-      catch(err){console.error(err);showToast("No se pudo crear la tarea");}
-    });
-    function setupTaskUI() {
-      const admin=ADMIN_EMAILS.includes((currentUser?.email||"").toLowerCase());
-      const creator=document.getElementById("adminTaskCreator"); if(creator) creator.style.display=admin?"block":"none";
-      const sel=document.getElementById("taskAssigneeSelect"); if(sel){sel.innerHTML='<option value="">Para cualquier integrante</option>'; USER_MAP.filter(u=>u.email.toLowerCase()!==currentUser.email.toLowerCase()).forEach(u=>{const o=document.createElement("option");o.value=u.email;o.textContent=u.name;sel.appendChild(o);});}
-      listenTasks();
-    }
-
-    /* MODO OSCURO */
+    // MODO OSCURO
     const darkModeToggle = document.getElementById("darkModeToggle");
     if (darkModeToggle) {
       darkModeToggle.addEventListener("change", () => {
@@ -1814,7 +1701,7 @@
       }
     }
 
-    /* AUTENTICACIÓN CENTRAL */
+    // AUTENTICACIÓN
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
       const loginScreen = document.getElementById("loginScreen");
@@ -1829,15 +1716,11 @@
         loadUserProfile(user);
         await loadBalance(user);
         listenTransactions(user);
-        setupTaskUI();
-
-        // Configura las notificaciones al entrar a la app.
-        await setupPushNotifications(user);
+        listenMessages();
       } else {
         if (loginScreen) loginScreen.style.display = "flex";
         if (appContainer) appContainer.style.display = "none";
         if (bottomNav) bottomNav.style.display = "none";
-        if (unsubscribeTasks) { unsubscribeTasks(); unsubscribeTasks = null; }
         if (accountSelection) accountSelection.style.display = "block";
         if (passwordScreen) passwordScreen.style.display = "none";
         if (standardPasswordInput) standardPasswordInput.value = "";
@@ -1848,7 +1731,6 @@
     if (logoutButton) {
       logoutButton.addEventListener("click", async () => {
         triggerHaptic();
-        await logoutPushNotifications();
         await signOut(auth);
         showToast("Sesión cerrada");
       });
