@@ -22,8 +22,11 @@ jobs:
       - name: Configurar Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
+
+      - name: Limpiar caché de Gradle
+        run: rm -rf ~/.gradle/caches/
 
       - name: Preparar carpeta de distribución (webDir)
         run: |
@@ -44,7 +47,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
 
       - name: Subir APK como artefacto descargable
         uses: actions/upload-artifact@v4
