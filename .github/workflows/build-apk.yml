@@ -25,11 +25,16 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Preparar carpeta de distribución (webDir)
+        run: |
+          mkdir -p dist
+          rsync -av --exclude='dist' --exclude='.git' --exclude='.github' --exclude='android' ./ dist/
+
       - name: Inicializar proyecto y Capacitor
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Mom Coin Wallet" com.momcoin.app --web-dir .
+          npx cap init "Mom Coin Wallet" com.momcoin.app --web-dir dist
           npx cap add android
 
       - name: Sincronizar archivos HTML/JS/CSS con Android
