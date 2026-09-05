@@ -6,6 +6,9 @@
   <title>Mom Coin Wallet</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
 
+  <!-- Median.co JS Bridge SDK -->
+  <script src="https://cdn.median.co/app/median.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -725,6 +728,10 @@
             <div class="account-arrow">›</div>
           </button>
         </div>
+
+        <button id="biometricsLoginBtn" class="google-button" style="margin-top:16px;background:var(--bg);border:1px solid var(--primary);color:var(--primary);display:none;">
+          👆 Entrar con Huella / Face ID
+        </button>
       </div>
 
       <div id="emailConfirmation" style="display:none;">
@@ -749,12 +756,16 @@
         <input type="checkbox" id="darkModeToggle" style="width:20px;height:20px;cursor:pointer;">
       </div>
       <div class="setting-item">
-        <span>🔔 Notificaciones Push (FCM)</span>
+        <span>🔔 Notificaciones Push (Median / Web)</span>
         <input type="checkbox" id="pushNotifToggle" checked style="width:20px;height:20px;cursor:pointer;">
       </div>
       <div class="setting-item">
         <span>🔒 Bloqueo Rápido de Saldo</span>
         <input type="checkbox" id="privacyToggleSetting" style="width:20px;height:20px;cursor:pointer;">
+      </div>
+      <div class="setting-item">
+        <span>👆 Acceso por Biometría (Huella / Face ID)</span>
+        <input type="checkbox" id="biometricsToggleSetting" checked style="width:20px;height:20px;cursor:pointer;">
       </div>
     </div>
   </div>
@@ -895,7 +906,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
@@ -909,7 +919,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const messaging = getMessaging(app);
 
     const MAX_WITHDRAWAL_MC = 10;
     const MC_VALUE_ARS = 500;
@@ -925,6 +934,20 @@
 
     function isAllowedUser(user) {
       return Boolean(user?.email && ALLOWED_USERS.includes(user.email.toLowerCase()));
+    }
+
+    // HELPER CONEXIÓN MEDIAN.CO
+    function triggerMedianHaptic() {
+      if (window.median && window.median.haptics) {
+        window.median.haptics.impact({ style: 'medium' });
+      }
+    }
+
+    function registerMedianPush() {
+      if (window.median && window.median.push) {
+        window.median.push.register();
+        console.log("Registrado en el servicio de Push Nativo de Median.co");
+      }
     }
 
     // DOM Elements
@@ -982,6 +1005,8 @@
     const darkModeToggle = document.getElementById("darkModeToggle");
     const pushNotifToggle = document.getElementById("pushNotifToggle");
     const privacyToggleSetting = document.getElementById("privacyToggleSetting");
+    const biometricsToggleSetting = document.getElementById("biometricsToggleSetting");
+    const biometricsLoginBtn = document.getElementById("biometricsLoginBtn");
 
     let selectedEmail = "";
     let selectedName = "";
@@ -1033,15 +1058,21 @@
     }
 
     privacyButton.addEventListener("click", () => {
+      triggerMedianHaptic();
       privateMode = !privateMode;
       updateBalanceUI();
     });
 
     // CONFIGURACIÓN DE AJUSTES (QoL)
-    settingsBtn.addEventListener("click", () => settingsModal.style.display = "flex");
+    settingsBtn.addEventListener("click", () => {
+      triggerMedianHaptic();
+      settingsModal.style.display = "flex";
+    });
+    
     closeSettings.addEventListener("click", () => settingsModal.style.display = "none");
 
     darkModeToggle.addEventListener("change", () => {
+      triggerMedianHaptic();
       if (darkModeToggle.checked) {
         document.body.classList.add("dark-mode");
         localStorage.setItem("momcoin_dark", "true");
@@ -1056,14 +1087,135 @@
       document.body.classList.add("dark-mode");
     }
 
+    pushNotifToggle.addEventListener("change", () => {
+      triggerMedianHaptic();
+      if (pushNotifToggle.checked) {
+        registerMedianPush();
+      }
+    });
+
     privacyToggleSetting.addEventListener("change", () => {
+      triggerMedianHaptic();
       privateMode = privacyToggleSetting.checked;
       updateBalanceUI();
     });
 
+    function isMedianAuthAvailable() {
+      return Boolean(window.median && window.median.auth);
+    }
+
+    function checkBiometricAvailability() {
+      const bioEnabled = localStorage.getItem("momcoin_bio_enabled") !== "false";
+      if (!bioEnabled) return;
+
+      if (isMedianAuthAvailable()) {
+        try {
+          window.median.auth.status({ callbackFunction: 'handleMedianAuthStatus' });
+        } catch (e) {
+          console.warn("Error consultando estado biométrico en Median:", e);
+        }
+      } else if (localStorage.getItem("momcoin_bio_secret")) {
+        if (biometricsLoginBtn) biometricsLoginBtn.style.display = "flex";
+      }
+    }
+
+    window.handleMedianAuthStatus = function(data) {
+      if (data && (data.hasTouchId || data.hasSecret)) {
+        if (biometricsLoginBtn) biometricsLoginBtn.style.display = "flex";
+      }
+    };
+
+    window.handleMedianAuthGet = async function(data) {
+      if (data && data.success && data.secret) {
+        try {
+          const creds = JSON.parse(data.secret);
+          if (creds.email && creds.pin) {
+            showToast("🔑 Autenticado con Biometría");
+            await signInWithEmailAndPassword(auth, creds.email, creds.pin);
+          }
+        } catch (err) {
+          showToast("Error al validar credenciales biométricas.");
+        }
+      } else if (data && data.error) {
+        showToast("Autenticación biométrica no completada.");
+      }
+    };
+
+    async function loginWithBiometrics() {
+      triggerMedianHaptic();
+      if (isMedianAuthAvailable()) {
+        try {
+          window.median.auth.get({
+            prompt: "Escaneá tu huella o Face ID para ingresar",
+            callbackFunction: 'handleMedianAuthGet'
+          });
+          return;
+        } catch (e) {
+          console.warn("Error en Median auth.get:", e);
+        }
+      }
+
+      const rawSecret = localStorage.getItem("momcoin_bio_secret");
+      if (!rawSecret) {
+        return showToast("No hay datos biométricos guardados en este dispositivo.");
+      }
+
+      try {
+        const creds = JSON.parse(atob(rawSecret));
+        if (creds.email && creds.pin) {
+          showToast("🔑 Autenticado con éxito");
+          await signInWithEmailAndPassword(auth, creds.email, creds.pin);
+        }
+      } catch (err) {
+        showToast("Error al decodificar credencial biométrica.");
+      }
+    }
+
+    function saveBiometricCredentials(email, pin) {
+      if (localStorage.getItem("momcoin_bio_enabled") === "false") return;
+      const payload = JSON.stringify({ email, pin });
+
+      if (isMedianAuthAvailable()) {
+        try {
+          window.median.auth.save({ secret: payload });
+        } catch (e) {
+          console.warn("Error guardando secreto en Median:", e);
+        }
+      }
+
+      localStorage.setItem("momcoin_bio_secret", btoa(payload));
+      localStorage.setItem("momcoin_bio_saved", "true");
+      if (biometricsLoginBtn) biometricsLoginBtn.style.display = "flex";
+    }
+
+    if (biometricsLoginBtn) {
+      biometricsLoginBtn.addEventListener("click", loginWithBiometrics);
+    }
+
+    if (biometricsToggleSetting) {
+      biometricsToggleSetting.checked = localStorage.getItem("momcoin_bio_enabled") !== "false";
+      biometricsToggleSetting.addEventListener("change", () => {
+        triggerMedianHaptic();
+        const enabled = biometricsToggleSetting.checked;
+        localStorage.setItem("momcoin_bio_enabled", enabled ? "true" : "false");
+        if (!enabled) {
+          if (isMedianAuthAvailable()) {
+            try { window.median.auth.delete({}); } catch {}
+          }
+          localStorage.removeItem("momcoin_bio_secret");
+          localStorage.removeItem("momcoin_bio_saved");
+          if (biometricsLoginBtn) biometricsLoginBtn.style.display = "none";
+          showToast("Biometría desactivada.");
+        } else {
+          showToast("Biometría activada. Se guardará al iniciar sesión con PIN.");
+        }
+      });
+    }
+
     // LOGIN POR PIN
     document.querySelectorAll(".account-button").forEach(button => {
       button.addEventListener("click", () => {
+        triggerMedianHaptic();
         selectedName = button.dataset.name;
         selectedEmail = button.dataset.email;
         selectedAccount.textContent = `${selectedName} · ${selectedEmail}`;
@@ -1075,12 +1227,14 @@
     });
 
     backAccounts.addEventListener("click", () => {
+      triggerMedianHaptic();
       emailConfirmation.style.display = "none";
       accountSelection.style.display = "block";
       pinInput.value = "";
     });
 
     pinLoginButton.addEventListener("click", async () => {
+      triggerMedianHaptic();
       const pin = pinInput.value.trim();
       if (!selectedName || !selectedEmail) return showToast("Seleccioná una cuenta primero.");
       if (pin !== ACCOUNT_PINS[selectedName]) {
@@ -1095,6 +1249,7 @@
 
       try {
         await signInWithEmailAndPassword(auth, selectedEmail, pin);
+        saveBiometricCredentials(selectedEmail, pin);
       } catch (error) {
         console.error("PIN Auth:", error);
         showToast("Error al iniciar sesión.");
@@ -1232,6 +1387,7 @@
     }
 
     async function handleWithdrawalAction(withdrawalId, action, cardElement) {
+      triggerMedianHaptic();
       if (processingWithdrawals.has(withdrawalId)) return;
       processingWithdrawals.add(withdrawalId);
 
@@ -1346,6 +1502,7 @@
     }
 
     sendMessageBtn.addEventListener("click", async () => {
+      triggerMedianHaptic();
       const text = messageInput.value.trim();
       if (!text) return;
       try {
@@ -1481,10 +1638,12 @@
             }
 
             bubble.querySelector(".btn-star").addEventListener("click", async () => {
+              triggerMedianHaptic();
               await updateDoc(doc(db, "messages", msgId), { starred: !msg.starred });
             });
 
             bubble.querySelector(".btn-delete").addEventListener("click", async () => {
+              triggerMedianHaptic();
               await deleteDoc(doc(db, "messages", msgId));
               showToast("Mensaje eliminado.");
             });
@@ -1540,6 +1699,7 @@
     }
 
     recordVoiceBtn.addEventListener("click", async () => {
+      triggerMedianHaptic();
       if (mediaRecorder?.state === "recording") {
         stopRecording();
         return;
@@ -1618,54 +1778,21 @@
       };
     }
 
-    // CLOUD MESSAGING (FCM) CONFIGURACIÓN SEGURA
-    async function initializeCloudMessaging() {
-      try {
-        if (!("serviceWorker" in navigator)) return;
-
-        const swPath = './firebase-messaging-sw.js';
-        
-        // Comprobamos de forma transparente si el archivo existe antes de pedirle al navegador que lo instale
-        const checkRes = await fetch(swPath, { method: 'HEAD' }).catch(() => null);
-        if (!checkRes || !checkRes.ok) return;
-
-        const contentType = checkRes.headers.get('content-type') || '';
-        if (contentType.includes('text/html')) return; // Evita intentar instalar la página 404 de GitHub
-
-        const registration = await navigator.serviceWorker.register(swPath).catch(() => null);
-        if (!registration) return;
-
-        const currentToken = await getToken(messaging, {
-          vapidKey: "AQUÍ_TU_VAPID_KEY_DE_LA_CONSOLA_DE_FIREBASE", 
-          serviceWorkerRegistration: registration
-        }).catch(() => null);
-
-        if (currentToken) {
-          console.log("Token FCM obtenido:", currentToken);
-        }
-      } catch (err) {
-        // Omisión silenciosa si no está disponible el archivo Service Worker externo
-      }
-    }
-
-    onMessage(messaging, (payload) => {
-      if ("Notification" in window && Notification.permission === "granted" && pushNotifToggle.checked) {
-        new Notification(payload.notification.title, {
-          body: payload.notification.body,
-          icon: payload.notification.icon || 'https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png'
-        });
-      }
-    });
-
     notificationBtn.addEventListener("click", async () => {
-      if (!("Notification" in window)) return showToast("Navegador no soporta notificaciones.");
-      const permission = await Notification.requestPermission();
-      if (permission === "granted") {
-        await initializeCloudMessaging();
-        new Notification("🏦 Mom Coin Bank", { body: "Notificaciones Web Push activadas." });
-        showToast("Notificaciones Push activadas 🔔");
-      } else {
-        showToast("Notificaciones bloqueadas.");
+      triggerMedianHaptic();
+      
+      // Registro de Notificaciones para Median.co
+      registerMedianPush();
+
+      // Registro Web alternativo si está en el navegador
+      if ("Notification" in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          new Notification("🏦 Mom Coin Bank", { body: "Notificaciones del sistema activadas." });
+          showToast("Notificaciones activadas 🔔");
+        } else {
+          showToast("Notificaciones Web bloqueadas.");
+        }
       }
     });
 
@@ -1695,6 +1822,7 @@
 
     if (requestWithdrawBtn) {
       requestWithdrawBtn.addEventListener("click", async () => {
+        triggerMedianHaptic();
         const amount = Number(withdrawAmount.value);
         if (!amount || amount <= 0) return showToast("Ingresá una cantidad válida.");
         if (amount > MAX_WITHDRAWAL_MC) return showToast("El máximo de retiro es 10 MC.");
@@ -1842,6 +1970,7 @@
     }
 
     sendCoinsButton.addEventListener("click", async () => {
+      triggerMedianHaptic();
       if (!currentUser || !isAdmin(currentUser)) return showToast("Acceso denegado.");
 
       const email = recipientEmail.value.trim().toLowerCase();
@@ -1931,11 +2060,12 @@
         listenToNotificationsUI(user);
         loadMessages();
         listenNotifications();
-        initializeCloudMessaging();
+        registerMedianPush();
       } else {
         loginScreen.style.display = "flex";
         appScreen.style.display = "none";
         currentUser = null;
+        checkBiometricAvailability();
         if (unsubscribeTransactions) unsubscribeTransactions();
         if (unsubscribeNotifications) unsubscribeNotifications();
         if (unsubscribeWithdrawals) unsubscribeWithdrawals();
@@ -1944,6 +2074,7 @@
     });
 
     logoutButton.addEventListener("click", async () => {
+      triggerMedianHaptic();
       await signOut(auth);
       showToast("Sesión cerrada.");
     });
