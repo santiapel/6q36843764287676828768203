@@ -46,7 +46,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --parallel=false
+          ./gradlew assembleDebug --no-daemon --no-parallel
           
       - name: Subir APK como artefacto descargable
         uses: actions/upload-artifact@v4
