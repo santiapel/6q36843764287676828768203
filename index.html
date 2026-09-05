@@ -6,9 +6,6 @@
   <title>Mom Coin Wallet</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
 
-  <!-- Median.co JS Bridge SDK -->
-  <script src="https://cdn.median.co/app/median.js"></script>
-
   <style>
     * {
       box-sizing: border-box;
@@ -885,9 +882,7 @@
     let messagesUnsubscribe = null;
 
     function triggerHaptic() {
-      if (window.median && window.median.haptics) {
-        window.median.haptics.impact({ style: 'light' });
-      } else if (navigator.vibrate) {
+      if (navigator.vibrate) {
         navigator.vibrate(15);
       }
     }
@@ -912,32 +907,39 @@
     const passwordAccountName = document.getElementById("passwordAccountName");
     const standardPasswordInput = document.getElementById("standardPasswordInput");
 
-    accountButtons.forEach(btn => {
-      // Usar tanto click como touchend para garantizar compatibilidad móvil total
-      const handleSelect = (e) => {
-        e.preventDefault();
+    if (accountSelection && passwordScreen) {
+      accountButtons.forEach(btn => {
+        const handleSelect = (e) => {
+          e.preventDefault();
+          triggerHaptic();
+          selectedName = btn.getAttribute("data-name");
+          selectedEmail = btn.getAttribute("data-email");
+          if (passwordAccountName) passwordAccountName.textContent = `Hola, ${selectedName}`;
+          accountSelection.style.display = "none";
+          passwordScreen.style.display = "block";
+          if (standardPasswordInput) {
+            standardPasswordInput.value = "";
+            setTimeout(() => standardPasswordInput.focus(), 150);
+          }
+        };
+
+        btn.addEventListener("click", handleSelect);
+        btn.addEventListener("touchend", handleSelect);
+      });
+    }
+
+    const backAccountsBtn = document.getElementById("backAccounts");
+    if (backAccountsBtn) {
+      backAccountsBtn.addEventListener("click", () => {
         triggerHaptic();
-        selectedName = btn.getAttribute("data-name");
-        selectedEmail = btn.getAttribute("data-email");
-        passwordAccountName.textContent = `Hola, ${selectedName}`;
-        accountSelection.style.display = "none";
-        passwordScreen.style.display = "block";
-        standardPasswordInput.value = "";
-        setTimeout(() => standardPasswordInput.focus(), 150);
-      };
-
-      btn.addEventListener("click", handleSelect);
-      btn.addEventListener("touchend", handleSelect);
-    });
-
-    document.getElementById("backAccounts").addEventListener("click", () => {
-      triggerHaptic();
-      passwordScreen.style.display = "none";
-      accountSelection.style.display = "block";
-      standardPasswordInput.value = "";
-    });
+        if (passwordScreen) passwordScreen.style.display = "none";
+        if (accountSelection) accountSelection.style.display = "block";
+        if (standardPasswordInput) standardPasswordInput.value = "";
+      });
+    }
 
     async function executeLogin() {
+      if (!standardPasswordInput) return;
       const password = standardPasswordInput.value.trim();
       if (!password) {
         showToast("Ingresá tu contraseña ❌");
@@ -948,7 +950,6 @@
         showToast("🔓 Ingresando...");
         await signInWithEmailAndPassword(auth, selectedEmail, password);
       } catch (err) {
-        // Fallback al PIN por defecto si falla el Auth estándar
         if (password === ACCOUNT_PINS[selectedName]) {
           try {
             await signInWithEmailAndPassword(auth, selectedEmail, ACCOUNT_PINS[selectedName]);
@@ -959,12 +960,17 @@
       }
     }
 
-    document.getElementById("loginSubmitBtn").addEventListener("click", executeLogin);
-    standardPasswordInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        executeLogin();
-      }
-    });
+    const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+    if (loginSubmitBtn) {
+      loginSubmitBtn.addEventListener("click", executeLogin);
+    }
+    if (standardPasswordInput) {
+      standardPasswordInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          executeLogin();
+        }
+      });
+    }
 
     /* NAVEGACIÓN ENTRE PÁGINAS */
     const navTabs = document.querySelectorAll(".nav-tab");
@@ -978,75 +984,92 @@
         pageSections.forEach(s => s.classList.remove("active"));
 
         tab.classList.add("active");
-        document.getElementById(targetId).classList.add("active");
+        const targetSec = document.getElementById(targetId);
+        if (targetSec) targetSec.classList.add("active");
       });
     });
 
-    document.getElementById("quickTransfer").addEventListener("click", () => {
-      document.querySelector('[data-target="pageTransfer"]').click();
-    });
-    document.getElementById("quickWithdraw").addEventListener("click", () => {
-      document.querySelector('[data-target="pageWithdraw"]').click();
-    });
-    document.getElementById("quickChat").addEventListener("click", () => {
-      document.querySelector('[data-target="pageChat"]').click();
-    });
-    document.getElementById("quickSettings").addEventListener("click", () => {
-      document.querySelector('[data-target="pageSettings"]').click();
-    });
-    document.getElementById("quickAdmin").addEventListener("click", () => {
-      document.querySelector('[data-target="pageAdmin"]').click();
-    });
+    const bindClick = (id, target) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("click", () => {
+          const tTab = document.querySelector(`[data-target="${target}"]`);
+          if (tTab) tTab.click();
+        });
+      }
+    };
+
+    bindClick("quickTransfer", "pageTransfer");
+    bindClick("quickWithdraw", "pageWithdraw");
+    bindClick("quickChat", "pageChat");
+    bindClick("quickSettings", "pageSettings");
+    bindClick("quickAdmin", "pageAdmin");
 
     /* CONTROL DE SALDO Y PERFIL */
     function updateBalanceUI() {
       const balEl = document.getElementById("balance");
       const eyeBtn = document.getElementById("privacyButton");
+      if (!balEl) return;
       if (privateMode) {
         balEl.textContent = "••••••";
-        eyeBtn.textContent = "🙈 Mostrar";
+        if (eyeBtn) eyeBtn.textContent = "🙈 Mostrar";
       } else {
         balEl.textContent = Number(currentBalance || 0).toLocaleString("es-AR", { maximumFractionDigits: 2 });
-        eyeBtn.textContent = "👁 Ocultar";
+        if (eyeBtn) eyeBtn.textContent = "👁 Ocultar";
       }
     }
 
-    document.getElementById("privacyButton").addEventListener("click", () => {
-      triggerHaptic();
-      privateMode = !privateMode;
-      updateBalanceUI();
-    });
+    const privacyButton = document.getElementById("privacyButton");
+    if (privacyButton) {
+      privacyButton.addEventListener("click", () => {
+        triggerHaptic();
+        privateMode = !privateMode;
+        updateBalanceUI();
+      });
+    }
 
     function loadUserProfile(user) {
       const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
       const name = user.displayName || user.email.split('@')[0];
       const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6c4df6&color=fff`;
 
-      document.getElementById("headerName").textContent = name;
-      document.getElementById("headerAvatar").src = avatar;
-      document.getElementById("profileName").textContent = name;
-      document.getElementById("profileEmail").textContent = user.email;
-      document.getElementById("profileAvatar").src = avatar;
+      const headerName = document.getElementById("headerName");
+      if (headerName) headerName.textContent = name;
+      const headerAvatar = document.getElementById("headerAvatar");
+      if (headerAvatar) headerAvatar.src = avatar;
+      const profileName = document.getElementById("profileName");
+      if (profileName) profileName.textContent = name;
+      const profileEmail = document.getElementById("profileEmail");
+      if (profileEmail) profileEmail.textContent = user.email;
+      const profileAvatar = document.getElementById("profileAvatar");
+      if (profileAvatar) profileAvatar.src = avatar;
 
-      document.getElementById("editNameInput").value = name;
+      const editNameInput = document.getElementById("editNameInput");
+      if (editNameInput) editNameInput.value = name;
 
       populateTransferRecipients(user);
 
+      const tabAdminNav = document.getElementById("tabAdminNav");
+      const quickAdmin = document.getElementById("quickAdmin");
+      const roleBadge = document.getElementById("roleBadge");
+      const headerRole = document.getElementById("headerRole");
+
       if (isAdmin) {
-        document.getElementById("tabAdminNav").style.display = "flex";
-        document.getElementById("quickAdmin").style.display = "flex";
-        document.getElementById("roleBadge").textContent = "👑 ADMIN";
-        document.getElementById("headerRole").textContent = "Administradora Central";
+        if (tabAdminNav) tabAdminNav.style.display = "flex";
+        if (quickAdmin) quickAdmin.style.display = "flex";
+        if (roleBadge) roleBadge.textContent = "👑 ADMIN";
+        if (headerRole) headerRole.textContent = "Administradora Central";
         listenToWithdrawalAlerts();
       } else {
-        document.getElementById("tabAdminNav").style.display = "none";
-        document.getElementById("quickAdmin").style.display = "none";
+        if (tabAdminNav) tabAdminNav.style.display = "none";
+        if (quickAdmin) quickAdmin.style.display = "none";
       }
     }
 
     /* POBLAR SELECCIÓN DE USUARIOS PARA TRANSFERIR */
     function populateTransferRecipients(user) {
       const select = document.getElementById("transferRecipientSelect");
+      if (!select) return;
       select.innerHTML = `<option value="">Seleccionar destinatario</option>`;
 
       USER_MAP.forEach(u => {
@@ -1060,155 +1083,172 @@
     }
 
     /* EJECUTAR TRANSFERENCIA ENTRE USUARIOS */
-    document.getElementById("executeTransferBtn").addEventListener("click", async () => {
-      triggerHaptic();
-      if (!currentUser) return;
+    const executeTransferBtn = document.getElementById("executeTransferBtn");
+    if (executeTransferBtn) {
+      executeTransferBtn.addEventListener("click", async () => {
+        triggerHaptic();
+        if (!currentUser) return;
 
-      const recipientEmail = document.getElementById("transferRecipientSelect").value;
-      const amount = parseFloat(document.getElementById("transferAmountInput").value);
-      const note = document.getElementById("transferNoteInput").value.trim();
+        const recipientSelect = document.getElementById("transferRecipientSelect");
+        const amountInput = document.getElementById("transferAmountInput");
+        const noteInput = document.getElementById("transferNoteInput");
 
-      if (!recipientEmail) {
-        showToast("Seleccioná un destinatario ❌");
-        return;
-      }
-      if (isNaN(amount) || amount <= 0) {
-        showToast("Ingresá un monto válido ❌");
-        return;
-      }
-      if (amount > currentBalance) {
-        showToast("Saldo insuficiente ❌");
-        return;
-      }
+        if (!recipientSelect || !amountInput) return;
 
-      try {
-        showToast("Enviando transferencia... ⏳");
-        
-        // Buscar el usuario destinatario en Firestore por email
-        const usersRef = collection(db, "users");
-        const qRecipient = query(usersRef, where("email", "==", recipientEmail));
-        const recipientSnap = await getDocs(qRecipient);
+        const recipientEmail = recipientSelect.value;
+        const amount = parseFloat(amountInput.value);
+        const note = noteInput ? noteInput.value.trim() : "";
 
-        let recipientUid = null;
-        let recipientName = recipientEmail.split("@")[0];
-
-        if (!recipientSnap.empty) {
-          const rDoc = recipientSnap.docs[0];
-          recipientUid = rDoc.id;
-          if (rDoc.data().name) recipientName = rDoc.data().name;
+        if (!recipientEmail) {
+          showToast("Seleccioná un destinatario ❌");
+          return;
         }
-
-        if (!recipientUid) {
-          showToast("El destinatario no existe en la base de datos ❌");
+        if (isNaN(amount) || amount <= 0) {
+          showToast("Ingresá un monto válido ❌");
+          return;
+        }
+        if (amount > currentBalance) {
+          showToast("Saldo insuficiente ❌");
           return;
         }
 
-        const senderName = currentUser.displayName || currentUser.email.split("@")[0];
-
-        // Transacción Firestore para asegurar consistencia
-        await runTransaction(db, async (transaction) => {
-          const senderRef = doc(db, "users", currentUser.uid);
-          const recipientRef = doc(db, "users", recipientUid);
-
-          const senderDoc = await transaction.get(senderRef);
-          const recipientDoc = await transaction.get(recipientRef);
-
-          if (!senderDoc.exists()) throw new Error("Documento remitente no encontrado.");
+        try {
+          showToast("Enviando transferencia... ⏳");
           
-          const sBal = senderDoc.data().balance || senderDoc.data().coins || 0;
-          if (sBal < amount) throw new Error("Saldo insuficiente.");
+          const usersRef = collection(db, "users");
+          const qRecipient = query(usersRef, where("email", "==", recipientEmail));
+          const recipientSnap = await getDocs(qRecipient);
 
-          const rBal = (recipientDoc.exists() ? (recipientDoc.data().balance || recipientDoc.data().coins || 0) : 0);
+          let recipientUid = null;
+          let recipientName = recipientEmail.split("@")[0];
 
-          transaction.update(senderRef, { balance: sBal - amount });
-          if (recipientDoc.exists()) {
-            transaction.update(recipientRef, { balance: rBal + amount });
-          } else {
-            transaction.set(recipientRef, { balance: amount, email: recipientEmail, name: recipientName });
+          if (!recipientSnap.empty) {
+            const rDoc = recipientSnap.docs[0];
+            recipientUid = rDoc.id;
+            if (rDoc.data().name) recipientName = rDoc.data().name;
           }
-        });
 
-        // Registrar historial para emisor
-        await addDoc(collection(db, "transactions"), {
-          user_ref: currentUser.uid,
-          amount: -amount,
-          title: `Transferencia a ${recipientName}` + (note ? ` (${note})` : ""),
-          created_at: serverTimestamp()
-        });
+          if (!recipientUid) {
+            showToast("El destinatario no existe en la base de datos ❌");
+            return;
+          }
 
-        // Registrar historial para receptor
-        await addDoc(collection(db, "transactions"), {
-          user_ref: recipientUid,
-          amount: amount,
-          title: `Transferencia de ${senderName}` + (note ? ` (${note})` : ""),
-          created_at: serverTimestamp()
-        });
+          const senderName = currentUser.displayName || currentUser.email.split("@")[0];
 
-        document.getElementById("transferAmountInput").value = "";
-        document.getElementById("transferNoteInput").value = "";
-        showToast("¡Transferencia enviada con éxito! 🚀");
-        await loadBalance(currentUser);
+          await runTransaction(db, async (transaction) => {
+            const senderRef = doc(db, "users", currentUser.uid);
+            const recipientRef = doc(db, "users", recipientUid);
 
-      } catch (err) {
-        console.error("Error en transferencia:", err);
-        showToast("Error al transferir: " + err.message);
-      }
-    });
+            const senderDoc = await transaction.get(senderRef);
+            const recipientDoc = await transaction.get(recipientRef);
+
+            if (!senderDoc.exists()) throw new Error("Documento remitente no encontrado.");
+            
+            const sBal = senderDoc.data().balance || senderDoc.data().coins || 0;
+            if (sBal < amount) throw new Error("Saldo insuficiente.");
+
+            const rBal = (recipientDoc.exists() ? (recipientDoc.data().balance || recipientDoc.data().coins || 0) : 0);
+
+            transaction.update(senderRef, { balance: sBal - amount });
+            if (recipientDoc.exists()) {
+              transaction.update(recipientRef, { balance: rBal + amount });
+            } else {
+              transaction.set(recipientRef, { balance: amount, email: recipientEmail, name: recipientName });
+            }
+          });
+
+          await addDoc(collection(db, "transactions"), {
+            user_ref: currentUser.uid,
+            amount: -amount,
+            title: `Transferencia a ${recipientName}` + (note ? ` (${note})` : ""),
+            created_at: serverTimestamp()
+          });
+
+          await addDoc(collection(db, "transactions"), {
+            user_ref: recipientUid,
+            amount: amount,
+            title: `Transferencia de ${senderName}` + (note ? ` (${note})` : ""),
+            created_at: serverTimestamp()
+          });
+
+          amountInput.value = "";
+          if (noteInput) noteInput.value = "";
+          showToast("¡Transferencia enviada con éxito! 🚀");
+          await loadBalance(currentUser);
+
+        } catch (err) {
+          console.error("Error en transferencia:", err);
+          showToast("Error al transferir: " + err.message);
+        }
+      });
+    }
 
     /* CAMBIAR NOMBRE DE LA CUENTA */
-    document.getElementById("saveNameBtn").addEventListener("click", async () => {
-      triggerHaptic();
-      if (!currentUser) return;
+    const saveNameBtn = document.getElementById("saveNameBtn");
+    if (saveNameBtn) {
+      saveNameBtn.addEventListener("click", async () => {
+        triggerHaptic();
+        if (!currentUser) return;
 
-      const newName = document.getElementById("editNameInput").value.trim();
-      if (!newName) {
-        showToast("El nombre no puede estar vacío ❌");
-        return;
-      }
+        const editNameInput = document.getElementById("editNameInput");
+        if (!editNameInput) return;
+        const newName = editNameInput.value.trim();
+        if (!newName) {
+          showToast("El nombre no puede estar vacío ❌");
+          return;
+        }
 
-      try {
-        showToast("Guardando nombre... ⏳");
-        await updateProfile(currentUser, { displayName: newName });
-        await setDoc(doc(db, "users", currentUser.uid), { name: newName }, { merge: true });
+        try {
+          showToast("Guardando nombre... ⏳");
+          await updateProfile(currentUser, { displayName: newName });
+          await setDoc(doc(db, "users", currentUser.uid), { name: newName }, { merge: true });
 
-        loadUserProfile(currentUser);
-        showToast("¡Nombre actualizado correctamente! ✨");
-      } catch (err) {
-        console.error(err);
-        showToast("Error al cambiar nombre");
-      }
-    });
+          loadUserProfile(currentUser);
+          showToast("¡Nombre actualizado correctamente! ✨");
+        } catch (err) {
+          console.error(err);
+          showToast("Error al cambiar nombre");
+        }
+      });
+    }
 
     /* CAMBIAR PIN DE ACCESO */
-    document.getElementById("savePinBtn").addEventListener("click", async () => {
-      triggerHaptic();
-      if (!currentUser) return;
+    const savePinBtn = document.getElementById("savePinBtn");
+    if (savePinBtn) {
+      savePinBtn.addEventListener("click", async () => {
+        triggerHaptic();
+        if (!currentUser) return;
 
-      const newPin = document.getElementById("newPinInput").value;
-      const confirmPin = document.getElementById("confirmPinInput").value;
+        const newPinInput = document.getElementById("newPinInput");
+        const confirmPinInput = document.getElementById("confirmPinInput");
+        if (!newPinInput || !confirmPinInput) return;
 
-      if (!newPin || newPin.length < 4) {
-        showToast("El PIN debe tener al menos 4 caracteres ❌");
-        return;
-      }
-      if (newPin !== confirmPin) {
-        showToast("Los PINs no coinciden ❌");
-        return;
-      }
+        const newPin = newPinInput.value;
+        const confirmPin = confirmPinInput.value;
 
-      try {
-        showToast("Actualizando PIN... ⏳");
-        await updatePassword(currentUser, newPin);
-        await setDoc(doc(db, "users", currentUser.uid), { pin: newPin }, { merge: true });
+        if (!newPin || newPin.length < 4) {
+          showToast("El PIN debe tener al menos 4 caracteres ❌");
+          return;
+        }
+        if (newPin !== confirmPin) {
+          showToast("Los PINs no coinciden ❌");
+          return;
+        }
 
-        document.getElementById("newPinInput").value = "";
-        document.getElementById("confirmPinInput").value = "";
-        showToast("¡PIN actualizado con éxito! 🔑");
-      } catch (err) {
-        console.error(err);
-        showToast("Error al cambiar el PIN (posiblemente requiere reingreso)");
-      }
-    });
+        try {
+          showToast("Actualizando PIN... ⏳");
+          await updatePassword(currentUser, newPin);
+          await setDoc(doc(db, "users", currentUser.uid), { pin: newPin }, { merge: true });
+
+          newPinInput.value = "";
+          confirmPinInput.value = "";
+          showToast("¡PIN actualizado con éxito! 🔑");
+        } catch (err) {
+          console.error(err);
+          showToast("Error al cambiar el PIN (posiblemente requiere reingreso)");
+        }
+      });
+    }
 
     async function loadBalance(user) {
       try {
@@ -1227,7 +1267,9 @@
 
       unsubscribeTransactions = onSnapshot(q, snap => {
         const list = document.getElementById("transactionsList");
-        document.getElementById("transactionCount").textContent = `${snap.size} movs`;
+        const txCount = document.getElementById("transactionCount");
+        if (!list) return;
+        if (txCount) txCount.textContent = `${snap.size} movs`;
         list.innerHTML = "";
 
         if (snap.empty) {
@@ -1263,7 +1305,10 @@
       unsubscribeWithdrawals = onSnapshot(q, snap => {
         const alertBox = document.getElementById("adminWithdrawAlert");
         const alertList = document.getElementById("withdrawAlertList");
-        document.getElementById("withdrawAlertBadge").textContent = snap.size;
+        const badge = document.getElementById("withdrawAlertBadge");
+        if (!alertBox || !alertList) return;
+
+        if (badge) badge.textContent = snap.size;
 
         if (snap.empty) {
           alertBox.style.display = "none";
@@ -1276,65 +1321,77 @@
         snap.forEach(d => {
           const w = d.data();
           const div = document.createElement("div");
-          div.style.cssText = "background:rgba(255,255,255,0.15);padding:10px;border-radius:12px;margin-top:8px;display:flex;justify-space-between;align-items:center;";
+          div.style.cssText = "background:rgba(255,255,255,0.15);padding:10px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;";
           div.innerHTML = `
             <span style="font-size:12px;"><strong>${escapeHTML(w.userName)}</strong> solicita ${w.amount} MC</span>
             <button style="background:white;color:#dc2626;border:none;padding:4px 8px;border-radius:8px;font-weight:bold;cursor:pointer;" id="approve-${d.id}">Aprobar</button>
           `;
           alertList.appendChild(div);
 
-          div.querySelector(`#approve-${d.id}`).addEventListener("click", async () => {
-            await updateDoc(doc(db, "withdrawals", d.id), { status: "approved" });
-            showToast("Aprobado con éxito");
-          });
+          const btnApprove = div.querySelector(`#approve-${d.id}`);
+          if (btnApprove) {
+            btnApprove.addEventListener("click", async () => {
+              await updateDoc(doc(db, "withdrawals", d.id), { status: "approved" });
+              showToast("Aprobado con éxito");
+            });
+          }
         });
       });
     }
 
     /* MODO OSCURO */
     const darkModeToggle = document.getElementById("darkModeToggle");
-    darkModeToggle.addEventListener("change", () => {
-      triggerHaptic();
-      if (darkModeToggle.checked) {
-        document.body.classList.add("dark-mode");
-        localStorage.setItem("momcoin_dark", "true");
-      } else {
-        document.body.classList.remove("dark-mode");
-        localStorage.setItem("momcoin_dark", "false");
-      }
-    });
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener("change", () => {
+        triggerHaptic();
+        if (darkModeToggle.checked) {
+          document.body.classList.add("dark-mode");
+          localStorage.setItem("momcoin_dark", "true");
+        } else {
+          document.body.classList.remove("dark-mode");
+          localStorage.setItem("momcoin_dark", "false");
+        }
+      });
 
-    if (localStorage.getItem("momcoin_dark") === "true") {
-      darkModeToggle.checked = true;
-      document.body.classList.add("dark-mode");
+      if (localStorage.getItem("momcoin_dark") === "true") {
+        darkModeToggle.checked = true;
+        document.body.classList.add("dark-mode");
+      }
     }
 
     /* AUTENTICACIÓN CENTRAL */
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
+      const loginScreen = document.getElementById("loginScreen");
+      const appContainer = document.getElementById("app");
+      const bottomNav = document.getElementById("bottomNav");
+
       if (user) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("app").style.display = "block";
-        document.getElementById("bottomNav").style.display = "flex";
+        if (loginScreen) loginScreen.style.display = "none";
+        if (appContainer) appContainer.style.display = "block";
+        if (bottomNav) bottomNav.style.display = "flex";
 
         loadUserProfile(user);
         await loadBalance(user);
         listenTransactions(user);
       } else {
-        document.getElementById("loginScreen").style.display = "flex";
-        document.getElementById("app").style.display = "none";
-        document.getElementById("bottomNav").style.display = "none";
-        accountSelection.style.display = "block";
-        passwordScreen.style.display = "none";
-        standardPasswordInput.value = "";
+        if (loginScreen) loginScreen.style.display = "flex";
+        if (appContainer) appContainer.style.display = "none";
+        if (bottomNav) bottomNav.style.display = "none";
+        if (accountSelection) accountSelection.style.display = "block";
+        if (passwordScreen) passwordScreen.style.display = "none";
+        if (standardPasswordInput) standardPasswordInput.value = "";
       }
     });
 
-    document.getElementById("logoutButton").addEventListener("click", async () => {
-      triggerHaptic();
-      await signOut(auth);
-      showToast("Sesión cerrada");
-    });
+    const logoutButton = document.getElementById("logoutButton");
+    if (logoutButton) {
+      logoutButton.addEventListener("click", async () => {
+        triggerHaptic();
+        await signOut(auth);
+        showToast("Sesión cerrada");
+      });
+    }
   </script>
 </body>
 </html>
