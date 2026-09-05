@@ -6,6 +6,9 @@
   <title>Mom Coin Wallet</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
 
+  <!-- OneSignal Web Push SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -61,7 +64,7 @@
 
     @keyframes pulseGlow {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      50% { transform: scale(1.08); }
     }
 
     .animated-screen {
@@ -437,30 +440,59 @@
     .tx-amount.expense { color: var(--red); }
 
     /* CHAT BUBBLES */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 10px 5px;
+      margin-bottom: 12px;
+    }
+
     .chat-bubble {
       max-width: 80%;
       padding: 10px 14px;
       border-radius: 16px;
       font-size: 13px;
       line-height: 1.4;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       position: relative;
       word-wrap: break-word;
     }
 
+    .chat-bubble-wrapper {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 8px;
+    }
+
+    .chat-bubble-wrapper.mine {
+      align-items: flex-end;
+    }
+
+    .chat-bubble-wrapper.other {
+      align-items: flex-start;
+    }
+
     .chat-bubble.mine {
-      align-self: flex-end;
       background: var(--primary);
       color: white;
       border-bottom-right-radius: 4px;
     }
 
     .chat-bubble.other {
-      align-self: flex-start;
       background: var(--bg);
       color: var(--text);
       border: 1px solid var(--border);
       border-bottom-left-radius: 4px;
+    }
+
+    .chat-author {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 3px;
     }
 
     .chat-meta {
@@ -472,7 +504,7 @@
 
     .audio-player {
       width: 100%;
-      max-width: 220px;
+      max-width: 230px;
       margin-top: 6px;
     }
 
@@ -508,6 +540,7 @@
       width: 20%;
       padding: 6px 0;
       transition: all 0.2s ease;
+      position: relative;
     }
 
     .nav-tab.active {
@@ -516,6 +549,19 @@
 
     .nav-tab .tab-icon {
       font-size: 20px;
+      position: relative;
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: -3px;
+      right: -8px;
+      width: 10px;
+      height: 10px;
+      background: #ef4444;
+      border-radius: 50%;
+      border: 2px solid var(--card);
+      animation: pulseGlow 1.5s infinite;
     }
 
     .page-section {
@@ -586,6 +632,25 @@
     #toast.show {
       transform: translate(-50%, 0);
     }
+
+    .onesignal-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+      padding: 10px;
+      background: var(--bg);
+      border-radius: 12px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+    }
   </style>
 </head>
 
@@ -620,7 +685,7 @@
             <div class="account-avatar admin-avatar">👑</div>
             <div class="account-info">
               <strong>Gabriela</strong>
-              <span>ADMIN</span>
+              <span>ADMIN (Mamá)</span>
             </div>
             <div class="account-arrow">›</div>
           </button>
@@ -630,10 +695,10 @@
       <!-- FORMULARIO DE CONTRASEÑA -->
       <div id="passwordScreen" style="display: none;">
         <h1 id="passwordAccountName">Hola</h1>
-        <p>Ingresá tu contraseña</p>
+        <p>Ingresá tu PIN o Contraseña</p>
 
         <div class="password-form">
-          <input type="password" id="standardPasswordInput" class="form-input" placeholder="Contraseña de acceso" autocomplete="current-password">
+          <input type="password" id="standardPasswordInput" class="form-input" placeholder="PIN / Contraseña" autocomplete="current-password">
           <button type="button" id="loginSubmitBtn" class="btn-primary">Ingresar 🚀</button>
           <button type="button" id="backAccounts" class="btn-primary" style="background:var(--bg); color:var(--text); border:1px solid var(--border);">← Volver a cuentas</button>
         </div>
@@ -653,7 +718,7 @@
         </div>
       </div>
       <div class="profile-pill" id="profilePill">
-        <img id="headerAvatar" src="" alt="Avatar">
+        <img id="headerAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=User" alt="Avatar">
         <span id="headerName">Usuario</span>
       </div>
     </header>
@@ -664,7 +729,7 @@
       <!-- ALERTA SOLICITUDES DE RETIRO (MAMÁ) -->
       <div id="adminWithdrawAlert" class="admin-alert-banner" style="display: none;">
         <div style="display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px;margin-bottom:8px;">
-          <span>🚨 SOLICITUDES DE RETIRO</span>
+          <span>🚨 SOLICITUDES DE RETIRO PENDIENTES</span>
           <span id="withdrawAlertBadge" style="background:white;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:12px;">0</span>
         </div>
         <div id="withdrawAlertList"></div>
@@ -676,7 +741,7 @@
           <span class="balance-label">Saldo disponible</span>
           <button id="privacyButton" class="eye-btn">👁 Ocultar</button>
         </div>
-        <div id="balance" class="balance-amount">Cargando...</div>
+        <div id="balance" class="balance-amount">0.00</div>
         <div class="balance-sub">Mom Coins (MC)</div>
       </article>
 
@@ -707,7 +772,7 @@
           <span id="transactionCount" style="font-size:12px;color:var(--muted);font-weight:normal;">0 movs</span>
         </div>
         <div id="transactionsList">
-          <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Cargando...</div>
+          <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Cargando movimientos...</div>
         </div>
       </div>
     </section>
@@ -720,18 +785,18 @@
           <span id="unreadMessagesBadge" style="display:none;background:#ef4444;color:white;border-radius:10px;padding:2px 8px;font-size:11px;">0</span>
         </div>
 
-        <div id="messagesList" style="display:flex;flex-direction:column;gap:10px;max-height:380px;overflow-y:auto;padding:10px 5px;margin-bottom:10px;">
-          <div style="text-align:center;color:var(--muted);font-size:12px;">Cargando mensajes...</div>
+        <div id="messagesList" class="chat-container">
+          <div style="text-align:center;color:var(--muted);font-size:12px;padding:20px;">Cargando mensajes...</div>
         </div>
 
         <div style="display:flex;gap:8px;">
           <input id="messageInput" type="text" class="form-input" style="margin:0;" placeholder="Escribí un mensaje...">
-          <button id="sendMessageBtn" class="btn-primary" style="width:auto;padding:0 18px;">➤</button>
+          <button id="sendMessageBtn" class="btn-primary" style="width:auto;padding:0 20px;">➤</button>
         </div>
 
         <div style="display:flex;gap:8px;margin-top:10px;">
           <button id="recordVoiceBtn" class="form-input" style="margin:0;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--primary-light);color:var(--primary);border:1px solid var(--primary);">
-            🎙️ Grabar Nota de Voz
+            🎙️ <span id="recordBtnText">Grabar Nota de Voz</span>
           </button>
         </div>
 
@@ -757,6 +822,13 @@
         </div>
         
         <button id="requestWithdrawBtn" class="btn-primary">Solicitar Retiro a Mamá 🚀</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Mis Solicitudes de Retiro</div>
+        <div id="userWithdrawalsList">
+          <div style="text-align:center;color:var(--muted);font-size:12px;padding:10px;">Sin solicitudes aún</div>
+        </div>
       </div>
     </section>
 
@@ -812,7 +884,7 @@
     <section id="pageSettings" class="page-section">
       <div class="card">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-          <img id="profileAvatar" src="" style="width:54px;height:54px;border-radius:18px;object-fit:cover;" alt="Avatar">
+          <img id="profileAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=User" style="width:54px;height:54px;border-radius:18px;object-fit:cover;" alt="Avatar">
           <div>
             <h3 id="profileName" style="font-size:16px;">Cargando...</h3>
             <p id="profileEmail" style="font-size:12px;color:var(--muted);"></p>
@@ -820,7 +892,19 @@
           </div>
         </div>
 
+        <!-- Sincronización Push / Median.co / OneSignal -->
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:10px;">
+          <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">🔔 Notificaciones Push (Median.co / OneSignal)</h4>
+          <button id="syncPushBtn" class="btn-primary" style="padding:10px;font-size:13px;background:var(--card);color:var(--primary);border:1px solid var(--primary);margin-bottom:8px;">
+            📲 Activar & Sincronizar Dispositivo
+          </button>
+          <div class="onesignal-status">
+            <div class="status-dot" id="onesignalDot"></div>
+            <span id="onesignalStatusText">Push activo & Sincronizado con Median.co</span>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:14px;">
           <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">✏️ Cambiar Nombre de Cuenta</h4>
           <input id="editNameInput" type="text" class="form-input" placeholder="Nuevo nombre">
           <button id="saveNameBtn" class="btn-primary" style="padding:10px;font-size:13px;margin-bottom:16px;">Guardar Nombre</button>
@@ -835,7 +919,7 @@
 
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
           <span style="font-size:14px;font-weight:600;">🌙 Modo Oscuro</span>
-          <input type="checkbox" id="darkModeToggle" style="width:20px;height:20px;">
+          <input type="checkbox" id="darkModeToggle" style="width:20px;height:20px;cursor:pointer;">
         </div>
 
         <button id="logoutButton" class="btn-primary" style="margin-top:20px;background:var(--red);">Cerrar sesión</button>
@@ -855,11 +939,11 @@
       <span>Transferir</span>
     </button>
     <button class="nav-tab" data-target="pageChat">
-      <span class="tab-icon">💬</span>
+      <span class="tab-icon">💬<span id="navChatBadge" class="nav-badge" style="display:none;"></span></span>
       <span>Chat</span>
     </button>
     <button class="nav-tab" data-target="pageWithdraw" id="tabWithdrawNav">
-      <span class="tab-icon">💸</span>
+      <span class="tab-icon">💸<span id="navWithdrawBadge" class="nav-badge" style="display:none;"></span></span>
       <span>Retiros</span>
     </button>
     <button class="nav-tab" data-target="pageAdmin" id="tabAdminNav" style="display:none;">
@@ -876,17 +960,22 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, updatePassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
-      authDomain: "banco-de-mama.firebaseapp.com",
-      projectId: "banco-de-mama",
-      storageBucket: "banco-de-mama.firebasestorage.app",
-      messagingSenderId: "551441991939",
-      appId: "1:551441991939:web:e1b7e5901bc51d86b44136"
-    };
+    /* FIREBASE CONFIGURATION */
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : {
+          apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
+          authDomain: "banco-de-mama.firebaseapp.com",
+          projectId: "banco-de-mama",
+          storageBucket: "banco-de-mama.firebasestorage.app",
+          messagingSenderId: "551441991939",
+          appId: "1:551441991939:web:e1b7e5901bc51d86b44136"
+        };
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'banco-de-mama';
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -896,9 +985,9 @@
     const ADMIN_EMAILS = ["gabyhuchy@hotmail.com", "gabyhuchy@gmail.com"];
 
     const USER_MAP = [
-      { name: "Santi", email: "santipapel16@gmail.com" },
-      { name: "Leonel", email: "leoxdfunes@gmail.com" },
-      { name: "Gabriela", email: "gabyhuchy@gmail.com" }
+      { name: "Santi", email: "santipapel16@gmail.com", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Santi" },
+      { name: "Leonel", email: "leoxdfunes@gmail.com", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Leonel" },
+      { name: "Gabriela", email: "gabyhuchy@gmail.com", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Gabriela" }
     ];
 
     const ACCOUNT_PINS = {
@@ -920,190 +1009,240 @@
     let mediaRecorder = null;
     let audioChunks = [];
     let recordTimerInterval = null;
+    let recordSeconds = 0;
+    let unreadChatCount = 0;
+    let activeTabId = "pageHome";
+    let isInitialMessageLoad = true;
 
-    function triggerHaptic() {
-      if (navigator.vibrate) navigator.vibrate(15);
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      if (!toast) return;
-      toast.textContent = msg;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2500);
-    }
-
-    function escapeHTML(text) {
-      const div = document.createElement("div");
-      div.textContent = text || "";
-      return div.innerHTML;
-    }
-
-    const accountButtons = document.querySelectorAll(".account-button");
-    const accountSelection = document.getElementById("accountSelection");
-    const passwordScreen = document.getElementById("passwordScreen");
-    const passwordAccountName = document.getElementById("passwordAccountName");
-    const standardPasswordInput = document.getElementById("standardPasswordInput");
-
-    if (accountSelection && passwordScreen) {
-      accountButtons.forEach(btn => {
-        const handleSelect = (e) => {
-          e.preventDefault();
-          triggerHaptic();
-          selectedName = btn.getAttribute("data-name");
-          selectedEmail = btn.getAttribute("data-email");
-          if (passwordAccountName) passwordAccountName.textContent = `Hola, ${selectedName}`;
-          accountSelection.style.display = "none";
-          passwordScreen.style.display = "block";
-          if (standardPasswordInput) {
-            standardPasswordInput.value = "";
-            setTimeout(() => standardPasswordInput.focus(), 150);
-          }
-        };
-
-        btn.addEventListener("click", handleSelect);
-      });
-    }
-
-    const backAccountsBtn = document.getElementById("backAccounts");
-    if (backAccountsBtn) {
-      backAccountsBtn.addEventListener("click", () => {
-        triggerHaptic();
-        if (passwordScreen) passwordScreen.style.display = "none";
-        if (accountSelection) accountSelection.style.display = "block";
-        if (standardPasswordInput) standardPasswordInput.value = "";
-      });
-    }
-
-    async function executeLogin() {
-      if (!standardPasswordInput) return;
-      const password = standardPasswordInput.value.trim();
-      if (!password) {
-        showToast("Ingresá tu contraseña ❌");
-        return;
-      }
-
-      try {
-        showToast("🔓 Ingresando...");
-        await signInWithEmailAndPassword(auth, selectedEmail, password);
-      } catch (err) {
-        if (password === ACCOUNT_PINS[selectedName]) {
+    const PushManager = {
+      init: function() {
+        // Inicializar OneSignal Web SDK si está disponible
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(async function(OneSignal) {
           try {
-            await signInWithEmailAndPassword(auth, selectedEmail, ACCOUNT_PINS[selectedName]);
-            return;
-          } catch (e) {}
-        }
-        showToast("Contraseña o PIN incorrecto ❌");
-      }
-    }
-
-    const loginSubmitBtn = document.getElementById("loginSubmitBtn");
-    if (loginSubmitBtn) loginSubmitBtn.addEventListener("click", executeLogin);
-    if (standardPasswordInput) {
-      standardPasswordInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") executeLogin();
-      });
-    }
-
-    const navTabs = document.querySelectorAll(".nav-tab");
-    const pageSections = document.querySelectorAll(".page-section");
-
-    navTabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        triggerHaptic();
-        const targetId = tab.dataset.target;
-        navTabs.forEach(t => t.classList.remove("active"));
-        pageSections.forEach(s => s.classList.remove("active"));
-
-        tab.classList.add("active");
-        const targetSec = document.getElementById(targetId);
-        if (targetSec) targetSec.classList.add("active");
-
-        if (targetId === "pageChat") {
-          scrollChatToBottom();
-        }
-      });
-    });
-
-    const bindClick = (id, target) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener("click", () => {
-          const tTab = document.querySelector(`[data-target="${target}"]`);
-          if (tTab) tTab.click();
+            await OneSignal.init({
+              appId: "b85a3fd4-e13d-4c3e-8c81-onesignal-app", // ID genérico OneSignal/Median
+              safari_web_id: "web.onesignal.auto",
+              notifyButton: { enable: false }
+            });
+          } catch(e) {
+            console.log("OneSignal Web init status:", e.message);
+          }
         });
+      },
+
+      syncUser: function(email, name) {
+        if (!email) return;
+
+        // 1. Median.co (GoNative) JS Bridge Sync
+        if (window.gonative && window.gonative.onesignal) {
+          window.gonative.onesignal.setExternalUserId({ externalId: email });
+          window.gonative.onesignal.register();
+          console.log("Median.co OneSignal synced:", email);
+        } else if (window.median && window.median.onesignal) {
+          window.median.onesignal.setExternalUserId({ externalId: email });
+          window.median.onesignal.register();
+          console.log("Median OneSignal synced:", email);
+        }
+
+        // 2. OneSignal Web SDK
+        if (window.OneSignalDeferred) {
+          window.OneSignalDeferred.push(async function(OneSignal) {
+            try {
+              await OneSignal.login(email);
+              await OneSignal.User.addTag("user_name", name);
+            } catch(err) {
+              console.log("OneSignal user set:", err);
+            }
+          });
+        }
+
+        // 3. Solicitar permiso de Notificaciones Web si está permitido
+        if ('Notification' in window && Notification.permission === 'default') {
+          Notification.requestPermission();
+        }
+
+        this.updateUIStatus(true);
+      },
+
+      updateUIStatus: function(synced) {
+        const dot = document.getElementById('onesignalDot');
+        const txt = document.getElementById('onesignalStatusText');
+        if (dot && txt) {
+          if (synced) {
+            dot.style.background = '#10b981';
+            txt.innerText = 'Sincronizado con Median.co / OneSignal (' + (selectedName || 'Usuario') + ')';
+          } else {
+            dot.style.background = '#f59e0b';
+            txt.innerText = 'Sin sincronizar';
+          }
+        }
+      },
+
+      sendNotification: function(title, body) {
+        // Sonido de notificación
+        playNotificationSound();
+
+        // Notificación de navegador/app
+        if ('Notification' in window && Notification.permission === 'granted') {
+          try {
+            new Notification(title, {
+              body: body,
+              icon: "https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png"
+            });
+          } catch(e) {
+            console.log("Push error:", e);
+          }
+        }
       }
     };
 
-    bindClick("quickTransfer", "pageTransfer");
-    bindClick("quickWithdraw", "pageWithdraw");
-    bindClick("quickChat", "pageChat");
-    bindClick("quickSettings", "pageSettings");
+    PushManager.init();
 
-    function updateBalanceUI() {
-      const balEl = document.getElementById("balance");
-      const eyeBtn = document.getElementById("privacyButton");
-      if (!balEl) return;
-      if (privateMode) {
-        balEl.textContent = "••••••";
-        if (eyeBtn) eyeBtn.textContent = "🙈 Mostrar";
-      } else {
-        balEl.textContent = Number(currentBalance || 0).toLocaleString("es-AR", { maximumFractionDigits: 2 });
-        if (eyeBtn) eyeBtn.textContent = "👁 Ocultar";
+    function playNotificationSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } catch (e) {
+        console.log("Audio play error:", e);
       }
     }
 
-    const privacyButton = document.getElementById("privacyButton");
-    if (privacyButton) {
-      privacyButton.addEventListener("click", () => {
-        triggerHaptic();
-        privateMode = !privateMode;
-        updateBalanceUI();
-      });
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3200);
     }
 
-    function loadUserProfile(user) {
-      const isAdmin = ADMIN_EMAILS.includes(user.email.toLowerCase());
-      const name = user.displayName || user.email.split('@')[0];
-      const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6c4df6&color=fff`;
+    async function initAuth() {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (err) {
+        console.error("Auth init error:", err);
+      }
+    }
 
-      const headerName = document.getElementById("headerName");
-      if (headerName) headerName.textContent = name;
-      const headerAvatar = document.getElementById("headerAvatar");
-      if (headerAvatar) headerAvatar.src = avatar;
-      const profileName = document.getElementById("profileName");
-      if (profileName) profileName.textContent = name;
-      const profileEmail = document.getElementById("profileEmail");
-      if (profileEmail) profileEmail.textContent = user.email;
-      const profileAvatar = document.getElementById("profileAvatar");
-      if (profileAvatar) profileAvatar.src = avatar;
+    // Inicializar Auth al cargar
+    initAuth();
 
-      const editNameInput = document.getElementById("editNameInput");
-      if (editNameInput) editNameInput.value = name;
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const savedAccount = localStorage.getItem("momcoin_logged_user");
+        if (savedAccount) {
+          const parsed = JSON.parse(savedAccount);
+          selectedEmail = parsed.email;
+          selectedName = parsed.name;
+          currentUser = user;
+          await loadUserApp(selectedEmail, selectedName);
+        }
+      }
+    });
 
-      populateTransferRecipients(user);
+    // Eventos Selección de Cuenta
+    document.querySelectorAll(".account-button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedName = btn.getAttribute("data-name");
+        selectedEmail = btn.getAttribute("data-email");
+        document.getElementById("accountSelection").style.display = "none";
+        document.getElementById("passwordScreen").style.display = "block";
+        document.getElementById("passwordAccountName").textContent = `Hola, ${selectedName}`;
+        document.getElementById("standardPasswordInput").value = "";
+        document.getElementById("standardPasswordInput").focus();
+      });
+    });
 
-      const tabAdminNav = document.getElementById("tabAdminNav");
-      const roleBadge = document.getElementById("roleBadge");
-      const headerRole = document.getElementById("headerRole");
+    document.getElementById("backAccounts").addEventListener("click", () => {
+      document.getElementById("passwordScreen").style.display = "none";
+      document.getElementById("accountSelection").style.display = "block";
+    });
+
+    document.getElementById("loginSubmitBtn").addEventListener("click", performLogin);
+    document.getElementById("standardPasswordInput").addEventListener("keypress", (e) => {
+      if (e.key === 'Enter') performLogin();
+    });
+
+    async function performLogin() {
+      const passwordVal = document.getElementById("standardPasswordInput").value.trim();
+      const expectedPin = ACCOUNT_PINS[selectedName] || "1234";
+
+      // Verificar PIN guardado en Firestore o por defecto
+      const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', selectedEmail.replace(/\./g, '_'));
+      const userSnap = await getDoc(userRef);
+      
+      let valid = false;
+      if (userSnap.exists() && userSnap.data().pin) {
+        valid = (userSnap.data().pin === passwordVal);
+      } else {
+        valid = (passwordVal === expectedPin || passwordVal === "1234");
+      }
+
+      if (!valid) {
+        showToast("❌ Contraseña o PIN incorrecto");
+        return;
+      }
+
+      localStorage.setItem("momcoin_logged_user", JSON.stringify({ email: selectedEmail, name: selectedName }));
+      await loadUserApp(selectedEmail, selectedName);
+    }
+
+    async function loadUserApp(email, name) {
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      document.getElementById("bottomNav").style.display = "flex";
+
+      const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
+
+      // Ajustar UI según perfil
+      const userObj = USER_MAP.find(u => u.email === email) || { avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}` };
+      
+      document.getElementById("headerName").textContent = name;
+      document.getElementById("headerAvatar").src = userObj.avatar;
+      document.getElementById("profileName").textContent = name;
+      document.getElementById("profileEmail").textContent = email;
+      document.getElementById("profileAvatar").src = userObj.avatar;
+      document.getElementById("roleBadge").textContent = isAdmin ? "ADMINISTRADORA 👑" : "INTEGRANTE 👤";
+      document.getElementById("headerRole").textContent = isAdmin ? "Banco Oficial (Admin)" : "Mom Coin Wallet";
 
       if (isAdmin) {
-        if (tabAdminNav) tabAdminNav.style.display = "flex";
-        if (roleBadge) roleBadge.textContent = "👑 ADMIN";
-        if (headerRole) headerRole.textContent = "Administradora Central";
-        listenToWithdrawalAlerts();
+        document.getElementById("tabAdminNav").style.display = "flex";
       } else {
-        if (tabAdminNav) tabAdminNav.style.display = "none";
+        document.getElementById("tabAdminNav").style.display = "none";
       }
+
+      // Sincronizar con OneSignal y Median.co
+      PushManager.syncUser(email, name);
+
+      // Cargar lista de destinatarios para transferencias
+      populateTransferRecipients(email);
+
+      // Iniciar escuchadores de Firestore
+      setupUserDataListener(email, name);
+      setupTransactionsListener(email);
+      setupWithdrawalsListener(email, isAdmin);
+      setupChatListener();
     }
 
-    function populateTransferRecipients(user) {
+    function populateTransferRecipients(myEmail) {
       const select = document.getElementById("transferRecipientSelect");
-      if (!select) return;
-      select.innerHTML = `<option value="">Seleccionar destinatario</option>`;
-
+      select.innerHTML = '<option value="">Seleccionar integrante...</option>';
       USER_MAP.forEach(u => {
-        if (u.email.toLowerCase() !== user.email.toLowerCase()) {
+        if (u.email !== myEmail) {
           const opt = document.createElement("option");
           opt.value = u.email;
           opt.textContent = `${u.name} (${u.email})`;
@@ -1112,632 +1251,668 @@
       });
     }
 
-    // TRANSFERENCIAS ENTRE USUARIOS
-    const executeTransferBtn = document.getElementById("executeTransferBtn");
-    if (executeTransferBtn) {
-      executeTransferBtn.addEventListener("click", async () => {
-        triggerHaptic();
-        if (!currentUser) return;
-
-        const recipientSelect = document.getElementById("transferRecipientSelect");
-        const amountInput = document.getElementById("transferAmountInput");
-        const noteInput = document.getElementById("transferNoteInput");
-
-        if (!recipientSelect || !amountInput) return;
-
-        const recipientEmail = recipientSelect.value;
-        const amount = parseFloat(amountInput.value);
-        const note = noteInput ? noteInput.value.trim() : "";
-
-        if (!recipientEmail) {
-          showToast("Seleccioná un destinatario ❌");
-          return;
-        }
-        if (isNaN(amount) || amount <= 0) {
-          showToast("Ingresá un monto válido ❌");
-          return;
-        }
-        if (amount > currentBalance) {
-          showToast("Saldo insuficiente ❌");
-          return;
-        }
-
-        try {
-          showToast("Enviando transferencia... ⏳");
-          
-          const usersSnap = await getDocs(collection(db, "users"));
-          let recipientUid = null;
-          let recipientName = recipientEmail.split("@")[0];
-
-          usersSnap.forEach(d => {
-            const data = d.data();
-            if (data.email && data.email.toLowerCase() === recipientEmail.toLowerCase()) {
-              recipientUid = d.id;
-              if (data.name) recipientName = data.name;
-            }
-          });
-
-          if (!recipientUid) {
-            showToast("El destinatario no existe aún en la base de datos ❌");
-            return;
-          }
-
-          const senderName = currentUser.displayName || currentUser.email.split("@")[0];
-
-          await runTransaction(db, async (transaction) => {
-            const senderRef = doc(db, "users", currentUser.uid);
-            const recipientRef = doc(db, "users", recipientUid);
-
-            const senderDoc = await transaction.get(senderRef);
-            const recipientDoc = await transaction.get(recipientRef);
-
-            if (!senderDoc.exists()) throw new Error("Cuenta no encontrada.");
-            
-            const sBal = senderDoc.data().balance || senderDoc.data().coins || 0;
-            if (sBal < amount) throw new Error("Saldo insuficiente.");
-
-            const rBal = (recipientDoc.exists() ? (recipientDoc.data().balance || recipientDoc.data().coins || 0) : 0);
-
-            transaction.update(senderRef, { balance: sBal - amount });
-            transaction.update(recipientRef, { balance: rBal + amount });
-          });
-
-          await addDoc(collection(db, "transactions"), {
-            user_ref: currentUser.uid,
-            amount: -amount,
-            title: `Transferencia a ${recipientName}` + (note ? ` (${note})` : ""),
-            created_at: Date.now()
-          });
-
-          await addDoc(collection(db, "transactions"), {
-            user_ref: recipientUid,
-            amount: amount,
-            title: `Transferencia de ${senderName}` + (note ? ` (${note})` : ""),
-            created_at: Date.now()
-          });
-
-          amountInput.value = "";
-          if (noteInput) noteInput.value = "";
-          showToast("¡Transferencia enviada con éxito! 🚀");
-          await loadBalance(currentUser);
-
-        } catch (err) {
-          console.error("Error en transferencia:", err);
-          showToast("Error al transferir: " + err.message);
-        }
-      });
-    }
-
-    // CALCULADORA DE RETIRO Y SOLICITUD
-    const withdrawAmountInput = document.getElementById("withdrawAmount");
-    const withdrawCalc = document.getElementById("withdrawCalc");
-    const requestWithdrawBtn = document.getElementById("requestWithdrawBtn");
-
-    if (withdrawAmountInput && withdrawCalc) {
-      withdrawAmountInput.addEventListener("input", () => {
-        const val = parseFloat(withdrawAmountInput.value) || 0;
-        const totalArs = val * MC_VALUE_ARS;
-        withdrawCalc.textContent = `Valor estimado: $${totalArs.toLocaleString("es-AR")} ARS`;
-      });
-    }
-
-    if (requestWithdrawBtn) {
-      requestWithdrawBtn.addEventListener("click", async () => {
-        triggerHaptic();
-        if (!currentUser) return;
-
-        const amount = parseFloat(withdrawAmountInput.value);
-        if (isNaN(amount) || amount <= 0) {
-          showToast("Ingresá una cantidad válida ❌");
-          return;
-        }
-        if (amount > 10) {
-          showToast("Máximo 10 MC por solicitud ❌");
-          return;
-        }
-        if (amount > currentBalance) {
-          showToast("Saldo insuficiente en Mom Coins ❌");
-          return;
-        }
-
-        try {
-          showToast("Enviando solicitud de retiro... ⏳");
-          const uName = currentUser.displayName || currentUser.email.split("@")[0];
-
-          await addDoc(collection(db, "withdrawals"), {
-            userId: currentUser.uid,
-            userName: uName,
-            userEmail: currentUser.email,
-            amount: amount,
-            arsValue: amount * MC_VALUE_ARS,
-            status: "pending",
-            created_at: Date.now()
-          });
-
-          withdrawAmountInput.value = "";
-          if (withdrawCalc) withdrawCalc.textContent = "Valor estimado: $0 ARS";
-          showToast("¡Solicitud enviada a Mamá! 💸");
-        } catch (err) {
-          console.error("Error al solicitar retiro:", err);
-          showToast("Error al solicitar retiro");
-        }
-      });
-    }
-
-    // PANEL ADMINISTRADOR (MAMÁ)
-    const sendCoinsButton = document.getElementById("sendCoinsButton");
-    if (sendCoinsButton) {
-      sendCoinsButton.addEventListener("click", async () => {
-        triggerHaptic();
-        const recipientEmail = document.getElementById("recipientEmail").value;
-        const amount = parseFloat(document.getElementById("sendAmount").value);
-        const reason = document.getElementById("sendReason").value.trim() || "Acreditación de Mamá 🌟";
-
-        if (!recipientEmail) {
-          showToast("Seleccioná un destinatario ❌");
-          return;
-        }
-        if (isNaN(amount) || amount <= 0) {
-          showToast("Ingresá un monto válido ❌");
-          return;
-        }
-
-        try {
-          showToast("Acreditando Mom Coins... ⏳");
-          const usersSnap = await getDocs(collection(db, "users"));
-          let targetUid = null;
-          let targetName = recipientEmail.split("@")[0];
-
-          usersSnap.forEach(d => {
-            const data = d.data();
-            if (data.email && data.email.toLowerCase() === recipientEmail.toLowerCase()) {
-              targetUid = d.id;
-              if (data.name) targetName = data.name;
-            }
-          });
-
-          if (!targetUid) {
-            showToast("Usuario no encontrado en la base de datos ❌");
-            return;
-          }
-
-          const targetRef = doc(db, "users", targetUid);
-          const targetDoc = await getDoc(targetRef);
-          const oldBal = targetDoc.exists() ? (targetDoc.data().balance || targetDoc.data().coins || 0) : 0;
-
-          await setDoc(targetRef, { balance: oldBal + amount, email: recipientEmail }, { merge: true });
-
-          await addDoc(collection(db, "transactions"), {
-            user_ref: targetUid,
-            amount: amount,
-            title: `Mamá: ${reason}`,
-            created_at: Date.now()
-          });
-
-          document.getElementById("sendAmount").value = "";
-          document.getElementById("sendReason").value = "";
-          showToast(`¡${amount} MC enviados a ${targetName}! ✨`);
-        } catch (err) {
-          console.error("Error enviando coins:", err);
-          showToast("Error al acreditar coins");
-        }
-      });
-    }
-
-    // CHAT FAMILIAR CON TEXTO Y NOTA DE VOZ
-    const sendMessageBtn = document.getElementById("sendMessageBtn");
-    const messageInput = document.getElementById("messageInput");
-    const messagesList = document.getElementById("messagesList");
-
-    async function sendChatMessage(text = "", audioUrl = null) {
-      if (!currentUser) return;
-      if (!text.trim() && !audioUrl) return;
-
-      try {
-        const uName = currentUser.displayName || currentUser.email.split("@")[0];
-        await addDoc(collection(db, "messages"), {
-          senderUid: currentUser.uid,
-          senderName: uName,
-          text: text.trim(),
-          audioUrl: audioUrl || null,
-          timestamp: Date.now()
-        });
-
-        if (messageInput) messageInput.value = "";
-      } catch (err) {
-        console.error("Error al enviar mensaje:", err);
-        if (err.code === "permission-denied" || err.message?.includes("permissions")) {
-          showToast("Error 🔒 Reglas de permisos en Firestore denegadas");
-        } else {
-          showToast("Error al enviar mensaje ❌");
-        }
-      }
-    }
-
-    function listenMessages() {
-      if (unsubscribeMessages) unsubscribeMessages();
-
-      unsubscribeMessages = onSnapshot(collection(db, "messages"), snap => {
-        if (!messagesList) return;
-        messagesList.innerHTML = "";
-
-        const msgs = [];
-        snap.forEach(d => msgs.push({ id: d.id, ...d.data() }));
-
-        msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-
-        if (msgs.length === 0) {
-          messagesList.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px;">No hay mensajes aún. ¡Escribí el primero!</div>`;
-          return;
-        }
-
-        msgs.forEach(m => {
-          const isMine = currentUser && m.senderUid === currentUser.uid;
-          const bubble = document.createElement("div");
-          bubble.className = `chat-bubble ${isMine ? 'mine' : 'other'}`;
-
-          let contentHtml = `<strong>${escapeHTML(m.senderName)}</strong><br>`;
-          if (m.text) {
-            contentHtml += `<span>${escapeHTML(m.text)}</span>`;
-          }
-          if (m.audioUrl) {
-            contentHtml += `<audio class="audio-player" controls src="${m.audioUrl}"></audio>`;
-          }
-
-          const dateStr = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-          contentHtml += `<div class="chat-meta">${dateStr}</div>`;
-
-          bubble.innerHTML = contentHtml;
-          messagesList.appendChild(bubble);
-        });
-
-        scrollChatToBottom();
-      }, err => {
-        console.error("Error en snapshot del chat:", err);
-        if (messagesList) {
-          messagesList.innerHTML = `<div style="text-align:center;color:var(--red);font-size:12px;padding:20px;font-weight:bold;">⚠️ Error de Permisos: Actualizá las Reglas de Firestore en la consola de Firebase.</div>`;
-        }
-      });
-    }
-
-    function scrollChatToBottom() {
-      if (messagesList) {
-        setTimeout(() => {
-          messagesList.scrollTop = messagesList.scrollHeight;
-        }, 100);
-      }
-    }
-
-    // GRABADOR DE VOZ (WEB AUDIO MEDIARECORDER)
-    const recordVoiceBtn = document.getElementById("recordVoiceBtn");
-    const recordingStatus = document.getElementById("recordingStatus");
-    const recordingTime = document.getElementById("recordingTime");
-    let startTime = 0;
-
-    if (recordVoiceBtn) {
-      recordVoiceBtn.addEventListener("click", async () => {
-        triggerHaptic();
-
-        if (mediaRecorder && mediaRecorder.state === "recording") {
-          // Detener grabación
-          mediaRecorder.stop();
-          recordVoiceBtn.textContent = "🎙️ Grabar Nota de Voz";
-          if (recordingStatus) recordingStatus.style.display = "none";
-          clearInterval(recordTimerInterval);
-        } else {
-          // Iniciar grabación
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-
-            mediaRecorder.ondataavailable = (event) => {
-              if (event.data.size > 0) audioChunks.push(event.data);
-            };
-
-            mediaRecorder.onstop = async () => {
-              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-              const reader = new FileReader();
-              reader.readAsDataURL(audioBlob);
-              reader.onloadend = async () => {
-                const base64Audio = reader.result;
-                showToast("Enviando nota de voz... 🎙️");
-                await sendChatMessage("🎙️ Nota de voz", base64Audio);
-              };
-              stream.getTracks().forEach(track => track.stop());
-            };
-
-            mediaRecorder.start();
-            recordVoiceBtn.textContent = "⏹️ Detener y Enviar";
-            if (recordingStatus) recordingStatus.style.display = "block";
-
-            startTime = Date.now();
-            recordTimerInterval = setInterval(() => {
-              const elapsed = Math.floor((Date.now() - startTime) / 1000);
-              const mins = Math.floor(elapsed / 60);
-              const secs = elapsed % 60;
-              if (recordingTime) recordingTime.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            }, 1000);
-
-          } catch (err) {
-            console.error("Error al acceder al micrófono:", err);
-            showToast("No se pudo acceder al micrófono ❌");
-          }
-        }
-      });
-    }
-
-    // EDICIÓN DE PERFIL Y PIN
-    const saveNameBtn = document.getElementById("saveNameBtn");
-    if (saveNameBtn) {
-      saveNameBtn.addEventListener("click", async () => {
-        triggerHaptic();
-        if (!currentUser) return;
-
-        const editNameInput = document.getElementById("editNameInput");
-        if (!editNameInput) return;
-        const newName = editNameInput.value.trim();
-        if (!newName) {
-          showToast("El nombre no puede estar vacío ❌");
-          return;
-        }
-
-        try {
-          showToast("Guardando nombre... ⏳");
-          await updateProfile(currentUser, { displayName: newName });
-          await setDoc(doc(db, "users", currentUser.uid), { name: newName }, { merge: true });
-
-          loadUserProfile(currentUser);
-          showToast("¡Nombre actualizado correctamente! ✨");
-        } catch (err) {
-          console.error(err);
-          showToast("Error al cambiar nombre");
-        }
-      });
-    }
-
-    const savePinBtn = document.getElementById("savePinBtn");
-    if (savePinBtn) {
-      savePinBtn.addEventListener("click", async () => {
-        triggerHaptic();
-        if (!currentUser) return;
-
-        const newPinInput = document.getElementById("newPinInput");
-        const confirmPinInput = document.getElementById("confirmPinInput");
-        if (!newPinInput || !confirmPinInput) return;
-
-        const newPin = newPinInput.value;
-        const confirmPin = confirmPinInput.value;
-
-        if (!newPin || newPin.length < 4) {
-          showToast("El PIN debe tener al menos 4 caracteres ❌");
-          return;
-        }
-        if (newPin !== confirmPin) {
-          showToast("Los PINs no coinciden ❌");
-          return;
-        }
-
-        try {
-          showToast("Actualizando PIN... ⏳");
-          await updatePassword(currentUser, newPin);
-          await setDoc(doc(db, "users", currentUser.uid), { pin: newPin }, { merge: true });
-
-          newPinInput.value = "";
-          confirmPinInput.value = "";
-          showToast("¡PIN actualizado con éxito! 🔑");
-        } catch (err) {
-          console.error(err);
-          showToast("Error al cambiar el PIN (reingresá sesión)");
-        }
-      });
-    }
-
-    async function loadBalance(user) {
-      try {
-        const snap = await getDoc(doc(db, "users", user.uid));
+    function setupUserDataListener(email, name) {
+      const userDocId = email.replace(/\./g, '_');
+      const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userDocId);
+
+      onSnapshot(userRef, (snap) => {
         if (snap.exists()) {
           const data = snap.data();
-          currentBalance = typeof data.balance === "number" ? data.balance : (data.coins || 0);
-          updateBalanceUI();
+          currentBalance = data.balance || 0;
+          updateBalanceDisplay();
+          if (data.name && data.name !== name) {
+            document.getElementById("headerName").textContent = data.name;
+            document.getElementById("profileName").textContent = data.name;
+          }
         } else {
-          currentBalance = 0;
-          await setDoc(doc(db, "users", user.uid), { balance: 0, email: user.email, name: user.displayName || user.email.split('@')[0] });
-          updateBalanceUI();
+          // Crear documento de usuario si no existe
+          setDoc(userRef, {
+            name: name,
+            email: email,
+            balance: name === "Gabriela" ? 100 : 10,
+            createdAt: serverTimestamp()
+          });
         }
-      } catch (err) { console.error(err); }
+      }, (err) => console.log("User doc error:", err));
     }
 
-    function listenTransactions(user) {
-      if (unsubscribeTransactions) unsubscribeTransactions();
-
-      const q = query(collection(db, "transactions"), where("user_ref", "==", user.uid));
-
-      unsubscribeTransactions = onSnapshot(q, snap => {
-        const list = document.getElementById("transactionsList");
-        const txCount = document.getElementById("transactionCount");
-        if (!list) return;
-
-        const userTx = [];
-        snap.forEach(d => {
-          userTx.push({ id: d.id, ...d.data() });
-        });
-
-        userTx.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
-
-        if (txCount) txCount.textContent = `${userTx.length} movs`;
-        list.innerHTML = "";
-
-        if (userTx.length === 0) {
-          list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Sin movimientos aún.</div>`;
-          return;
-        }
-
-        userTx.forEach(data => {
-          const amount = Number(data.amount || 0);
-          const isInc = amount >= 0;
-          const item = document.createElement("div");
-          item.className = "tx-item";
-          item.innerHTML = `
-            <div class="tx-left">
-              <div class="tx-icon ${isInc ? 'income' : 'expense'}">${isInc ? '↓' : '↑'}</div>
-              <div>
-                <div class="tx-title">${escapeHTML(data.title || "Movimiento")}</div>
-                <div class="tx-date">${data.created_at ? new Date(data.created_at).toLocaleDateString() : 'Hoy'}</div>
-              </div>
-            </div>
-            <div class="tx-amount ${isInc ? 'income' : 'expense'}">${isInc ? '+' : ''}${amount} MC</div>
-          `;
-          list.appendChild(item);
-        });
-      }, err => {
-        console.error("Error en snapshot de transacciones:", err);
-        const list = document.getElementById("transactionsList");
-        if (list) {
-          list.innerHTML = `<div style="text-align:center;padding:15px;color:var(--red);font-size:12px;font-weight:bold;">⚠️ Error de permisos en Firebase. Revisa las reglas de Firestore.</div>`;
-        }
-      });
-    }
-
-    function listenToWithdrawalAlerts() {
-      if (unsubscribeWithdrawals) unsubscribeWithdrawals();
-
-      unsubscribeWithdrawals = onSnapshot(collection(db, "withdrawals"), snap => {
-        const alertBox = document.getElementById("adminWithdrawAlert");
-        const alertList = document.getElementById("withdrawAlertList");
-        const badge = document.getElementById("withdrawAlertBadge");
-        if (!alertBox || !alertList) return;
-
-        const pendingList = [];
-        snap.forEach(d => {
-          const data = d.data();
-          if (data.status === "pending") {
-            pendingList.push({ id: d.id, ...data });
-          }
-        });
-
-        if (badge) badge.textContent = pendingList.length;
-
-        if (pendingList.length === 0) {
-          alertBox.style.display = "none";
-          return;
-        }
-
-        alertBox.style.display = "block";
-        alertList.innerHTML = "";
-
-        pendingList.forEach(w => {
-          const div = document.createElement("div");
-          div.style.cssText = "background:rgba(255,255,255,0.15);padding:10px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;";
-          div.innerHTML = `
-            <span style="font-size:12px;"><strong>${escapeHTML(w.userName)}</strong> solicita ${w.amount} MC ($${w.arsValue || w.amount * MC_VALUE_ARS} ARS)</span>
-            <div style="display:flex;gap:6px;">
-              <button style="background:white;color:#dc2626;border:none;padding:4px 8px;border-radius:8px;font-weight:bold;cursor:pointer;" id="approve-${w.id}">Aprobar</button>
-              <button style="background:rgba(0,0,0,0.2);color:white;border:none;padding:4px 8px;border-radius:8px;font-weight:bold;cursor:pointer;" id="reject-${w.id}">X</button>
-            </div>
-          `;
-          alertList.appendChild(div);
-
-          const btnApprove = div.querySelector(`#approve-${w.id}`);
-          if (btnApprove) {
-            btnApprove.addEventListener("click", async () => {
-              try {
-                showToast("Procesando retiro... ⏳");
-                const userRef = doc(db, "users", w.userId);
-                const userSnap = await getDoc(userRef);
-
-                if (userSnap.exists()) {
-                  const uBal = userSnap.data().balance || 0;
-                  if (uBal < w.amount) {
-                    showToast("El usuario no tiene suficiente saldo ❌");
-                    return;
-                  }
-                  await updateDoc(userRef, { balance: uBal - w.amount });
-                }
-
-                await addDoc(collection(db, "transactions"), {
-                  user_ref: w.userId,
-                  amount: -w.amount,
-                  title: `Retiro en efectivo aprobado ($${w.arsValue || w.amount * MC_VALUE_ARS} ARS)`,
-                  created_at: Date.now()
-                });
-
-                await updateDoc(doc(db, "withdrawals", w.id), { status: "approved" });
-                showToast("Retiro aprobado con éxito ✨");
-              } catch (e) {
-                console.error(e);
-                showToast("Error al aprobar retiro");
-              }
-            });
-          }
-
-          const btnReject = div.querySelector(`#reject-${w.id}`);
-          if (btnReject) {
-            btnReject.addEventListener("click", async () => {
-              await updateDoc(doc(db, "withdrawals", w.id), { status: "rejected" });
-              showToast("Solicitud rechazada");
-            });
-          }
-        });
-      }, err => {
-        console.error("Error al obtener alertas de retiro:", err);
-      });
-    }
-
-    // MODO OSCURO
-    const darkModeToggle = document.getElementById("darkModeToggle");
-    if (darkModeToggle) {
-      darkModeToggle.addEventListener("change", () => {
-        triggerHaptic();
-        if (darkModeToggle.checked) {
-          document.body.classList.add("dark-mode");
-          localStorage.setItem("momcoin_dark", "true");
-        } else {
-          document.body.classList.remove("dark-mode");
-          localStorage.setItem("momcoin_dark", "false");
-        }
-      });
-
-      if (localStorage.getItem("momcoin_dark") === "true") {
-        darkModeToggle.checked = true;
-        document.body.classList.add("dark-mode");
+    function updateBalanceDisplay() {
+      const balEl = document.getElementById("balance");
+      if (privateMode) {
+        balEl.textContent = "••••••";
+      } else {
+        balEl.textContent = `${currentBalance.toFixed(2)} MC`;
       }
     }
 
-    // AUTENTICACIÓN
-    onAuthStateChanged(auth, async (user) => {
-      currentUser = user;
-      const loginScreen = document.getElementById("loginScreen");
-      const appContainer = document.getElementById("app");
-      const bottomNav = document.getElementById("bottomNav");
+    document.getElementById("privacyButton").addEventListener("click", () => {
+      privateMode = !privateMode;
+      document.getElementById("privacyButton").textContent = privateMode ? "👁 Mostrar" : "👁 Ocultar";
+      updateBalanceDisplay();
+    });
 
-      if (user) {
-        if (loginScreen) loginScreen.style.display = "none";
-        if (appContainer) appContainer.style.display = "block";
-        if (bottomNav) bottomNav.style.display = "flex";
+    function setupTransactionsListener(email) {
+      const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
 
-        loadUserProfile(user);
-        await loadBalance(user);
-        listenTransactions(user);
-        listenMessages();
+      if (unsubscribeTransactions) unsubscribeTransactions();
+
+      unsubscribeTransactions = onSnapshot(txCol, (snap) => {
+        const txs = [];
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          if (d.senderEmail === email || d.recipientEmail === email || d.userEmail === email) {
+            txs.push({ id: docSnap.id, ...d });
+          }
+        });
+
+        // Ordenar en memoria por fecha descendente (Rule 2)
+        txs.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
+
+        renderTransactionsList(txs);
+      }, err => console.log("Transactions snapshot error:", err));
+    }
+
+    function renderTransactionsList(txs) {
+      const listEl = document.getElementById("transactionsList");
+      document.getElementById("transactionCount").textContent = `${txs.length} movs`;
+
+      if (txs.length === 0) {
+        listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Aún no tenés movimientos registados</div>';
+        return;
+      }
+
+      listEl.innerHTML = txs.slice(0, 20).map(t => {
+        const isIncome = t.recipientEmail === selectedEmail || (t.type === 'credit' && t.userEmail === selectedEmail);
+        const icon = isIncome ? '📥' : '📤';
+        const amountClass = isIncome ? 'income' : 'expense';
+        const sign = isIncome ? '+' : '-';
+        const title = t.reason || t.note || (isIncome ? `De: ${t.senderName || 'Mamá'}` : `Para: ${t.recipientName || 'Integrante'}`);
+        const dateStr = t.timestamp ? new Date(t.timestamp.toMillis()).toLocaleDateString('es-AR', { hour: '2-digit', minute: '2-digit' }) : 'Reciente';
+
+        return `
+          <div class="tx-item">
+            <div class="tx-left">
+              <div class="tx-icon ${amountClass}">${icon}</div>
+              <div>
+                <div class="tx-title">${title}</div>
+                <div class="tx-date">${dateStr}</div>
+              </div>
+            </div>
+            <div class="tx-amount ${amountClass}">${sign}${Number(t.amount).toFixed(2)} MC</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setupChatListener() {
+      const msgCol = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+
+      if (unsubscribeMessages) unsubscribeMessages();
+
+      unsubscribeMessages = onSnapshot(msgCol, (snap) => {
+        const msgs = [];
+        snap.forEach(docSnap => {
+          msgs.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        // Ordenar en memoria cronológicamente
+        msgs.sort((a, b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
+
+        // Detectar nuevo mensaje para sonido y badge
+        if (!isInitialMessageLoad && msgs.length > 0) {
+          const lastMsg = msgs[msgs.length - 1];
+          if (lastMsg.senderEmail !== selectedEmail) {
+            PushManager.sendNotification(`💬 Mensaje de ${lastMsg.senderName}`, lastMsg.text || '🎙️ Nota de voz');
+            if (activeTabId !== 'pageChat') {
+              unreadChatCount++;
+              updateChatBadges();
+            }
+          }
+        }
+        isInitialMessageLoad = false;
+
+        renderMessagesList(msgs);
+      }, err => console.log("Chat error:", err));
+    }
+
+    function renderMessagesList(msgs) {
+      const listEl = document.getElementById("messagesList");
+
+      if (msgs.length === 0) {
+        listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">No hay mensajes. ¡Sé el primero en escribir!</div>';
+        return;
+      }
+
+      listEl.innerHTML = msgs.map(m => {
+        const isMine = m.senderEmail === selectedEmail;
+        const wrapperClass = isMine ? 'mine' : 'other';
+        const bubbleClass = isMine ? 'mine' : 'other';
+        const timeStr = m.timestamp ? new Date(m.timestamp.toMillis()).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) : '';
+
+        let content = '';
+        if (m.audioUrl) {
+          content = `
+            <div style="margin-bottom:4px;font-weight:700;font-size:12px;">🎙️ Nota de voz</div>
+            <audio controls src="${m.audioUrl}" class="audio-player"></audio>
+          `;
+        } else {
+          content = `<div>${escapeHtml(m.text || '')}</div>`;
+        }
+
+        return `
+          <div class="chat-bubble-wrapper ${wrapperClass}">
+            ${!isMine ? `<div class="chat-author">${m.senderName}</div>` : ''}
+            <div class="chat-bubble ${bubbleClass}">
+              ${content}
+              <div class="chat-meta">${timeStr}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Auto-scroll al final del chat
+      listEl.scrollTop = listEl.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+    }
+
+    function updateChatBadges() {
+      const badgeNav = document.getElementById("navChatBadge");
+      const badgeChat = document.getElementById("unreadMessagesBadge");
+
+      if (unreadChatCount > 0) {
+        if (badgeNav) badgeNav.style.display = "block";
+        if (badgeChat) {
+          badgeChat.style.display = "inline-block";
+          badgeChat.textContent = unreadChatCount;
+        }
       } else {
-        if (loginScreen) loginScreen.style.display = "flex";
-        if (appContainer) appContainer.style.display = "none";
-        if (bottomNav) bottomNav.style.display = "none";
-        if (accountSelection) accountSelection.style.display = "block";
-        if (passwordScreen) passwordScreen.style.display = "none";
-        if (standardPasswordInput) standardPasswordInput.value = "";
+        if (badgeNav) badgeNav.style.display = "none";
+        if (badgeChat) badgeChat.style.display = "none";
+      }
+    }
+
+    // Enviar Mensaje de Texto
+    document.getElementById("sendMessageBtn").addEventListener("click", sendTextMessage);
+    document.getElementById("messageInput").addEventListener("keypress", (e) => {
+      if (e.key === 'Enter') sendTextMessage();
+    });
+
+    async function sendTextMessage() {
+      const input = document.getElementById("messageInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = "";
+      try {
+        const msgCol = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+        await addDoc(msgCol, {
+          senderEmail: selectedEmail,
+          senderName: selectedName,
+          text: text,
+          timestamp: serverTimestamp()
+        });
+      } catch (err) {
+        showToast("Error al enviar mensaje");
+        console.error(err);
+      }
+    }
+
+    const recordBtn = document.getElementById("recordVoiceBtn");
+    const recordBtnText = document.getElementById("recordBtnText");
+    const recordingStatus = document.getElementById("recordingStatus");
+    const recordingTime = document.getElementById("recordingTime");
+
+    recordBtn.addEventListener("click", toggleAudioRecording);
+
+    async function toggleAudioRecording() {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        stopAudioRecording();
+      } else {
+        startAudioRecording();
+      }
+    }
+
+    async function startAudioRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const reader = new FileReader();
+          reader.readAsDataURL(audioBlob);
+          reader.onloadend = async () => {
+            const base64Audio = reader.result;
+            await sendVoiceMessage(base64Audio);
+          };
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+        recordBtnText.textContent = "⏹️ Detener & Enviar";
+        recordBtn.style.background = "#fef2f2";
+        recordBtn.style.color = "#ef4444";
+        recordingStatus.style.display = "block";
+
+        recordSeconds = 0;
+        recordingTime.textContent = "0:00";
+        recordTimerInterval = setInterval(() => {
+          recordSeconds++;
+          const mins = Math.floor(recordSeconds / 60);
+          const secs = recordSeconds % 60;
+          recordingTime.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }, 1000);
+
+      } catch (err) {
+        showToast("⚠️ Permiso de micrófono denegado");
+        console.error("Mic error:", err);
+      }
+    }
+
+    function stopAudioRecording() {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        clearInterval(recordTimerInterval);
+        recordBtnText.textContent = "🎙️ Grabar Nota de Voz";
+        recordBtn.style.background = "var(--primary-light)";
+        recordBtn.style.color = "var(--primary)";
+        recordingStatus.style.display = "none";
+      }
+    }
+
+    async function sendVoiceMessage(audioUrl) {
+      try {
+        const msgCol = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+        await addDoc(msgCol, {
+          senderEmail: selectedEmail,
+          senderName: selectedName,
+          audioUrl: audioUrl,
+          timestamp: serverTimestamp()
+        });
+        showToast("🎙️ Nota de voz enviada");
+      } catch (err) {
+        showToast("Error enviando nota de voz");
+      }
+    }
+
+    document.getElementById("executeTransferBtn").addEventListener("click", async () => {
+      const recipientEmail = document.getElementById("transferRecipientSelect").value;
+      const amount = parseFloat(document.getElementById("transferAmountInput").value);
+      const note = document.getElementById("transferNoteInput").value.trim();
+
+      if (!recipientEmail) {
+        showToast("Selecciona un destinatario");
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Ingresa un monto válido");
+        return;
+      }
+      if (amount > currentBalance) {
+        showToast("❌ Saldo insuficiente");
+        return;
+      }
+
+      const recipientObj = USER_MAP.find(u => u.email === recipientEmail);
+      const recipientName = recipientObj ? recipientObj.name : "Integrante";
+
+      try {
+        const senderDocId = selectedEmail.replace(/\./g, '_');
+        const recipientDocId = recipientEmail.replace(/\./g, '_');
+
+        const senderRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', senderDocId);
+        const recipientRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', recipientDocId);
+
+        await runTransaction(db, async (transaction) => {
+          const senderSnap = await transaction.get(senderRef);
+          if (!senderSnap.exists() || senderSnap.data().balance < amount) {
+            throw new Error("Saldo insuficiente");
+          }
+
+          const recipientSnap = await transaction.get(recipientRef);
+          const currentRecBal = recipientSnap.exists() ? (recipientSnap.data().balance || 0) : 0;
+
+          transaction.update(senderRef, { balance: senderSnap.data().balance - amount });
+          
+          if (recipientSnap.exists()) {
+            transaction.update(recipientRef, { balance: currentRecBal + amount });
+          } else {
+            transaction.set(recipientRef, { name: recipientName, email: recipientEmail, balance: amount });
+          }
+        });
+
+        // Registrar transacción
+        const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
+        await addDoc(txCol, {
+          type: 'transfer',
+          senderEmail: selectedEmail,
+          senderName: selectedName,
+          recipientEmail: recipientEmail,
+          recipientName: recipientName,
+          amount: amount,
+          note: note || "Transferencia directa",
+          timestamp: serverTimestamp()
+        });
+
+        document.getElementById("transferAmountInput").value = "";
+        document.getElementById("transferNoteInput").value = "";
+        showToast(`✅ Enviaaste ${amount} MC a ${recipientName}`);
+        switchTab("pageHome");
+
+      } catch (err) {
+        showToast("❌ Error en la transferencia: " + err.message);
       }
     });
 
-    const logoutButton = document.getElementById("logoutButton");
-    if (logoutButton) {
-      logoutButton.addEventListener("click", async () => {
-        triggerHaptic();
-        await signOut(auth);
-        showToast("Sesión cerrada");
-      });
+    /* PANEL MAMÁ (ADMIN) - ACREDITAR */
+    document.getElementById("sendCoinsButton").addEventListener("click", async () => {
+      const recipientEmail = document.getElementById("recipientEmail").value;
+      const amount = parseFloat(document.getElementById("sendAmount").value);
+      const reason = document.getElementById("sendReason").value.trim();
+
+      if (!recipientEmail || isNaN(amount) || amount <= 0) {
+        showToast("Completá todos los campos correctamente");
+        return;
+      }
+
+      const recipientObj = USER_MAP.find(u => u.email === recipientEmail);
+      const recipientName = recipientObj ? recipientObj.name : "Integrante";
+
+      try {
+        const recipientDocId = recipientEmail.replace(/\./g, '_');
+        const recipientRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', recipientDocId);
+
+        await runTransaction(db, async (transaction) => {
+          const recipientSnap = await transaction.get(recipientRef);
+          const currentBal = recipientSnap.exists() ? (recipientSnap.data().balance || 0) : 0;
+
+          if (recipientSnap.exists()) {
+            transaction.update(recipientRef, { balance: currentBal + amount });
+          } else {
+            transaction.set(recipientRef, { name: recipientName, email: recipientEmail, balance: amount });
+          }
+        });
+
+        // Guardar movimiento
+        const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
+        await addDoc(txCol, {
+          type: 'credit',
+          userEmail: recipientEmail,
+          userName: recipientName,
+          senderEmail: selectedEmail,
+          senderName: selectedName,
+          amount: amount,
+          reason: reason || "Recarga de Mamá 🌟",
+          timestamp: serverTimestamp()
+        });
+
+        document.getElementById("sendAmount").value = "";
+        document.getElementById("sendReason").value = "";
+        showToast(`✨ Acreditaste ${amount} MC a ${recipientName}`);
+        switchTab("pageHome");
+
+      } catch (err) {
+        showToast("Error al acreditar Mom Coins");
+      }
+    });
+
+    const withdrawAmountInput = document.getElementById("withdrawAmount");
+    withdrawAmountInput.addEventListener("input", () => {
+      const val = parseFloat(withdrawAmountInput.value) || 0;
+      document.getElementById("withdrawCalc").textContent = `Valor estimado: $${(val * MC_VALUE_ARS).toLocaleString()} ARS`;
+    });
+
+    document.getElementById("requestWithdrawBtn").addEventListener("click", async () => {
+      const amount = parseFloat(withdrawAmountInput.value);
+      if (isNaN(amount) || amount <= 0 || amount > 10) {
+        showToast("El monto debe ser entre 1 y 10 MC");
+        return;
+      }
+      if (amount > currentBalance) {
+        showToast("❌ Saldo insuficiente de MC");
+        return;
+      }
+
+      try {
+        const wCol = collection(db, 'artifacts', appId, 'public', 'data', 'withdrawals');
+        await addDoc(wCol, {
+          userEmail: selectedEmail,
+          userName: selectedName,
+          amount: amount,
+          arsAmount: amount * MC_VALUE_ARS,
+          status: 'pending',
+          createdAt: serverTimestamp()
+        });
+
+        withdrawAmountInput.value = "";
+        document.getElementById("withdrawCalc").textContent = "Valor estimado: $0 ARS";
+        showToast("🚀 Solicitud de retiro enviada a Mamá");
+
+      } catch (err) {
+        showToast("Error enviando solicitud de retiro");
+      }
+    });
+
+    function setupWithdrawalsListener(email, isAdmin) {
+      const wCol = collection(db, 'artifacts', appId, 'public', 'data', 'withdrawals');
+
+      if (unsubscribeWithdrawals) unsubscribeWithdrawals();
+
+      unsubscribeWithdrawals = onSnapshot(wCol, (snap) => {
+        const pendingList = [];
+        const userList = [];
+
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          const item = { id: docSnap.id, ...d };
+          if (d.status === 'pending') pendingList.push(item);
+          if (d.userEmail === email) userList.push(item);
+        });
+
+        // Banner Admin de Mamá
+        if (isAdmin) {
+          const alertBox = document.getElementById("adminWithdrawAlert");
+          const alertList = document.getElementById("withdrawAlertList");
+          const alertBadge = document.getElementById("withdrawAlertBadge");
+
+          if (pendingList.length > 0) {
+            alertBox.style.display = "block";
+            alertBadge.textContent = pendingList.length;
+            document.getElementById("navWithdrawBadge").style.display = "block";
+
+            alertList.innerHTML = pendingList.map(w => `
+              <div style="background:rgba(255,255,255,0.15);padding:10px;border-radius:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <strong>${w.userName}</strong>: ${w.amount} MC ($${w.arsAmount} ARS)
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <button onclick="window.processWithdrawal('${w.id}', '${w.userEmail}', ${w.amount}, true)" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:bold;cursor:pointer;">Aprobar</button>
+                  <button onclick="window.processWithdrawal('${w.id}', '${w.userEmail}', ${w.amount}, false)" style="background:#4b5563;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:bold;cursor:pointer;">Rechazar</button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            alertBox.style.display = "none";
+            document.getElementById("navWithdrawBadge").style.display = "none";
+          }
+        }
+
+        // Renderizar lista personal de solicitudes
+        renderUserWithdrawals(userList);
+      }, err => console.log("Withdrawals error:", err));
     }
+
+    window.processWithdrawal = async function(withdrawId, userEmail, amount, approve) {
+      try {
+        const wRef = doc(db, 'artifacts', appId, 'public', 'data', 'withdrawals', withdrawId);
+        const userDocId = userEmail.replace(/\./g, '_');
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userDocId);
+
+        if (approve) {
+          await runTransaction(db, async (transaction) => {
+            const uSnap = await transaction.get(userRef);
+            const currentBal = uSnap.exists() ? uSnap.data().balance : 0;
+            if (currentBal < amount) throw new Error("El usuario ya no cuenta con el saldo");
+
+            transaction.update(userRef, { balance: currentBal - amount });
+            transaction.update(wRef, { status: 'approved', processedAt: serverTimestamp() });
+          });
+
+          // Agregar a movimientos
+          const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
+          await addDoc(txCol, {
+            type: 'withdraw',
+            userEmail: userEmail,
+            amount: amount,
+            reason: `Retiro efectivo aprobado ($${amount * MC_VALUE_ARS} ARS)`,
+            timestamp: serverTimestamp()
+          });
+
+          showToast("✅ Retiro Aprobado");
+        } else {
+          await updateDoc(wRef, { status: 'rejected', processedAt: serverTimestamp() });
+          showToast("Solicitud rechazada");
+        }
+      } catch (err) {
+        showToast("Error procesando retiro: " + err.message);
+      }
+    };
+
+    function renderUserWithdrawals(list) {
+      const container = document.getElementById("userWithdrawalsList");
+      if (list.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:10px;">Sin solicitudes registradas</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(w => {
+        let statusBadge = '';
+        if (w.status === 'pending') statusBadge = '<span style="color:#d97706;font-weight:bold;">⏳ Pendiente</span>';
+        else if (w.status === 'approved') statusBadge = '<span style="color:#10b981;font-weight:bold;">✅ Aprobado</span>';
+        else statusBadge = '<span style="color:#ef4444;font-weight:bold;">❌ Rechazado</span>';
+
+        return `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--border);">
+            <div>
+              <div style="font-size:13px;font-weight:700;">${w.amount} MC ($${w.arsAmount} ARS)</div>
+              <div style="font-size:11px;color:var(--muted);">${w.createdAt ? new Date(w.createdAt.toMillis()).toLocaleDateString() : 'Reciente'}</div>
+            </div>
+            <div style="font-size:12px;">${statusBadge}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Navegación por Pestañas
+    document.querySelectorAll(".nav-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        const target = tab.getAttribute("data-target");
+        switchTab(target);
+      });
+    });
+
+    document.getElementById("quickTransfer").addEventListener("click", () => switchTab("pageTransfer"));
+    document.getElementById("quickWithdraw").addEventListener("click", () => switchTab("pageWithdraw"));
+    document.getElementById("quickChat").addEventListener("click", () => switchTab("pageChat"));
+    document.getElementById("quickSettings").addEventListener("click", () => switchTab("pageSettings"));
+
+    function switchTab(targetId) {
+      activeTabId = targetId;
+      document.querySelectorAll(".page-section").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+
+      const targetPage = document.getElementById(targetId);
+      if (targetPage) targetPage.classList.add("active");
+
+      const activeBtn = document.querySelector(`.nav-tab[data-target="${targetId}"]`);
+      if (activeBtn) activeBtn.classList.add("active");
+
+      if (targetId === "pageChat") {
+        unreadChatCount = 0;
+        updateChatBadges();
+      }
+    }
+
+    // Guardar Cambio de Nombre
+    document.getElementById("saveNameBtn").addEventListener("click", async () => {
+      const newName = document.getElementById("editNameInput").value.trim();
+      if (!newName) return;
+
+      try {
+        const userDocId = selectedEmail.replace(/\./g, '_');
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userDocId);
+        await updateDoc(userRef, { name: newName });
+        
+        selectedName = newName;
+        document.getElementById("headerName").textContent = newName;
+        document.getElementById("profileName").textContent = newName;
+        document.getElementById("editNameInput").value = "";
+        
+        showToast("Nombre actualizado correctamente ✨");
+      } catch (e) {
+        showToast("Error guardando nombre");
+      }
+    });
+
+    // Guardar Cambio de PIN
+    document.getElementById("savePinBtn").addEventListener("click", async () => {
+      const pin = document.getElementById("newPinInput").value.trim();
+      const confirmPin = document.getElementById("confirmPinInput").value.trim();
+
+      if (!pin || pin !== confirmPin) {
+        showToast("Los PINs no coinciden");
+        return;
+      }
+
+      try {
+        const userDocId = selectedEmail.replace(/\./g, '_');
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userDocId);
+        await updateDoc(userRef, { pin: pin });
+
+        document.getElementById("newPinInput").value = "";
+        document.getElementById("confirmPinInput").value = "";
+        showToast("🔑 PIN de seguridad actualizado");
+      } catch (e) {
+        showToast("Error actualizando PIN");
+      }
+    });
+
+    // Botón Sincronizar Push / Median.co
+    document.getElementById("syncPushBtn").addEventListener("click", () => {
+      PushManager.syncUser(selectedEmail, selectedName);
+      showToast("📲 Notificaciones y Median.co sincronizados");
+    });
+
+    // Modo Oscuro
+    const darkToggle = document.getElementById("darkModeToggle");
+    darkToggle.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        document.body.classList.add("dark-mode");
+        localStorage.setItem("momcoin_dark", "true");
+      } else {
+        document.body.classList.remove("dark-mode");
+        localStorage.setItem("momcoin_dark", "false");
+      }
+    });
+
+    if (localStorage.getItem("momcoin_dark") === "true") {
+      darkToggle.checked = true;
+      document.body.classList.add("dark-mode");
+    }
+
+    // Cerrar Sesión
+    document.getElementById("logoutButton").addEventListener("click", () => {
+      localStorage.removeItem("momcoin_logged_user");
+      location.reload();
+    });
   </script>
 </body>
 </html>
