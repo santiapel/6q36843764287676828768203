@@ -877,7 +877,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, updatePassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAe2LC8Mopcf8NTjhnS_tCCN8Fj5bvIX4E",
@@ -1346,21 +1346,12 @@
         if (messageInput) messageInput.value = "";
       } catch (err) {
         console.error("Error al enviar mensaje:", err);
-        showToast("Error al enviar mensaje");
-      }
-    }
-
-    if (sendMessageBtn && messageInput) {
-      sendMessageBtn.addEventListener("click", () => {
-        triggerHaptic();
-        sendChatMessage(messageInput.value);
-      });
-
-      messageInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          sendChatMessage(messageInput.value);
+        if (err.code === "permission-denied" || err.message?.includes("permissions")) {
+          showToast("Error 🔒 Reglas de permisos en Firestore denegadas");
+        } else {
+          showToast("Error al enviar mensaje ❌");
         }
-      });
+      }
     }
 
     function listenMessages() {
@@ -1401,6 +1392,11 @@
         });
 
         scrollChatToBottom();
+      }, err => {
+        console.error("Error en snapshot del chat:", err);
+        if (messagesList) {
+          messagesList.innerHTML = `<div style="text-align:center;color:var(--red);font-size:12px;padding:20px;font-weight:bold;">⚠️ Error de Permisos: Actualizá las Reglas de Firestore en la consola de Firebase.</div>`;
+        }
       });
     }
 
@@ -1555,17 +1551,16 @@
     function listenTransactions(user) {
       if (unsubscribeTransactions) unsubscribeTransactions();
 
-      unsubscribeTransactions = onSnapshot(collection(db, "transactions"), snap => {
+      const q = query(collection(db, "transactions"), where("user_ref", "==", user.uid));
+
+      unsubscribeTransactions = onSnapshot(q, snap => {
         const list = document.getElementById("transactionsList");
         const txCount = document.getElementById("transactionCount");
         if (!list) return;
 
         const userTx = [];
         snap.forEach(d => {
-          const data = d.data();
-          if (data.user_ref === user.uid) {
-            userTx.push({ id: d.id, ...data });
-          }
+          userTx.push({ id: d.id, ...d.data() });
         });
 
         userTx.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
@@ -1595,6 +1590,12 @@
           `;
           list.appendChild(item);
         });
+      }, err => {
+        console.error("Error en snapshot de transacciones:", err);
+        const list = document.getElementById("transactionsList");
+        if (list) {
+          list.innerHTML = `<div style="text-align:center;padding:15px;color:var(--red);font-size:12px;font-weight:bold;">⚠️ Error de permisos en Firebase. Revisa las reglas de Firestore.</div>`;
+        }
       });
     }
 
@@ -1678,6 +1679,8 @@
             });
           }
         });
+      }, err => {
+        console.error("Error al obtener alertas de retiro:", err);
       });
     }
 
