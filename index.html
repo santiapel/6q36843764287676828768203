@@ -563,6 +563,41 @@
     #toast.show {
       transform: translate(-50%, 0);
     }
+
+
+    /* ===== MEDIAN.CO + MICROINTERACCIONES ===== */
+    html { scroll-behavior: smooth; }
+    body { padding-top: env(safe-area-inset-top); padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 18px); }
+    button, .action-item, .nav-tab, .account-button, input, select { touch-action: manipulation; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid rgba(108,77,246,.25); outline-offset: 2px; }
+    .card, .balance-card, .action-item, .profile-pill { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+    .card:hover, .action-item:hover { transform: translateY(-2px); }
+    .balance-card { animation: cardIn .5s cubic-bezier(.16,1,.3,1); }
+    .action-item { animation: popIn .4s cubic-bezier(.16,1,.3,1) both; }
+    .action-item:nth-child(2){animation-delay:.04s}.action-item:nth-child(3){animation-delay:.08s}.action-item:nth-child(4){animation-delay:.12s}
+    @keyframes cardIn { from { opacity:0; transform: translateY(12px) scale(.98); } to { opacity:1; transform:none; } }
+    @keyframes popIn { from { opacity:0; transform:translateY(8px) scale(.96); } to { opacity:1; transform:none; } }
+    @keyframes shimmer { 0% { transform:translateX(-120%); } 100% { transform:translateX(120%); } }
+    @keyframes bellRing { 0%,100%{transform:rotate(0)} 20%{transform:rotate(12deg)} 40%{transform:rotate(-10deg)} 60%{transform:rotate(7deg)} 80%{transform:rotate(-4deg)} }
+    .notification-dot { width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;box-shadow:0 0 0 4px rgba(239,68,68,.12);animation:dotPop 1.4s infinite; }
+    .withdraw-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; margin-top:10px; box-shadow:var(--shadow); animation:slideUp .25s ease; }
+    .withdraw-actions { display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; margin-top:10px; }
+    .mini-btn { border:0; border-radius:11px; padding:9px 6px; font-weight:800; font-size:11px; cursor:pointer; transition:transform .15s ease, opacity .15s ease; }
+    .mini-btn:active { transform:scale(.95); }
+    .mini-btn.accept { background:#dcfce7;color:#15803d; }.mini-btn.reject{background:#fee2e2;color:#b91c1c}.mini-btn.schedule{background:#ede9fe;color:#6d28d9}
+    .task-item { padding:14px; border:1px solid var(--border); border-radius:16px; margin-bottom:10px; background:var(--bg); animation:slideUp .25s ease; }
+    .task-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .task-title { font-size:14px;font-weight:800; }.task-meta{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+    .reward-chip { flex:none; background:var(--green-bg);color:#059669;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900; }
+    .task-progress { height:7px;background:var(--border);border-radius:99px;overflow:hidden;margin:10px 0; }.task-progress > span{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .5s ease;}
+    .task-btn { width:100%;padding:10px;border:0;border-radius:12px;background:var(--primary);color:#fff;font-weight:800;cursor:pointer; }
+    .task-btn.secondary{background:var(--primary-light);color:var(--primary);}.task-btn:disabled{opacity:.55;cursor:not-allowed}
+    .empty-state { text-align:center;padding:24px 12px;color:var(--muted);font-size:13px; }
+    .floating-notice { position:fixed; right:16px; top:calc(16px + env(safe-area-inset-top)); z-index:10001; background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:16px;padding:12px 14px;box-shadow:0 18px 45px rgba(0,0,0,.16);display:flex;align-items:center;gap:10px;animation:slideUp .3s ease;max-width:min(340px,calc(100vw - 32px)); }
+    .floating-notice .notice-icon{font-size:22px;animation:bellRing 1s ease;}
+    @media (max-width: 430px) { .quick-actions{gap:7px}.action-item{padding:12px 5px}.action-label{font-size:10px}.bottom-nav{overflow-x:auto}.nav-tab{min-width:72px}.withdraw-actions{grid-template-columns:1fr 1fr 1fr} }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }
+
   </style>
 </head>
 
@@ -672,9 +707,9 @@
           <div class="action-icon">💬</div>
           <span class="action-label">Chat</span>
         </div>
-        <div class="action-item" id="quickSettings">
-          <div class="action-icon">⚙️</div>
-          <span class="action-label">Ajustes</span>
+        <div class="action-item" id="quickTasks">
+          <div class="action-icon">✅</div>
+          <span class="action-label">Tareas</span>
         </div>
       </div>
 
@@ -748,6 +783,26 @@
         <input id="transferNoteInput" type="text" maxlength="80" class="form-input" placeholder="Ej: Pago de merienda 🍕">
 
         <button id="executeTransferBtn" class="btn-primary" style="margin-top:6px;">Enviar Mom Coins 🚀</button>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: TAREAS Y RECOMPENSAS -->
+    <section id="pageTasks" class="page-section">
+      <div class="card">
+        <div class="card-title">
+          <span>✅ Tareas del hogar</span>
+          <span id="taskCount" style="font-size:12px;color:var(--muted);font-weight:normal;">0 tareas</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Completá tareas, marcálas como hechas y ganá Mom Coins cuando mamá las apruebe. 🪙</p>
+        <div id="tasksList"><div class="empty-state">Cargando tareas...</div></div>
+      </div>
+      <div class="card" id="adminTaskCreator" style="display:none;">
+        <div class="card-title"><span>👑 Crear tarea</span><span>🪙</span></div>
+        <input id="taskTitleInput" class="form-input" maxlength="80" placeholder="Ej: Ordenar mi habitación">
+        <input id="taskDescriptionInput" class="form-input" maxlength="160" placeholder="Descripción (opcional)">
+        <input id="taskRewardInput" type="number" min="0.1" max="100" step="0.1" class="form-input" placeholder="Recompensa en MC">
+        <select id="taskAssigneeSelect" class="form-input"><option value="">Para cualquier integrante</option></select>
+        <button id="createTaskBtn" class="btn-primary">Crear tarea ✨</button>
       </div>
     </section>
 
@@ -828,6 +883,10 @@
       <span class="tab-icon">👑</span>
       <span>Admin</span>
     </button>
+    <button class="nav-tab" data-target="pageTasks">
+      <span class="tab-icon">✅</span>
+      <span>Tareas</span>
+    </button>
     <button class="nav-tab" data-target="pageSettings">
       <span class="tab-icon">⚙️</span>
       <span>Ajustes</span>
@@ -865,9 +924,9 @@
     ];
 
     const ACCOUNT_PINS = {
-      "Santi": "Sanfunpro",
-      "Leonel": "Leoncito2012",
-      "Gabriela": "Chanchuly2014"
+      "Santi": "2014",
+      "Leonel": "2012",
+      "Gabriela": "1981"
     };
 
     let currentUser = null;
@@ -1002,6 +1061,7 @@
     bindClick("quickTransfer", "pageTransfer");
     bindClick("quickWithdraw", "pageWithdraw");
     bindClick("quickChat", "pageChat");
+    bindClick("quickTasks", "pageTasks");
     bindClick("quickSettings", "pageSettings");
     bindClick("quickAdmin", "pageAdmin");
 
@@ -1060,6 +1120,7 @@
         if (roleBadge) roleBadge.textContent = "👑 ADMIN";
         if (headerRole) headerRole.textContent = "Administradora Central";
         listenToWithdrawalAlerts();
+        if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {});
       } else {
         if (tabAdminNav) tabAdminNav.style.display = "none";
         if (quickAdmin) quickAdmin.style.display = "none";
@@ -1298,9 +1359,57 @@
       });
     }
 
+    function formatScheduleDate(ts) {
+      try {
+        const d = ts?.toDate ? ts.toDate() : new Date(ts);
+        return d.toLocaleString("es-AR", { dateStyle:"short", timeStyle:"short" });
+      } catch (_) { return "fecha programada"; }
+    }
+
+    async function handleWithdrawalAction(id, action) {
+      try {
+        if (action === "schedule") {
+          const raw = prompt("¿Para qué fecha y hora querés programar el retiro?\nFormato: AAAA-MM-DDTHH:MM", "2026-09-05T18:00");
+          if (!raw) return;
+          const when = new Date(raw);
+          if (Number.isNaN(when.getTime()) || when.getTime() <= Date.now()) {
+            showToast("Elegí una fecha futura válida ❌"); return;
+          }
+          await updateDoc(doc(db, "withdrawals", id), {
+            status: "scheduled",
+            scheduledFor: when,
+            scheduledBy: currentUser.uid,
+            scheduledAt: serverTimestamp()
+          });
+          await addDoc(collection(db, "notifications"), {
+            type: "withdrawal_scheduled",
+            withdrawalId: id,
+            title: "Retiro programado 📅",
+            message: `El retiro fue programado para ${when.toLocaleString("es-AR")}.`,
+            targetEmail: currentUser.email,
+            scheduledFor: when,
+            read: false,
+            createdAt: serverTimestamp()
+          });
+          showToast("Retiro programado 📅");
+          return;
+        }
+        const newStatus = action === "accept" ? "approved" : "rejected";
+        await updateDoc(doc(db, "withdrawals", id), {
+          status: newStatus,
+          resolvedBy: currentUser.uid,
+          resolvedAt: serverTimestamp()
+        });
+        showToast(action === "accept" ? "Retiro aceptado ✅" : "Retiro rechazado ❌");
+      } catch (err) {
+        console.error("Withdrawal action:", err);
+        showToast("No se pudo actualizar el retiro");
+      }
+    }
+
     function listenToWithdrawalAlerts() {
       if (unsubscribeWithdrawals) unsubscribeWithdrawals();
-      const q = query(collection(db, "withdrawals"), where("status", "==", "pending"));
+      const q = query(collection(db, "withdrawals"), where("status", "in", ["pending", "scheduled"]));
 
       unsubscribeWithdrawals = onSnapshot(q, snap => {
         const alertBox = document.getElementById("adminWithdrawAlert");
@@ -1308,35 +1417,190 @@
         const badge = document.getElementById("withdrawAlertBadge");
         if (!alertBox || !alertList) return;
 
-        if (badge) badge.textContent = snap.size;
-
-        if (snap.empty) {
-          alertBox.style.display = "none";
-          return;
-        }
-
-        alertBox.style.display = "block";
-        alertList.innerHTML = "";
-
+        const now = Date.now();
+        const due = [];
+        const scheduled = [];
         snap.forEach(d => {
           const w = d.data();
-          const div = document.createElement("div");
-          div.style.cssText = "background:rgba(255,255,255,0.15);padding:10px;border-radius:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;";
-          div.innerHTML = `
-            <span style="font-size:12px;"><strong>${escapeHTML(w.userName)}</strong> solicita ${w.amount} MC</span>
-            <button style="background:white;color:#dc2626;border:none;padding:4px 8px;border-radius:8px;font-weight:bold;cursor:pointer;" id="approve-${d.id}">Aprobar</button>
-          `;
-          alertList.appendChild(div);
+          if (w.status === "scheduled") {
+            const t = w.scheduledFor?.toDate ? w.scheduledFor.toDate().getTime() : new Date(w.scheduledFor || 0).getTime();
+            if (t && t <= now) due.push({ id:d.id, ...w }); else scheduled.push({ id:d.id, ...w });
+          } else due.push({ id:d.id, ...w });
+        });
 
-          const btnApprove = div.querySelector(`#approve-${d.id}`);
-          if (btnApprove) {
-            btnApprove.addEventListener("click", async () => {
-              await updateDoc(doc(db, "withdrawals", d.id), { status: "approved" });
-              showToast("Aprobado con éxito");
-            });
+        badge.textContent = due.length + (scheduled.length ? ` · ${scheduled.length} 📅` : "");
+        alertBox.style.display = (due.length || scheduled.length) ? "block" : "none";
+        alertList.innerHTML = "";
+
+        due.forEach(w => {
+          const div = document.createElement("div");
+          div.className = "withdraw-card";
+          div.innerHTML = `
+            <div style="font-size:12px;line-height:1.5;"><strong>${escapeHTML(w.userName || "Usuario")}</strong> solicita <strong>${Number(w.amount || 0)} MC</strong><br><span style="opacity:.75">$${Number(w.amount || 0) * MC_VALUE_ARS} ARS</span></div>
+            <div class="withdraw-actions">
+              <button class="mini-btn reject" data-action="reject">Rechazar</button>
+              <button class="mini-btn accept" data-action="accept">Aceptar</button>
+              <button class="mini-btn schedule" data-action="schedule">📅 Programar</button>
+            </div>`;
+          div.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => handleWithdrawalAction(w.id, btn.dataset.action)));
+          alertList.appendChild(div);
+        });
+
+        scheduled.forEach(w => {
+          const div = document.createElement("div");
+          div.className = "withdraw-card";
+          div.innerHTML = `<div style="font-size:12px;line-height:1.5;"><strong>📅 ${escapeHTML(w.userName || "Usuario")}</strong> · ${Number(w.amount || 0)} MC<br><span style="color:var(--primary);font-weight:800;">Programado: ${escapeHTML(formatScheduleDate(w.scheduledFor))}</span></div>`;
+          alertList.appendChild(div);
+          const scheduledTime = w.scheduledFor?.toDate ? w.scheduledFor.toDate().getTime() : new Date(w.scheduledFor || 0).getTime();
+          if (scheduledTime > Date.now()) {
+            setTimeout(() => {
+              showFloatingNotice("⏰", `Retiro de ${w.userName || "usuario"} programado ahora`);
+              if (navigator.vibrate) navigator.vibrate([100,60,100]);
+              if ("Notification" in window && Notification.permission === "granted") new Notification("Mom Coin Wallet", { body: `Retiro de ${w.userName || "usuario"} listo para revisar.` });
+            }, Math.min(scheduledTime - Date.now(), 2147483647));
           }
         });
+
+        if (due.length) showFloatingNotice("🚨", `${due.length} solicitud${due.length > 1 ? "es" : ""} de retiro pendiente${due.length > 1 ? "s" : ""}`);
+      }, err => console.error("Withdrawals listener:", err));
+    }
+
+    function showFloatingNotice(icon, text) {
+      const old = document.querySelector(".floating-notice");
+      if (old) old.remove();
+      const n = document.createElement("div");
+      n.className = "floating-notice";
+      n.innerHTML = `<span class="notice-icon">${icon}</span><strong>${escapeHTML(text)}</strong>`;
+      document.body.appendChild(n);
+      setTimeout(() => n.remove(), 4200);
+    }
+
+    /* SOLICITAR RETIRO */
+    const withdrawAmountInput = document.getElementById("withdrawAmount");
+    const withdrawCalc = document.getElementById("withdrawCalc");
+    if (withdrawAmountInput) {
+      withdrawAmountInput.addEventListener("input", () => {
+        const amount = Math.max(0, Math.min(MAX_WITHDRAWAL_MC, Number(withdrawAmountInput.value || 0)));
+        if (withdrawCalc) withdrawCalc.textContent = `Valor estimado: $${(amount * MC_VALUE_ARS).toLocaleString("es-AR")} ARS`;
       });
+    }
+    const requestWithdrawBtn = document.getElementById("requestWithdrawBtn");
+    if (requestWithdrawBtn) requestWithdrawBtn.addEventListener("click", async () => {
+      triggerHaptic();
+      if (!currentUser) return showToast("Iniciá sesión primero ❌");
+      const amount = Number(withdrawAmountInput?.value || 0);
+      if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_WITHDRAWAL_MC) return showToast(`El retiro debe ser de 1 a ${MAX_WITHDRAWAL_MC} MC ❌`);
+      if (amount > currentBalance) return showToast("Saldo insuficiente ❌");
+      requestWithdrawBtn.disabled = true;
+      try {
+        await addDoc(collection(db, "withdrawals"), {
+          userId: currentUser.uid,
+          userEmail: currentUser.email,
+          userName: currentUser.displayName || currentUser.email.split("@")[0],
+          amount,
+          valueARS: amount * MC_VALUE_ARS,
+          status: "pending",
+          createdAt: serverTimestamp()
+        });
+        await addDoc(collection(db, "notifications"), {
+          type: "withdrawal_request",
+          title: "Nueva solicitud de retiro 💸",
+          message: `${currentUser.displayName || currentUser.email.split("@")[0]} solicitó ${amount} MC.`,
+          targetRole: "admin",
+          withdrawalAmount: amount,
+          read: false,
+          createdAt: serverTimestamp()
+        });
+        withdrawAmountInput.value = "";
+        if (withdrawCalc) withdrawCalc.textContent = "Valor estimado: $0 ARS";
+        showToast("Solicitud enviada a mamá 📩");
+      } catch (err) {
+        console.error("Withdraw request:", err);
+        showToast("No se pudo enviar la solicitud");
+      } finally { requestWithdrawBtn.disabled = false; }
+    });
+
+    /* TAREAS */
+    let unsubscribeTasks = null;
+    function taskTimestamp(data) { return data.createdAt?.toDate ? data.createdAt.toDate().getTime() : 0; }
+    function renderTasks(snap) {
+      const list = document.getElementById("tasksList");
+      const count = document.getElementById("taskCount");
+      if (!list) return;
+      const docs = snap.docs.slice().sort((a,b) => taskTimestamp(b.data()) - taskTimestamp(a.data()));
+      if (count) count.textContent = `${docs.length} tarea${docs.length === 1 ? "" : "s"}`;
+      list.innerHTML = "";
+      if (!docs.length) { list.innerHTML = `<div class="empty-state">No hay tareas todavía. 💤</div>`; return; }
+      docs.forEach(d => {
+        const t = d.data();
+        const assigned = !t.assignedEmail || t.assignedEmail.toLowerCase() === currentUser.email.toLowerCase();
+        if (!assigned && !ADMIN_EMAILS.includes(currentUser.email.toLowerCase())) return;
+        const status = t.status || "open";
+        const progress = status === "completed" ? 66 : status === "approved" ? 100 : 20;
+        const div = document.createElement("div"); div.className = "task-item";
+        const statusText = status === "open" ? "Disponible" : status === "completed" ? "Esperando aprobación" : status === "approved" ? "Pagada ✅" : status;
+        div.innerHTML = `
+          <div class="task-head"><div><div class="task-title">${escapeHTML(t.title || "Tarea")}</div><div class="task-meta">${escapeHTML(t.description || "Sin descripción")}<br>Para: ${escapeHTML(t.assignedName || "cualquiera")}</div></div><span class="reward-chip">+${Number(t.reward || 0)} MC</span></div>
+          <div class="task-progress"><span style="width:${progress}%"></span></div>
+          <div class="task-meta" style="margin-bottom:8px;">${statusText}</div>
+          <div class="task-buttons"></div>`;
+        const buttons = div.querySelector(".task-buttons");
+        if (ADMIN_EMAILS.includes(currentUser.email.toLowerCase())) {
+          if (status === "completed") {
+            const b=document.createElement("button"); b.className="task-btn"; b.textContent="Aprobar y pagar 🪙"; b.onclick=()=>approveTask(d.id,t); buttons.appendChild(b);
+          }
+          if (status !== "approved") {
+            const del=document.createElement("button"); del.className="task-btn secondary"; del.style.marginTop="7px"; del.textContent="Eliminar tarea"; del.onclick=()=>deleteTaskSafe(d.id); buttons.appendChild(del);
+          }
+        } else if (status === "open") {
+          const b=document.createElement("button"); b.className="task-btn"; b.textContent="Marcar como hecha ✅"; b.onclick=()=>completeTask(d.id); buttons.appendChild(b);
+        } else if (status === "completed") {
+          const b=document.createElement("button"); b.className="task-btn secondary"; b.textContent="En revisión por mamá ⏳"; b.disabled=true; buttons.appendChild(b);
+        }
+        list.appendChild(div);
+      });
+    }
+    function listenTasks() {
+      if (unsubscribeTasks) unsubscribeTasks();
+      unsubscribeTasks = onSnapshot(collection(db, "tasks"), renderTasks, err => { console.error("Tasks:",err); showToast("No se pudieron cargar las tareas"); });
+    }
+    async function completeTask(id) {
+      try { await updateDoc(doc(db,"tasks",id), { status:"completed", completedBy:currentUser.uid, completedAt:serverTimestamp() }); showToast("Tarea marcada como hecha 🎉"); }
+      catch(err){ console.error(err); showToast("No se pudo completar la tarea"); }
+    }
+    async function approveTask(id,t) {
+      try {
+        const assignedEmail = t.assignedEmail;
+        let recipientUid = t.completedBy || null;
+        if (!recipientUid && assignedEmail) {
+          const usersSnap = await getDocs(query(collection(db,"users"), where("email","==",assignedEmail)));
+          if (usersSnap.empty) throw new Error("Usuario no encontrado");
+          recipientUid = usersSnap.docs[0].id;
+        }
+        if (!recipientUid) throw new Error("No se pudo determinar quién completó la tarea");
+        const reward = Number(t.reward || 0);
+        await runTransaction(db, async tx => {
+          const ref=doc(db,"users",recipientUid); const us=await tx.get(ref); if(!us.exists()) throw new Error("Cuenta inexistente");
+          const bal=Number(us.data().balance || us.data().coins || 0); tx.update(ref,{balance:bal+reward});
+        });
+        await addDoc(collection(db,"transactions"),{user_ref:recipientUid,amount:reward,title:`Recompensa: ${t.title}`,created_at:serverTimestamp()});
+        await updateDoc(doc(db,"tasks",id),{status:"approved",approvedBy:currentUser.uid,approvedAt:serverTimestamp()});
+        showToast(`Tarea aprobada: +${reward} MC 🪙`);
+      } catch(err){ console.error("Approve task:",err); showToast("No se pudo pagar la tarea"); }
+    }
+    async function deleteTaskSafe(id) { if(!confirm("¿Eliminar esta tarea?")) return; try { await deleteDoc(doc(db,"tasks",id)); showToast("Tarea eliminada"); } catch(err){ console.error(err); showToast("No se pudo eliminar"); } }
+    const createTaskBtn=document.getElementById("createTaskBtn");
+    if(createTaskBtn) createTaskBtn.addEventListener("click",async()=>{
+      const title=document.getElementById("taskTitleInput")?.value.trim(); const description=document.getElementById("taskDescriptionInput")?.value.trim(); const reward=Number(document.getElementById("taskRewardInput")?.value||0); const sel=document.getElementById("taskAssigneeSelect"); const assignedEmail=sel?.value||""; const assignedName=sel?.selectedOptions?.[0]?.textContent||"cualquiera";
+      if(!title||reward<=0) return showToast("Completá título y recompensa ❌");
+      try { await addDoc(collection(db,"tasks"),{title,description,reward,assignedEmail,assignedName,status:"open",createdBy:currentUser.uid,createdAt:serverTimestamp()}); document.getElementById("taskTitleInput").value="";document.getElementById("taskDescriptionInput").value="";document.getElementById("taskRewardInput").value="";showToast("Tarea creada ✨"); }
+      catch(err){console.error(err);showToast("No se pudo crear la tarea");}
+    });
+    function setupTaskUI() {
+      const admin=ADMIN_EMAILS.includes((currentUser?.email||"").toLowerCase());
+      const creator=document.getElementById("adminTaskCreator"); if(creator) creator.style.display=admin?"block":"none";
+      const sel=document.getElementById("taskAssigneeSelect"); if(sel){sel.innerHTML='<option value="">Para cualquier integrante</option>'; USER_MAP.filter(u=>u.email.toLowerCase()!==currentUser.email.toLowerCase()).forEach(u=>{const o=document.createElement("option");o.value=u.email;o.textContent=u.name;sel.appendChild(o);});}
+      listenTasks();
     }
 
     /* MODO OSCURO */
@@ -1374,10 +1638,12 @@
         loadUserProfile(user);
         await loadBalance(user);
         listenTransactions(user);
+        setupTaskUI();
       } else {
         if (loginScreen) loginScreen.style.display = "flex";
         if (appContainer) appContainer.style.display = "none";
         if (bottomNav) bottomNav.style.display = "none";
+        if (unsubscribeTasks) { unsubscribeTasks(); unsubscribeTasks = null; }
         if (accountSelection) accountSelection.style.display = "block";
         if (passwordScreen) passwordScreen.style.display = "none";
         if (standardPasswordInput) standardPasswordInput.value = "";
