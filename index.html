@@ -1618,30 +1618,33 @@
       };
     }
 
-    // CLOUD MESSAGING (FCM) CONFIGURACIÓN
+    // CLOUD MESSAGING (FCM) CONFIGURACIÓN SEGURA
     async function initializeCloudMessaging() {
       try {
         if (!("serviceWorker" in navigator)) return;
+
+        const swPath = './firebase-messaging-sw.js';
         
-        // Verificamos si podemos registrar el service worker sin romper la ejecución si el archivo no existe en el host externo
-        let registration;
-        try {
-          registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        } catch (swErr) {
-          console.warn("Service Worker externo no disponible en este entorno, omitiendo FCM push nativo:", swErr);
-          return;
-        }
-        
+        // Comprobamos de forma transparente si el archivo existe antes de pedirle al navegador que lo instale
+        const checkRes = await fetch(swPath, { method: 'HEAD' }).catch(() => null);
+        if (!checkRes || !checkRes.ok) return;
+
+        const contentType = checkRes.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) return; // Evita intentar instalar la página 404 de GitHub
+
+        const registration = await navigator.serviceWorker.register(swPath).catch(() => null);
+        if (!registration) return;
+
         const currentToken = await getToken(messaging, {
-          vapidKey: "BPAcGedS15TO_n12OKHGf2m-c1j5sCfjt4xMTk04JSubZZOXYnaO_EIioLToi_6BEtCk03A_zQKBCFC86_9f-Ok", 
+          vapidKey: "AQUÍ_TU_VAPID_KEY_DE_LA_CONSOLA_DE_FIREBASE", 
           serviceWorkerRegistration: registration
-        });
+        }).catch(() => null);
 
         if (currentToken) {
           console.log("Token FCM obtenido:", currentToken);
         }
       } catch (err) {
-        console.warn("Aviso de FCM:", err);
+        // Omisión silenciosa si no está disponible el archivo Service Worker externo
       }
     }
 
