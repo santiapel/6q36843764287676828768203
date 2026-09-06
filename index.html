@@ -663,6 +663,71 @@
 </head>
 
 <body>
+  <!-- ===== Panel de Debug Visual (para ver errores dentro del WebView de Median) ===== -->
+  <div id="debugPanel" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.92); color:#0f0; font-family:monospace; font-size:12px; padding:12px; overflow-y:auto; white-space:pre-wrap; word-break:break-word;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; position:sticky; top:0; background:rgba(0,0,0,0.92); padding-bottom:8px;">
+      <strong style="color:#fff;">🐞 Debug Log</strong>
+      <div>
+        <button onclick="navigator.clipboard && navigator.clipboard.writeText(document.getElementById('debugLogContent').innerText); this.innerText='Copiado!'" style="margin-right:6px; padding:6px 10px;">Copiar</button>
+        <button onclick="document.getElementById('debugLogContent').innerHTML=''" style="margin-right:6px; padding:6px 10px;">Limpiar</button>
+        <button onclick="document.getElementById('debugPanel').style.display='none'" style="padding:6px 10px;">Cerrar</button>
+      </div>
+    </div>
+    <div id="debugLogContent"></div>
+  </div>
+  <script>
+    (function() {
+      const logBox = () => document.getElementById('debugLogContent');
+      function addLine(type, args) {
+        try {
+          const box = logBox();
+          if (!box) return;
+          const line = document.createElement('div');
+          const colors = { log: '#0f0', error: '#f66', warn: '#fd6', info: '#6cf' };
+          line.style.color = colors[type] || '#0f0';
+          line.style.borderBottom = '1px solid #333';
+          line.style.padding = '4px 0';
+          const time = new Date().toLocaleTimeString();
+          const msg = args.map(a => {
+            try { return typeof a === 'object' ? JSON.stringify(a) : String(a); }
+            catch (e) { return String(a); }
+          }).join(' ');
+          line.textContent = `[${time}] ${type.toUpperCase()}: ${msg}`;
+          box.appendChild(line);
+          box.parentElement.scrollTop = box.parentElement.scrollHeight;
+        } catch (e) {}
+      }
+
+      ['log', 'error', 'warn', 'info'].forEach(type => {
+        const original = console[type];
+        console[type] = function(...args) {
+          addLine(type, args);
+          original.apply(console, args);
+        };
+      });
+
+      window.addEventListener('error', function(e) {
+        addLine('error', [`${e.message} (${e.filename}:${e.lineno}:${e.colno})`]);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        addLine('error', ['Promise rechazada sin manejar:', e.reason]);
+      });
+
+      // Toque largo (1seg) sobre el logo de login abre el panel de debug
+      document.addEventListener('DOMContentLoaded', function() {
+        const logo = document.querySelector('.app-logo');
+        if (logo) {
+          let pressTimer;
+          const openPanel = () => { document.getElementById('debugPanel').style.display = 'block'; };
+          logo.addEventListener('touchstart', () => { pressTimer = setTimeout(openPanel, 1000); });
+          logo.addEventListener('touchend', () => clearTimeout(pressTimer));
+          logo.addEventListener('mousedown', () => { pressTimer = setTimeout(openPanel, 1000); });
+          logo.addEventListener('mouseup', () => clearTimeout(pressTimer));
+        }
+      });
+    })();
+  </script>
+
   <section id="loginScreen">
     <div class="login-card animated-screen">
       <div class="app-logo">MC</div>
