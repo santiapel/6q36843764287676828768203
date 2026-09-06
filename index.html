@@ -1033,7 +1033,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, inMemoryPersistence, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     /* FIREBASE CONFIGURATION */
@@ -1051,7 +1051,15 @@
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'banco-de-mama';
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // Se usa initializeAuth (en vez de getAuth) con una cadena explícita de
+    // persistencia. getAuth() hace un chequeo automático de "browser
+    // compatibility" pensado para popups/redirects de login social (que esta
+    // app no usa), y ese chequeo falla dentro de WebViews embebidos como el
+    // de Median, mostrando "Incompatible browser" y a veces impidiendo que
+    // la sesión anónima persista. Con initializeAuth evitamos ese chequeo.
+    const auth = initializeAuth(app, {
+      persistence: [indexedDBLocalPersistence, browserLocalPersistence, inMemoryPersistence]
+    });
     const db = getFirestore(app);
 
     const MC_VALUE_ARS = 500;
