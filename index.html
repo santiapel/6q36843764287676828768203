@@ -11,9 +11,18 @@
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "f57ce516-611b-4500-a009-c323db4f4840",
-      });
+      try {
+        await OneSignal.init({
+          appId: "f57ce516-611b-4500-a009-c323db4f4840",
+        });
+      } catch (err) {
+        // Dentro del WebView de Median, el Web Push SDK de OneSignal puede
+        // rechazar el init() (se ve como "Incompatible browser" en consola).
+        // Esto es esperable ahí: las notificaciones dentro de la app las
+        // maneja el plugin nativo de Median (median.onesignal), no este SDK
+        // web. Lo atrapamos para que no quede como error sin manejar.
+        console.info("OneSignal Web SDK init omitido/fallido (normal dentro de la app nativa):", err && err.message ? err.message : err);
+      }
     });
   </script>
 
@@ -713,17 +722,27 @@
         addLine('error', ['Promise rechazada sin manejar:', e.reason]);
       });
 
-      // Botón flotante fijo, visible en TODAS las pantallas de la app
-      // (login, billetera, menú, admin, etc.), no solo en el login.
+      // Triple toque sobre cualquier logo "MC" (login o barra superior)
+      // abre el panel de debug. Nada visible en pantalla hasta ese gesto.
       document.addEventListener('DOMContentLoaded', function() {
-        const btn = document.createElement('div');
-        btn.id = 'debugFloatBtn';
-        btn.textContent = '🐞';
-        btn.style.cssText = 'position:fixed; bottom:14px; right:14px; width:36px; height:36px; border-radius:50%; background:rgba(0,0,0,0.35); color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px; z-index:99998; box-shadow:0 2px 6px rgba(0,0,0,0.3); user-select:none;';
-        btn.addEventListener('click', () => {
-          document.getElementById('debugPanel').style.display = 'block';
+        let tapCount = 0;
+        let tapTimer = null;
+
+        function registerTap() {
+          tapCount++;
+          if (tapTimer) clearTimeout(tapTimer);
+          tapTimer = setTimeout(() => { tapCount = 0; }, 1200);
+          if (tapCount >= 3) {
+            tapCount = 0;
+            clearTimeout(tapTimer);
+            document.getElementById('debugPanel').style.display = 'block';
+          }
+        }
+
+        document.querySelectorAll('.app-logo, .brand-logo').forEach(logo => {
+          logo.style.cursor = 'pointer';
+          logo.addEventListener('click', registerTap);
         });
-        document.body.appendChild(btn);
       });
     })();
   </script>
@@ -1104,15 +1123,24 @@
       syncUser: function(email, name) {
         if (!email) return;
 
-        // 1. Median.co (GoNative) JS Bridge Sync
-        if (window.gonative && window.gonative.onesignal) {
-          window.gonative.onesignal.setExternalUserId({ externalId: email });
-          window.gonative.onesignal.register();
-          console.log("Median.co OneSignal synced:", email);
-        } else if (window.median && window.median.onesignal) {
-          window.median.onesignal.setExternalUserId({ externalId: email });
-          window.median.onesignal.register();
-          console.log("Median OneSignal synced:", email);
+        // 1. Median.co JS Bridge Sync (SDK v5+, modelo user-centric).
+        //    OJO: setExternalUserId()/register() son nombres viejos que ya
+        //    no existen y tiraban "TypeError: ... is not a function".
+        //    El método actual es median.onesignal.login(externalId).
+        try {
+          if (window.median && window.median.onesignal && typeof window.median.onesignal.login === 'function') {
+            window.median.onesignal.login(email)
+              .then(() => console.log("Median OneSignal login OK:", email))
+              .catch(err => console.warn("Median OneSignal login error:", err && err.message ? err.message : err));
+          } else if (window.gonative && window.gonative.onesignal && typeof window.gonative.onesignal.login === 'function') {
+            window.gonative.onesignal.login(email)
+              .then(() => console.log("Median.co (gonative) OneSignal login OK:", email))
+              .catch(err => console.warn("Median.co (gonative) OneSignal login error:", err && err.message ? err.message : err));
+          } else {
+            console.log("Median JS Bridge de OneSignal no disponible en este contexto (normal si se abre fuera de la app).");
+          }
+        } catch (err) {
+          console.warn("Median OneSignal bridge error:", err && err.message ? err.message : err);
         }
 
         // 2. OneSignal Web SDK
@@ -1124,7 +1152,7 @@
                 await OneSignal.User.addTag("user_name", name);
               }
             } catch(err) {
-              console.info("OneSignal user set info:", err.message || err);
+              console.info("OneSignal user set info:", err && err.message ? err.message : err);
             }
           });
         }
