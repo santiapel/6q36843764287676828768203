@@ -713,17 +713,17 @@
         addLine('error', ['Promise rechazada sin manejar:', e.reason]);
       });
 
-      // Toque largo (1seg) sobre el logo de login abre el panel de debug
+      // Botón flotante fijo, visible en TODAS las pantallas de la app
+      // (login, billetera, menú, admin, etc.), no solo en el login.
       document.addEventListener('DOMContentLoaded', function() {
-        const logo = document.querySelector('.app-logo');
-        if (logo) {
-          let pressTimer;
-          const openPanel = () => { document.getElementById('debugPanel').style.display = 'block'; };
-          logo.addEventListener('touchstart', () => { pressTimer = setTimeout(openPanel, 1000); });
-          logo.addEventListener('touchend', () => clearTimeout(pressTimer));
-          logo.addEventListener('mousedown', () => { pressTimer = setTimeout(openPanel, 1000); });
-          logo.addEventListener('mouseup', () => clearTimeout(pressTimer));
-        }
+        const btn = document.createElement('div');
+        btn.id = 'debugFloatBtn';
+        btn.textContent = '🐞';
+        btn.style.cssText = 'position:fixed; bottom:14px; right:14px; width:36px; height:36px; border-radius:50%; background:rgba(0,0,0,0.35); color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px; z-index:99998; box-shadow:0 2px 6px rgba(0,0,0,0.3); user-select:none;';
+        btn.addEventListener('click', () => {
+          document.getElementById('debugPanel').style.display = 'block';
+        });
+        document.body.appendChild(btn);
       });
     })();
   </script>
@@ -1198,6 +1198,16 @@
       setTimeout(() => toast.classList.remove("show"), 3200);
     }
 
+    // authReady se resuelve una sola vez, cuando Firebase confirma el primer
+    // estado de autenticación (haya usuario o no). Esto evita la condición de
+    // carrera donde la app consultaba Firestore ANTES de que signInAnonymously
+    // terminara de resolver — algo que en el WebView de Median tarda más que
+    // en un navegador de escritorio y causaba los errores de "Missing or
+    // insufficient permissions".
+    let _authReadyResolve;
+    let _authResolved = false;
+    const authReady = new Promise((resolve) => { _authReadyResolve = resolve; });
+
     async function initAuth() {
       try {
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -1209,7 +1219,7 @@
             if (anonErr.code === 'auth/admin-restricted-operation') {
               console.info("ℹ️ Firebase Auth: Autenticación anónima desactivada en la consola de Firebase. La aplicación continuará funcionando localmente con PIN.");
             } else {
-              console.warn("⚠️ Aviso de Auth:", anonErr.message || anonErr);
+              console.warn("⚠️ Aviso de Auth:", anonErr.code || "", anonErr.message || anonErr);
             }
           }
         }
@@ -1222,6 +1232,11 @@
     initAuth();
 
     onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      if (!_authResolved) {
+        _authResolved = true;
+        _authReadyResolve(user);
+      }
       if (user) {
         const savedAccount = localStorage.getItem("momcoin_logged_user");
         if (savedAccount) {
@@ -1233,6 +1248,18 @@
         }
       }
     });
+
+    // Por si onAuthStateChanged tardara demasiado (ej. red muy lenta dentro
+    // del WebView), no dejamos la app colgada para siempre esperando: a los
+    // 6 segundos destrabamos authReady igual, y el resto del código sigue
+    // con su manejo normal de errores de permisos.
+    setTimeout(() => {
+      if (!_authResolved) {
+        _authResolved = true;
+        console.warn("⚠️ authReady: se agotó el tiempo de espera de Firebase Auth (6s), continuando sin sesión confirmada.");
+        _authReadyResolve(null);
+      }
+    }, 6000);
 
     // Eventos Selección de Cuenta
     document.querySelectorAll(".account-button").forEach(btn => {
@@ -1261,6 +1288,9 @@
       const passwordVal = document.getElementById("standardPasswordInput").value.trim();
       const expectedPin = ACCOUNT_PINS[selectedName] || "1234";
 
+      // Esperar a que Firebase Auth confirme sesión (o falle) antes de leer Firestore
+      await authReady;
+
       let valid = false;
       try {
         // Verificar PIN guardado en Firestore o por defecto
@@ -1287,6 +1317,10 @@
     }
 
     async function loadUserApp(email, name) {
+      // Esperar a que Firebase Auth confirme sesión (o falle) antes de abrir
+      // listeners de Firestore, para no repetir la condición de carrera.
+      await authReady;
+
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("app").style.display = "block";
       document.getElementById("bottomNav").style.display = "flex";
