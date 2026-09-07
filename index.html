@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mom Coin Wallet</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- OneSignal Web Push SDK -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -36,38 +39,44 @@
     }
 
     :root {
-      --bg: #f4f6fb;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #6c4df6;
-      --primary-dark: #5538d8;
-      --primary-light: #eef2ff;
-      --green: #10b981;
-      --green-bg: #ecfdf5;
-      --red: #ef4444;
-      --red-bg: #fef2f2;
-      --border: #e2e8f0;
-      --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+      --bg: #F1ECDD;
+      --card: #FFFFFF;
+      --text: #1B241E;
+      --muted: #6E6857;
+      --primary: #1F6F4A;
+      --primary-dark: #164F35;
+      --primary-light: #E3F0E7;
+      --gold: #B8892B;
+      --gold-dark: #8F6A1F;
+      --gold-light: #F5EAD2;
+      --green: #2F6F4E;
+      --green-bg: #E9F3EC;
+      --red: #A6452F;
+      --red-bg: #F6E9E3;
+      --border: #E3DDC9;
+      --shadow: 0 10px 26px -10px rgba(27, 36, 30, 0.18);
       --radius: 20px;
       --nav-height: 65px;
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body.dark-mode {
-      --bg: #0f1117;
-      --card: #181a24;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --border: #262938;
-      --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
-      --primary-light: rgba(108, 77, 246, 0.15);
+      --bg: #0E1712;
+      --card: #17221B;
+      --text: #F1EEE1;
+      --muted: #99A196;
+      --border: #283329;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --primary-light: rgba(47, 111, 78, 0.18);
+      --gold-light: rgba(184, 137, 43, 0.16);
     }
 
     body {
       min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-family: var(--font-body);
       overflow-x: hidden;
       padding-bottom: calc(var(--nav-height) + 20px);
       transition: background 0.3s ease, color 0.3s ease;
@@ -116,18 +125,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #7c5cff, #5438dc);
-      color: white;
-      font-size: 28px;
-      font-weight: 800;
-      box-shadow: 0 10px 20px rgba(108, 77, 246, 0.3);
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #E7C976, var(--gold) 55%, var(--gold-dark) 100%);
+      color: #3B2A0C;
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 22px rgba(143, 106, 31, 0.35), inset 0 0 0 3px rgba(255,255,255,0.35);
     }
 
     .login-card h1 {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
+      font-family: var(--font-display);
+      font-size: 25px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
       margin-bottom: 6px;
     }
 
@@ -235,19 +247,22 @@
     .brand-logo {
       width: 38px;
       height: 38px;
-      border-radius: 12px;
-      background: var(--primary);
-      color: white;
-      font-weight: 800;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #E7C976, var(--gold) 55%, var(--gold-dark) 100%);
+      color: #3B2A0C;
+      font-family: var(--font-display);
+      font-weight: 600;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 15px;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35);
     }
 
     .brand h2 {
-      font-size: 17px;
-      font-weight: 800;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
     }
 
     .brand span {
@@ -282,24 +297,27 @@
     /* TARJETA SALDO */
     .balance-card {
       position: relative;
-      padding: 24px;
-      border-radius: 24px;
-      background: linear-gradient(135deg, #6c4df6, #4b34ce);
-      color: white;
-      box-shadow: 0 16px 32px rgba(108, 77, 246, 0.25);
+      padding: 26px 24px 22px;
+      border-radius: 22px;
+      background:
+        repeating-linear-gradient(115deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 7px),
+        linear-gradient(150deg, #24805A 0%, #1C6B4C 45%, #123B29 100%);
+      color: #F4F1E4;
+      box-shadow: 0 18px 34px -10px rgba(18, 59, 41, 0.45);
       margin-bottom: 18px;
       overflow: hidden;
+      border-top: 3px solid var(--gold);
     }
 
     .balance-card::after {
       content: '';
       position: absolute;
-      top: -40%;
-      right: -20%;
-      width: 180px;
-      height: 180px;
+      top: -50%;
+      right: -15%;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
+      background: radial-gradient(circle, rgba(184,137,43,0.18), transparent 70%);
       pointer-events: none;
     }
 
@@ -307,21 +325,22 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .balance-label {
-      font-size: 13px;
-      opacity: 0.85;
-      font-weight: 600;
+      font-size: 12px;
+      opacity: 0.75;
+      font-weight: 700;
+      letter-spacing: 0.3px;
     }
 
     .eye-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255,255,255,0.18);
       padding: 6px 12px;
       border-radius: 12px;
-      color: white;
+      color: #F4F1E4;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
@@ -329,15 +348,96 @@
     }
 
     .balance-amount {
-      font-size: 38px;
-      font-weight: 800;
-      letter-spacing: -1px;
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: #FBF4DE;
     }
 
     .balance-sub {
       font-size: 12px;
-      opacity: 0.8;
+      opacity: 0.7;
       margin-top: 4px;
+    }
+
+    .card-chip-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-chip {
+      width: 34px;
+      height: 26px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #F5EAD2 0%, #D9C48C 45%, #B8892B 100%);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .card-chip::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(0,0,0,0.18);
+      border-radius: 3px;
+    }
+
+    .card-contactless {
+      font-size: 15px;
+      letter-spacing: -3px;
+      opacity: 0.55;
+      transform: rotate(90deg) scaleX(1.3);
+      color: #F4F1E4;
+    }
+
+    .card-wordmark {
+      margin-left: auto;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+    .card-wordmark span {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .card-number {
+      margin-top: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 17px;
+      letter-spacing: 3px;
+      opacity: 0.85;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-holder-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-holder-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      opacity: 0.6;
+      margin-bottom: 2px;
+    }
+
+    .card-holder-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
     /* ACCIONES RÁPIDAS */
@@ -397,8 +497,9 @@
     }
 
     .card-title {
-      font-size: 16px;
-      font-weight: 800;
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 600;
       margin-bottom: 14px;
       display: flex;
       align-items: center;
@@ -449,8 +550,9 @@
     }
 
     .tx-amount {
-      font-size: 14px;
-      font-weight: 800;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
     }
 
     .tx-amount.income { color: var(--green); }
@@ -591,12 +693,13 @@
     }
 
     .admin-alert-banner {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
+      background: linear-gradient(150deg, #B5573A, #8F3E28);
+      color: #FBF1EA;
       padding: 16px;
-      border-radius: 20px;
+      border-radius: 18px;
       margin-bottom: 18px;
-      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.25);
+      box-shadow: 0 10px 22px -6px rgba(143, 62, 40, 0.4);
+      border-top: 2px solid rgba(255,255,255,0.25);
     }
 
     .form-input {
@@ -648,6 +751,75 @@
 
     #toast.show {
       transform: translate(-50%, 0);
+    }
+
+    #toast.toast-success {
+      background: var(--primary-dark);
+      color: #F4F1E4;
+    }
+
+    #toast.toast-error {
+      background: #8F3E28;
+      color: #FBF1EA;
+    }
+
+    /* BANNER DE NOTIFICACIÓN EN VIVO */
+    #liveNotifBanner {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      width: calc(100% - 24px);
+      max-width: 420px;
+      transform: translate(-50%, -120%);
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: 16px;
+      box-shadow: 0 14px 30px -8px rgba(0,0,0,0.25);
+      margin-top: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10001;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #liveNotifBanner.show {
+      transform: translate(-50%, 0);
+    }
+
+    .live-notif-icon {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .live-notif-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .live-notif-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .live-notif-body {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .onesignal-status {
@@ -835,6 +1007,23 @@
         </div>
         <div id="balance" class="balance-amount">0.00</div>
         <div class="balance-sub">Mom Coins (MC)</div>
+
+        <div class="card-chip-row">
+          <div class="card-chip" aria-hidden="true"></div>
+          <div class="card-contactless" aria-hidden="true">))) </div>
+          <div class="card-wordmark">MOM<span>BANK</span></div>
+        </div>
+        <div class="card-number" id="cardMaskedNumber">•••• •••• •••• ••••</div>
+        <div class="card-holder-row">
+          <div>
+            <div class="card-holder-label">Titular</div>
+            <div class="card-holder-name" id="cardHolderName">—</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="card-holder-label">Válida hasta</div>
+            <div class="card-holder-name">∞ / ∞</div>
+          </div>
+        </div>
       </article>
 
       <!-- BOTONES DE ACCIÓN RÁPIDA -->
@@ -1014,6 +1203,32 @@
           <input type="checkbox" id="darkModeToggle" style="width:20px;height:20px;cursor:pointer;">
         </div>
 
+        <!-- Preferencias de la app -->
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
+          <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">⚙️ Preferencias</h4>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;">
+            <span style="font-size:14px;font-weight:600;">🔊 Sonidos</span>
+            <input type="checkbox" id="prefSoundToggle" style="width:20px;height:20px;cursor:pointer;">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--border);">
+            <span style="font-size:14px;font-weight:600;">📳 Vibración</span>
+            <input type="checkbox" id="prefVibrationToggle" style="width:20px;height:20px;cursor:pointer;">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--border);">
+            <span style="font-size:14px;font-weight:600;">🗣️ Leer notificaciones en voz alta</span>
+            <input type="checkbox" id="prefTtsToggle" style="width:20px;height:20px;cursor:pointer;">
+          </div>
+          <div id="ttsRateWrapper" style="padding:10px 0 4px;border-top:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;">
+              <span>Velocidad de voz</span>
+              <span id="ttsRateLabel">1.0x</span>
+            </div>
+            <input type="range" id="prefTtsRate" min="0.6" max="1.6" step="0.1" style="width:100%;">
+            <button id="testTtsBtn" class="btn-primary" style="padding:8px;font-size:12px;margin-top:10px;background:var(--card);color:var(--primary);border:1px solid var(--primary);">🔊 Probar voz</button>
+          </div>
+        </div>
+
         <button id="logoutButton" class="btn-primary" style="margin-top:20px;background:var(--red);">Cerrar sesión</button>
       </div>
     </section>
@@ -1050,10 +1265,19 @@
 
   <div id="toast"></div>
 
+  <!-- Banner de notificación en vivo, aparece adentro de la app sin importar la pestaña activa -->
+  <div id="liveNotifBanner" role="status">
+    <div class="live-notif-icon" id="liveNotifIcon">🔔</div>
+    <div class="live-notif-text">
+      <div class="live-notif-title" id="liveNotifTitle">Título</div>
+      <div class="live-notif-body" id="liveNotifBody">Detalle</div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, inMemoryPersistence, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     /* FIREBASE CONFIGURATION */
     const firebaseConfig = typeof __firebase_config !== 'undefined' 
@@ -1095,6 +1319,66 @@
       "Leonel": "Leoncito2012",
       "Gabriela": "Chanchuly2014"
     };
+
+    // ===== Push notifications reales vía OneSignal REST (llegan aunque la
+    // app esté totalmente cerrada, no solo minimizada) =====
+    // ⚠️ PEGÁ ACÁ TU "Legacy API Key" (OneSignal Dashboard > Settings > Keys
+    // & IDs). El App ID ya está puesto (es el mismo que usamos en el <head>).
+    // Como esta app no tiene backend propio, la llamada se hace directo
+    // desde el navegador — es un compromiso razonable para una app familiar
+    // privada, pero tené presente que cualquiera que vea el código fuente
+    // podría ver esta key. Si en algún momento la subís a un repo público,
+    // sacala de acá primero.
+    const ONESIGNAL_CONFIG = {
+      appId: "f57ce516-611b-4500-a009-c323db4f4840",
+      legacyApiKey: "os_v2_app_6v6okftbdncqbiajymr5wt2iidfuzlaj4peuneuihctsg46zp5tnmx4fwszauffl4vwal3rinldrxb65bblql62tkctmk7gcm4kdpey" // <-- reemplazar
+    };
+
+    async function sendRealPushNotification(recipientEmails, title, body) {
+      if (!ONESIGNAL_CONFIG.legacyApiKey || ONESIGNAL_CONFIG.legacyApiKey === "PEGA_ACA_TU_LEGACY_API_KEY") {
+        console.info("ℹ️ Push real omitido: falta configurar la Legacy API Key de OneSignal.");
+        return;
+      }
+      const targets = Array.isArray(recipientEmails) ? recipientEmails : [recipientEmails];
+      try {
+        await fetch("https://onesignal.com/api/v1/notifications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Basic ${ONESIGNAL_CONFIG.legacyApiKey}`
+          },
+          body: JSON.stringify({
+            app_id: ONESIGNAL_CONFIG.appId,
+            include_external_user_ids: targets,
+            headings: { en: title, es: title },
+            contents: { en: body, es: body }
+          })
+        });
+      } catch (err) {
+        console.warn("⚠️ Error enviando push real por OneSignal:", err && err.message ? err.message : err);
+      }
+    }
+
+    // ===== Preferencias del usuario (sonido / vibración / voz) =====
+    // Se guardan en localStorage por dispositivo, no en Firestore, porque
+    // son ajustes de la app en ese teléfono, no del usuario en general.
+    const AppPrefs = (function() {
+      const KEY = 'momcoin_prefs';
+      const defaults = { sound: true, vibration: true, tts: true, ttsRate: 1 };
+      let state = { ...defaults };
+      try {
+        const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+        state = { ...defaults, ...saved };
+      } catch (e) {}
+      return {
+        get: (k) => state[k],
+        set: (k, v) => {
+          state[k] = v;
+          try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+        },
+        all: () => ({ ...state })
+      };
+    })();
 
     let currentUser = null;
     let currentBalance = 0;
@@ -1181,7 +1465,7 @@
 
       sendNotification: function(title, body) {
         // Sonido de notificación
-        playNotificationSound();
+        SoundManager.notification();
 
         // Notificación de navegador/app
         if ('Notification' in window && Notification.permission === 'granted') {
@@ -1199,29 +1483,203 @@
 
     PushManager.init();
 
-    function playNotificationSound() {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
-      } catch (e) {
-        console.log("Audio play error:", e);
-      }
-    }
+    // ===== Texto a Voz (Web Speech API) =====
+    // Funciona dentro del WebView de Median en la mayoría de los Android
+    // modernos (usa el motor de TTS del sistema operativo), pero puede
+    // variar según el dispositivo. Se detecta soporte antes de ofrecerlo,
+    // y las voces se cargan de forma asíncrona (requerido en Chromium).
+    const TTS = (function() {
+      let voices = [];
+      let voicesLoaded = false;
+      const supported = 'speechSynthesis' in window;
 
-    function showToast(message) {
+      function loadVoices() {
+        if (!supported) return;
+        voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) voicesLoaded = true;
+      }
+      if (supported) {
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+
+      function pickSpanishVoice() {
+        if (!voices.length) return null;
+        return voices.find(v => /es-AR/i.test(v.lang)) ||
+               voices.find(v => /^es/i.test(v.lang)) ||
+               voices[0];
+      }
+
+      return {
+        isSupported: () => supported,
+        speak: function(text) {
+          if (!supported || !text) return;
+          try {
+            window.speechSynthesis.cancel(); // evitar solapamiento de lecturas
+            const utter = new SpeechSynthesisUtterance(text);
+            const voice = pickSpanishVoice();
+            if (voice) utter.voice = voice;
+            utter.lang = voice ? voice.lang : 'es-AR';
+            utter.rate = AppPrefs.get('ttsRate') || 1;
+            window.speechSynthesis.speak(utter);
+          } catch (e) { console.warn("TTS error:", e); }
+        },
+        stop: function() {
+          if (supported) window.speechSynthesis.cancel();
+        }
+      };
+    })();
+
+    // ===== Sistema de sonidos (Web Audio API, sin archivos externos) =====
+    const SoundManager = (function() {
+      let ctx = null;
+      function getCtx() {
+        if (!ctx) {
+          try { ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+          catch (e) { return null; }
+        }
+        if (ctx.state === 'suspended') { ctx.resume().catch(() => {}); }
+        return ctx;
+      }
+      function tone(freq, start, duration, type, gainStart, glideTo) {
+        const audioCtx = getCtx();
+        if (!audioCtx) return;
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || 'sine';
+          const t0 = audioCtx.currentTime + start;
+          osc.frequency.setValueAtTime(freq, t0);
+          if (glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo, t0 + duration);
+          gain.gain.setValueAtTime(gainStart || 0.15, t0);
+          gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(t0);
+          osc.stop(t0 + duration + 0.03);
+        } catch (e) {}
+      }
+      return {
+        unlock: function() { getCtx(); },
+        tap: function() { if (AppPrefs.get('sound')) tone(720, 0, 0.05, 'sine', 0.07); },
+        success: function() {
+          if (!AppPrefs.get('sound')) return;
+          tone(523.25, 0, 0.12, 'sine', 0.14);
+          tone(659.25, 0.09, 0.12, 'sine', 0.14);
+          tone(783.99, 0.18, 0.22, 'sine', 0.14);
+        },
+        error: function() {
+          if (!AppPrefs.get('sound')) return;
+          tone(220, 0, 0.16, 'sawtooth', 0.10);
+          tone(164.81, 0.12, 0.22, 'sawtooth', 0.09);
+        },
+        coin: function() {
+          if (!AppPrefs.get('sound')) return;
+          tone(987.77, 0, 0.08, 'triangle', 0.15);
+          tone(1318.51, 0.06, 0.18, 'triangle', 0.13, 1975.53);
+        },
+        notification: function() {
+          if (!AppPrefs.get('sound')) return;
+          tone(587.33, 0, 0.15, 'sine', 0.18, 880);
+        },
+        message: function() {
+          if (!AppPrefs.get('sound')) return;
+          tone(660, 0, 0.07, 'sine', 0.10);
+          tone(880, 0.06, 0.10, 'sine', 0.09);
+        },
+        pin: function() {
+          if (!AppPrefs.get('sound')) return;
+          tone(1046.5, 0, 0.05, 'sine', 0.12);
+          tone(1567.98, 0.05, 0.12, 'sine', 0.10);
+        }
+      };
+    })();
+
+    // Desbloquear el AudioContext con el primer toque del usuario
+    // (requerido por las políticas de autoplay de iOS/Android/WebView)
+    ['click', 'touchstart'].forEach(evt => {
+      document.addEventListener(evt, () => SoundManager.unlock(), { once: true, passive: true });
+    });
+
+    // Sonido + vibración de "tap" en botones y acciones táctiles principales
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-primary, .account-button, .nav-tab, .action-item')) {
+        SoundManager.tap();
+        if (navigator.vibrate && AppPrefs.get('vibration')) {
+          try { navigator.vibrate(15); } catch (err) {}
+        }
+      }
+    });
+
+    // ===== Centro de notificaciones en vivo =====
+    // Muestra un banner en pantalla + sonido + vibración, sin importar si
+    // la app está en foco o qué pestaña esté abierta. Si la app está en
+    // segundo plano y hay permiso, además dispara una notificación nativa.
+    const NotificationCenter = {
+      show: function(opts) {
+        const banner = document.getElementById('liveNotifBanner');
+        if (!banner) return;
+        document.getElementById('liveNotifIcon').textContent = opts.icon || '🔔';
+        document.getElementById('liveNotifTitle').textContent = opts.title || '';
+        document.getElementById('liveNotifBody').textContent = opts.body || '';
+
+        banner.classList.add('show');
+        clearTimeout(banner._hideTimer);
+        banner._hideTimer = setTimeout(() => banner.classList.remove('show'), 4500);
+
+        banner.onclick = () => {
+          banner.classList.remove('show');
+          if (opts.targetTab && typeof switchTab === 'function') {
+            switchTab(opts.targetTab);
+          }
+        };
+
+        if (opts.sound === 'coin') SoundManager.coin();
+        else if (opts.sound === 'success') SoundManager.success();
+        else if (opts.sound === 'error') SoundManager.error();
+        else if (opts.sound === 'message') SoundManager.message();
+        else SoundManager.notification();
+
+        if (navigator.vibrate && AppPrefs.get('vibration')) {
+          try { navigator.vibrate(opts.sound === 'error' ? [80, 60, 80] : 60); } catch (e) {}
+        }
+
+        if (opts.speak && AppPrefs.get('tts')) {
+          TTS.speak(`${opts.title}. ${opts.body}`);
+        }
+
+        // Si la app está en segundo plano (minimizada / otra pestaña) y hay
+        // permiso, disparamos además la notificación nativa del sistema.
+        if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+          try {
+            new Notification(opts.title || 'Banco de Mamá', {
+              body: opts.body || '',
+              icon: "https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png"
+            });
+          } catch (e) {}
+        }
+      }
+    };
+
+    function showToast(message, type) {
       const toast = document.getElementById("toast");
       if (!toast) return;
       toast.textContent = message;
+      toast.classList.remove("toast-success", "toast-error");
+
+      let resolvedType = type;
+      if (!resolvedType) {
+        if (/❌|⚠️|error/i.test(message)) resolvedType = 'error';
+        else if (/✅|🚀|✨|🔑|📲/.test(message)) resolvedType = 'success';
+      }
+      if (resolvedType === 'error') {
+        toast.classList.add("toast-error");
+        SoundManager.error();
+      } else if (resolvedType === 'success') {
+        toast.classList.add("toast-success");
+        SoundManager.success();
+      }
+
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 3200);
     }
@@ -1344,6 +1802,14 @@
       await loadUserApp(selectedEmail, selectedName);
     }
 
+    function generateCardDigitsFromEmail(email) {
+      let hash = 0;
+      for (let i = 0; i < email.length; i++) {
+        hash = (hash * 31 + email.charCodeAt(i)) >>> 0;
+      }
+      return String(hash % 10000).padStart(4, '0');
+    }
+
     async function loadUserApp(email, name) {
       // Esperar a que Firebase Auth confirme sesión (o falle) antes de abrir
       // listeners de Firestore, para no repetir la condición de carrera.
@@ -1365,6 +1831,13 @@
       document.getElementById("profileAvatar").src = userObj.avatar;
       document.getElementById("roleBadge").textContent = isAdmin ? "ADMINISTRADORA 👑" : "INTEGRANTE 👤";
       document.getElementById("headerRole").textContent = isAdmin ? "Banco Oficial (Admin)" : "Mom Coin Wallet";
+
+      // Personalizar la "tarjeta" con nombre del titular y un número
+      // pseudo-aleatorio pero fijo (determinado por el email, así siempre
+      // es el mismo número para la misma cuenta).
+      document.getElementById("cardHolderName").textContent = name.toUpperCase();
+      const cardDigits = generateCardDigitsFromEmail(email);
+      document.getElementById("cardMaskedNumber").textContent = `•••• •••• •••• ${cardDigits}`;
 
       if (isAdmin) {
         document.getElementById("tabAdminNav").style.display = "flex";
@@ -1438,10 +1911,13 @@
       updateBalanceDisplay();
     });
 
+    let isInitialTxLoad = true;
+
     function setupTransactionsListener(email) {
       const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
 
       if (unsubscribeTransactions) unsubscribeTransactions();
+      isInitialTxLoad = true;
 
       unsubscribeTransactions = onSnapshot(txCol, (snap) => {
         const txs = [];
@@ -1456,6 +1932,34 @@
         txs.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
 
         renderTransactionsList(txs);
+
+        // Notificación en vivo: solo para movimientos NUEVOS (no en la carga
+        // inicial) donde el usuario actual recibe dinero.
+        if (!isInitialTxLoad) {
+          snap.docChanges().forEach(change => {
+            if (change.type !== 'added') return;
+            const d = change.doc.data();
+            const isRelevant = d.senderEmail === email || d.recipientEmail === email || d.userEmail === email;
+            if (!isRelevant) return;
+            const isIncome = d.recipientEmail === email || (d.type === 'credit' && d.userEmail === email);
+            if (isIncome) {
+              NotificationCenter.show({
+                icon: '💰',
+                title: `Recibiste ${Number(d.amount).toFixed(2)} MC`,
+                body: d.reason || d.note || `De: ${d.senderName || 'Mamá'}`,
+                sound: 'coin',
+                targetTab: 'pageHome',
+                speak: true
+              });
+              sendRealPushNotification(
+                email,
+                `💰 Recibiste ${Number(d.amount).toFixed(2)} MC`,
+                d.reason || d.note || `De: ${d.senderName || 'Mamá'}`
+              );
+            }
+          });
+        }
+        isInitialTxLoad = false;
       }, err => console.log("Transactions snapshot error:", err));
     }
 
@@ -1497,19 +2001,43 @@
       if (unsubscribeMessages) unsubscribeMessages();
 
       unsubscribeMessages = onSnapshot(msgCol, (snap) => {
-        const msgs = [];
+        const allMsgs = [];
+        const toDelete = [];
+        const twelveHoursAgo = Date.now() - (12 * 60 * 60 * 1000);
+
         snap.forEach(docSnap => {
-          msgs.push({ id: docSnap.id, ...docSnap.data() });
+          const data = { id: docSnap.id, ...docSnap.data() };
+          const msgMillis = data.timestamp?.toMillis ? data.timestamp.toMillis() : null;
+
+          if (!data.pinned && msgMillis !== null && msgMillis < twelveHoursAgo) {
+            // Mensaje viejo y no destacado: se saca de la vista y se agenda
+            // para borrar de Firestore (limpieza oportunista, la hace
+            // cualquier cliente que esté mirando el chat en ese momento).
+            toDelete.push(docSnap.id);
+            return;
+          }
+          allMsgs.push(data);
         });
 
         // Ordenar en memoria cronológicamente
-        msgs.sort((a, b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
+        allMsgs.sort((a, b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
 
-        // Detectar nuevo mensaje para sonido y badge
-        if (!isInitialMessageLoad && msgs.length > 0) {
-          const lastMsg = msgs[msgs.length - 1];
+        // Detectar nuevo mensaje para notificación en vivo y badge
+        if (!isInitialMessageLoad && allMsgs.length > 0) {
+          const lastMsg = allMsgs[allMsgs.length - 1];
           if (lastMsg.senderEmail !== selectedEmail) {
-            PushManager.sendNotification(`💬 Mensaje de ${lastMsg.senderName}`, lastMsg.text || '🎙️ Nota de voz');
+            NotificationCenter.show({
+              icon: '💬',
+              title: `Mensaje de ${lastMsg.senderName || 'Familia'}`,
+              body: lastMsg.text || '🎙️ Nota de voz',
+              sound: 'message',
+              targetTab: 'pageChat'
+            });
+            sendRealPushNotification(
+              USER_MAP.filter(u => u.email !== selectedEmail).map(u => u.email),
+              `💬 ${lastMsg.senderName || 'Familia'}`,
+              lastMsg.text || '🎙️ Envió una nota de voz'
+            );
             if (activeTabId !== 'pageChat') {
               unreadChatCount++;
               updateChatBadges();
@@ -1518,19 +2046,38 @@
         }
         isInitialMessageLoad = false;
 
-        renderMessagesList(msgs);
+        renderMessagesList(allMsgs);
+
+        // Limpieza oportunista: borra en segundo plano, sin bloquear el
+        // render ni molestar al usuario si alguna falla por permisos.
+        toDelete.forEach(id => {
+          deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', id)).catch(() => {});
+        });
       }, err => console.log("Chat error:", err));
+    }
+
+    async function toggleMessagePin(messageId, currentlyPinned) {
+      try {
+        const msgRef = doc(db, 'artifacts', appId, 'public', 'data', 'messages', messageId);
+        await updateDoc(msgRef, { pinned: !currentlyPinned });
+        SoundManager.pin();
+      } catch (err) {
+        showToast("No se pudo destacar el mensaje");
+      }
     }
 
     function renderMessagesList(msgs) {
       const listEl = document.getElementById("messagesList");
 
       if (msgs.length === 0) {
-        listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">No hay mensajes. ¡Sé el primero en escribir!</div>';
+        listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">No hay mensajes. ¡Sé el primero en escribir!<br><span style="font-size:11px;opacity:0.75;">Los mensajes se borran solos a las 12hs, salvo que los destaques 📌</span></div>';
         return;
       }
 
-      listEl.innerHTML = msgs.map(m => {
+      const pinned = msgs.filter(m => m.pinned);
+      const recent = msgs.filter(m => !m.pinned);
+
+      function bubbleHtml(m) {
         const isMine = m.senderEmail === selectedEmail;
         const wrapperClass = isMine ? 'mine' : 'other';
         const bubbleClass = isMine ? 'mine' : 'other';
@@ -1546,20 +2093,50 @@
           content = `<div>${escapeHtml(m.text || '')}</div>`;
         }
 
+        const canSpeak = !m.audioUrl && m.text && TTS.isSupported();
+
         return `
           <div class="chat-bubble-wrapper ${wrapperClass}">
             ${!isMine ? `<div class="chat-author">${m.senderName}</div>` : ''}
-            <div class="chat-bubble ${bubbleClass}">
+            <div class="chat-bubble ${bubbleClass}" style="position:relative;">
               ${content}
-              <div class="chat-meta">${timeStr}</div>
+              <div class="chat-meta" style="display:flex;align-items:center;gap:8px;justify-content:${isMine ? 'flex-end' : 'flex-start'};">
+                <span>${timeStr}</span>
+                ${m.pinned ? '<span title="Destacado">📌</span>' : ''}
+                ${canSpeak ? `<button class="chat-tts-btn" data-text="${escapeHtml(m.text)}" title="Leer en voz alta" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:0.7;padding:0;">🔊</button>` : ''}
+                <button class="chat-pin-btn" data-id="${m.id}" data-pinned="${!!m.pinned}" title="${m.pinned ? 'Quitar destacado' : 'Destacar (no se borra)'}" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:0.7;padding:0;">${m.pinned ? '📌' : '📍'}</button>
+              </div>
             </div>
           </div>
         `;
-      }).join('');
+      }
+
+      let html = '';
+      if (pinned.length > 0) {
+        html += `<div style="text-align:center;font-size:11px;font-weight:800;color:var(--gold-dark);margin:6px 0 10px;letter-spacing:0.4px;">📌 DESTACADOS (no se borran)</div>`;
+        html += pinned.map(bubbleHtml).join('');
+        html += `<div style="border-top:1px dashed var(--border);margin:14px 0;"></div>`;
+      }
+      html += recent.map(bubbleHtml).join('');
+
+      listEl.innerHTML = html;
 
       // Auto-scroll al final del chat
       listEl.scrollTop = listEl.scrollHeight;
     }
+
+    // Delegación de eventos para los botones de pin y de leer-en-voz-alta
+    document.getElementById("messagesList").addEventListener("click", (e) => {
+      const pinBtn = e.target.closest(".chat-pin-btn");
+      if (pinBtn) {
+        toggleMessagePin(pinBtn.dataset.id, pinBtn.dataset.pinned === 'true');
+        return;
+      }
+      const ttsBtn = e.target.closest(".chat-tts-btn");
+      if (ttsBtn) {
+        TTS.speak(ttsBtn.dataset.text);
+      }
+    });
 
     function escapeHtml(str) {
       return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
@@ -1751,6 +2328,7 @@
 
         document.getElementById("transferAmountInput").value = "";
         document.getElementById("transferNoteInput").value = "";
+        SoundManager.coin();
         showToast(`✅ Enviaaste ${amount} MC a ${recipientName}`);
         switchTab("pageHome");
 
@@ -1803,6 +2381,7 @@
 
         document.getElementById("sendAmount").value = "";
         document.getElementById("sendReason").value = "";
+        SoundManager.coin();
         showToast(`✨ Acreditaste ${amount} MC a ${recipientName}`);
         switchTab("pageHome");
 
@@ -1848,10 +2427,13 @@
       }
     });
 
+    let isInitialWithdrawLoad = true;
+
     function setupWithdrawalsListener(email, isAdmin) {
       const wCol = collection(db, 'artifacts', appId, 'public', 'data', 'withdrawals');
 
       if (unsubscribeWithdrawals) unsubscribeWithdrawals();
+      isInitialWithdrawLoad = true;
 
       unsubscribeWithdrawals = onSnapshot(wCol, (snap) => {
         const pendingList = [];
@@ -1863,6 +2445,56 @@
           if (d.status === 'pending') pendingList.push(item);
           if (d.userEmail === email) userList.push(item);
         });
+
+        // Notificaciones en vivo por cambios reales (no en la carga inicial)
+        if (!isInitialWithdrawLoad) {
+          snap.docChanges().forEach(change => {
+            const d = change.doc.data();
+
+            // A la mamá/admin: aviso de solicitud nueva
+            if (isAdmin && change.type === 'added' && d.status === 'pending') {
+              NotificationCenter.show({
+                icon: '🙋',
+                title: `${d.userName || 'Alguien'} pidió un retiro`,
+                body: `${d.amount} MC ($${d.arsAmount || (d.amount * MC_VALUE_ARS)} ARS)`,
+                sound: 'notification',
+                targetTab: 'pageWithdraw',
+                speak: true
+              });
+              sendRealPushNotification(
+                ADMIN_EMAILS,
+                `🙋 ${d.userName || 'Alguien'} pidió un retiro`,
+                `${d.amount} MC ($${d.arsAmount || (d.amount * MC_VALUE_ARS)} ARS)`
+              );
+            }
+
+            // Al usuario: aviso de que le resolvieron su solicitud
+            if (change.type === 'modified' && d.userEmail === email) {
+              if (d.status === 'approved') {
+                NotificationCenter.show({
+                  icon: '✅',
+                  title: 'Retiro aprobado',
+                  body: `Mamá aprobó tu retiro de ${d.amount} MC`,
+                  sound: 'coin',
+                  targetTab: 'pageWithdraw',
+                  speak: true
+                });
+                sendRealPushNotification(email, '✅ Retiro aprobado', `Mamá aprobó tu retiro de ${d.amount} MC`);
+              } else if (d.status === 'rejected') {
+                NotificationCenter.show({
+                  icon: '❌',
+                  title: 'Retiro rechazado',
+                  body: `Tu solicitud de ${d.amount} MC fue rechazada`,
+                  sound: 'error',
+                  targetTab: 'pageWithdraw',
+                  speak: true
+                });
+                sendRealPushNotification(email, '❌ Retiro rechazado', `Tu solicitud de ${d.amount} MC fue rechazada`);
+              }
+            }
+          });
+        }
+        isInitialWithdrawLoad = false;
 
         // Banner Admin de Mamá
         if (isAdmin) {
@@ -1923,6 +2555,7 @@
             timestamp: serverTimestamp()
           });
 
+          SoundManager.coin();
           showToast("✅ Retiro Aprobado");
         } else {
           await updateDoc(wRef, { status: 'rejected', processedAt: serverTimestamp() });
@@ -2054,6 +2687,53 @@
       darkToggle.checked = true;
       document.body.classList.add("dark-mode");
     }
+
+    // ===== Preferencias: sonido / vibración / voz =====
+    const prefSoundToggle = document.getElementById("prefSoundToggle");
+    const prefVibrationToggle = document.getElementById("prefVibrationToggle");
+    const prefTtsToggle = document.getElementById("prefTtsToggle");
+    const prefTtsRate = document.getElementById("prefTtsRate");
+    const ttsRateLabel = document.getElementById("ttsRateLabel");
+    const ttsRateWrapper = document.getElementById("ttsRateWrapper");
+    const testTtsBtn = document.getElementById("testTtsBtn");
+
+    function refreshTtsAvailability() {
+      if (!TTS.isSupported()) {
+        prefTtsToggle.checked = false;
+        prefTtsToggle.disabled = true;
+        ttsRateWrapper.style.opacity = "0.4";
+        ttsRateWrapper.style.pointerEvents = "none";
+        const parentLabel = prefTtsToggle.closest('div').querySelector('span');
+        if (parentLabel) parentLabel.textContent = "🗣️ Leer en voz alta (no compatible en este dispositivo)";
+      }
+    }
+
+    prefSoundToggle.checked = AppPrefs.get('sound');
+    prefVibrationToggle.checked = AppPrefs.get('vibration');
+    prefTtsToggle.checked = AppPrefs.get('tts');
+    prefTtsRate.value = AppPrefs.get('ttsRate');
+    ttsRateLabel.textContent = `${Number(AppPrefs.get('ttsRate')).toFixed(1)}x`;
+    refreshTtsAvailability();
+
+    prefSoundToggle.addEventListener("change", (e) => {
+      AppPrefs.set('sound', e.target.checked);
+      if (e.target.checked) SoundManager.tap();
+    });
+    prefVibrationToggle.addEventListener("change", (e) => {
+      AppPrefs.set('vibration', e.target.checked);
+      if (e.target.checked && navigator.vibrate) navigator.vibrate(40);
+    });
+    prefTtsToggle.addEventListener("change", (e) => {
+      AppPrefs.set('tts', e.target.checked);
+    });
+    prefTtsRate.addEventListener("input", (e) => {
+      const rate = parseFloat(e.target.value);
+      AppPrefs.set('ttsRate', rate);
+      ttsRateLabel.textContent = `${rate.toFixed(1)}x`;
+    });
+    testTtsBtn.addEventListener("click", () => {
+      TTS.speak("Hola, así va a sonar tu banco al leerte las notificaciones.");
+    });
 
     // Cerrar Sesión
     document.getElementById("logoutButton").addEventListener("click", () => {
