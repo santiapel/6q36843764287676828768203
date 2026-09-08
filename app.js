@@ -74,14 +74,83 @@ const db =
    FUNCIONALIDADES MEDIAN / WEB (NATIVAS)
    ========================================= */
 
-// --- CÓDIGO PARA NOTIFICACIONES ---
+function esMedian() {
+    return typeof median !== "undefined" &&
+        median &&
+        median.onesignal;
+}
+
+async function configurarOneSignalMedian(user) {
+    if (!esMedian()) return;
+
+    try {
+
+        // Permitir notificaciones mientras la app está abierta
+        if (
+            typeof median.onesignal.enableForegroundNotifications ===
+            "function"
+        ) {
+            median.onesignal.enableForegroundNotifications(true);
+        }
+
+        // Registrar el dispositivo en OneSignal
+        if (
+            typeof median.onesignal.register ===
+            "function"
+        ) {
+            await Promise.resolve(
+                median.onesignal.register()
+            );
+        }
+
+        // Asociar el usuario de Firebase con OneSignal
+        if (
+            user?.email &&
+            typeof median.onesignal.login ===
+            "function"
+        ) {
+            await median.onesignal.login(
+                user.email
+            );
+        }
+
+        // Mostrar información de OneSignal en consola
+        if (
+            typeof median.onesignal.info ===
+            "function"
+        ) {
+            const info =
+                await median.onesignal.info();
+
+            console.log(
+                "OneSignal Median:",
+                info
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Median OneSignal:",
+            error
+        );
+
+    }
+}
+
 function solicitarPermisoNotificaciones() {
-    // Detecta si está dentro de la app de Median
-    if (navigator.userAgent.includes('median') || typeof median !== 'undefined') {
-        // Llama al sistema de la app (Por ejemplo, OneSignal)
-        median.onesignal.register(); 
-    } else {
-        // Navegador web común (Chrome, Safari, Zen Browser, etc.)
+
+    if (esMedian()) {
+
+        configurarOneSignalMedian(
+            currentUser
+        );
+
+        return;
+    }
+
+    // Navegador normal
+    if ("Notification" in window) {
         Notification.requestPermission();
     }
 }
@@ -98,7 +167,9 @@ function leerTexto(texto) {
 }
 
 // Se exponen globalmente en window para que puedan ser invocadas desde atributos onclick="..." en el HTML
-window.solicitarPermisoNotificaciones = solicitarPermisoNotificaciones;
+window.solicitarPermisoNotificaciones =
+    solicitarPermisoNotificaciones;
+
 window.leerTexto = leerTexto;
 
 
@@ -1883,6 +1954,10 @@ onAuthStateChanged(
     }
 
 
+    // Configurar OneSignal nativo de Median
+    await configurarOneSignalMedian(user);
+
+
     /*
      * Cargar todo.
      */
@@ -1916,29 +1991,35 @@ onAuthStateChanged(
    ========================================= */
 
 logoutButton.addEventListener(
-  "click",
-  async () => {
+    "click",
+    async () => {
 
-    try {
+        try {
 
-      await signOut(
-        auth
-      );
+            if (
+                esMedian() &&
+                typeof median.onesignal.logout ===
+                "function"
+            ) {
+                await median.onesignal.logout();
+            }
 
-      showToast(
-        "Sesión cerrada."
-      );
+            await signOut(auth);
 
-    } catch (error) {
+            showToast(
+                "Sesión cerrada."
+            );
 
-      console.error(
-        "Logout:",
-        error
-      );
+        } catch (error) {
+
+            console.error(
+                "Logout:",
+                error
+            );
+
+        }
 
     }
-
-  }
 );
 
 </script>
