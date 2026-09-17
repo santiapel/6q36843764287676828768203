@@ -1765,22 +1765,9 @@
           console.warn("Median OneSignal bridge error:", err && err.message ? err.message : err);
         }
 
-        // 2. OneSignal Web SDK
-        if (window.OneSignalDeferred) {
-          window.OneSignalDeferred.push(async function(OneSignal) {
-            try {
-              if (typeof OneSignal.login === 'function') {
-                await OneSignal.login(email);
-                await OneSignal.User.addTag("user_name", name);
-              }
-            } catch(err) {
-              console.info("OneSignal user set info:", err && err.message ? err.message : err);
-            }
-          });
-        }
-
-        // 3. En Median las notificaciones se gestionan por el bridge nativo;
-        // no solicitamos permisos Web aquí porque algunos WebViews rechazan la Promise.
+        // 2. No usamos el OneSignal Web SDK dentro de Median/WebView.
+        // Las notificaciones de la app se gestionan por el bridge nativo.
+        // Esto evita promesas internas del SDK Web que algunos WebViews rechazan.
 
         this.updateUIStatus(true);
       },
@@ -2099,7 +2086,7 @@
             currentUser = user;
             Promise.resolve(loadUserApp(selectedEmail, selectedName)).catch((err) => {
               appLoadStartedFromAuth = false;
-              console.error("Error cargando la app desde Auth:", err);
+              console.error("Error cargando la app desde Auth:", err && (err.stack || err.message || err.code || JSON.stringify(err)) || err);
               showToast("⚠️ No se pudo cargar la cuenta. Revisá la conexión.");
             });
           } catch (err) {
@@ -2218,68 +2205,82 @@
 
 
     async function loadUserApp(email, name) {
-      // Esperar a que Firebase Auth confirme sesión (o falle) antes de abrir
-      // listeners de Firestore, para no repetir la condición de carrera.
-      await authReady;
-
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("app").style.display = "block";
-      document.getElementById("bottomNav").style.display = "flex";
-
-      const normalizedEmail = email.toLowerCase();
-      const isAdmin = ADMIN_EMAILS.includes(normalizedEmail);
-      const canPublishNews = NEWS_PUBLISHER_EMAILS.includes(normalizedEmail);
-
-      // Ajustar UI según perfil
-      const userObj = USER_MAP.find(u => u.email === email) || { avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}` };
-      
-      document.getElementById("headerName").textContent = name;
-      document.getElementById("headerAvatar").src = userObj.avatar;
-      document.getElementById("profileName").textContent = name;
-      document.getElementById("profileEmail").textContent = email;
-      document.getElementById("profileAvatar").src = userObj.avatar;
-      document.getElementById("roleBadge").textContent = isAdmin ? "ADMINISTRADORA 👑" : (canPublishNews ? "PUBLICADOR/A DE NOTICIAS 📰" : "INTEGRANTE 👤");
-      document.getElementById("headerRole").textContent = isAdmin ? "Banco Oficial (Admin)" : (canPublishNews ? "Mom Coin Wallet · Noticias" : "Mom Coin Wallet");
-      document.getElementById("homeGreetingName").textContent = name;
-      document.getElementById("adminShortcut").style.display = isAdmin ? "flex" : "none";
-      document.getElementById("settingsAdminShortcut").style.display = isAdmin ? "block" : "none";
-      const publisherCard = document.getElementById('newsPublisherCard');
-      if (publisherCard) publisherCard.style.display = canPublishNews ? 'block' : 'none';
-
-      // Personalizar la "tarjeta" con nombre del titular y un número
-      // pseudo-aleatorio pero fijo (determinado por el email, así siempre
-      // es el mismo número para la misma cuenta).
-      document.getElementById("cardHolderName").textContent = name.toUpperCase();
-      const cardDigits = generateCardDigitsFromEmail(email);
-      document.getElementById("cardMaskedNumber").textContent = `•••• •••• •••• ${cardDigits}`;
-
-      if (isAdmin) {
-        document.getElementById("tabAdminNav").style.display = "flex";
-        populateAdminRecipients();
-        setupFamilyBalancesListener();
-        setupScheduledTransfersListener();
-        loadReasons();
-      } else {
-        document.getElementById("tabAdminNav").style.display = "none";
-        setupFamilyShareListener(email);
+      // Esta función no debe rechazar por un componente secundario. En WebViews
+      // un rechazo de cualquier listener/bridge puede aparecer solamente como {}
+      // en la consola de Median. Capturamos cada etapa por separado.
+      try { await authReady; } catch (e) {
+        console.warn("AuthReady falló, continuando en modo local:", e && (e.message || e.code) || e);
       }
 
-      // Economía (tipo de cambio) es visible/afecta a todos
-      setupEconomyListener(isAdmin);
-      setupNewsListener(isAdmin, canPublishNews);
-      if (isAdmin) { processDueSchedules().catch(e => console.warn('Scheduler:', e)); processDueWithdrawals().catch(e => console.warn('Withdraw scheduler:', e)); }
+      const safe = (label, fn) => {
+        try {
+          const result = fn();
+          if (result && typeof result.catch === 'function') {
+            result.catch(err => console.error(label + " (async):", err && (err.stack || err.message || err.code) || err));
+          }
+          return result;
+        } catch (err) {
+          console.error(label + ":", err && (err.stack || err.message || err.code) || err);
+          return null;
+        }
+      };
 
-      // Sincronizar con OneSignal y Median.co
-      PushManager.syncUser(email, name);
+      try {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        document.getElementById("bottomNav").style.display = "flex";
 
-      // Cargar lista de destinatarios para transferencias
-      populateTransferRecipients(email);
+        const normalizedEmail = (email || '').toLowerCase();
+        const isAdmin = ADMIN_EMAILS.includes(normalizedEmail);
+        const canPublishNews = NEWS_PUBLISHER_EMAILS.includes(normalizedEmail);
+        const userObj = USER_MAP.find(u => u.email === email) || { avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}` };
 
-      // Iniciar escuchadores de Firestore
-      setupUserDataListener(email, name);
-      setupTransactionsListener(email);
-      setupWithdrawalsListener(email, isAdmin);
-      setupChatListener();
+        const setText = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=value; };
+        const setSrc = (id, value) => { const el=document.getElementById(id); if(el) el.src=value; };
+        const setDisplay = (id, value) => { const el=document.getElementById(id); if(el) el.style.display=value; };
+        setText("headerName", name); setSrc("headerAvatar", userObj.avatar);
+        setText("profileName", name); setText("profileEmail", email); setSrc("profileAvatar", userObj.avatar);
+        setText("roleBadge", isAdmin ? "ADMINISTRADORA 👑" : (canPublishNews ? "PUBLICADOR/A DE NOTICIAS 📰" : "INTEGRANTE 👤"));
+        setText("headerRole", isAdmin ? "Banco Oficial (Admin)" : (canPublishNews ? "Mom Coin Wallet · Noticias" : "Mom Coin Wallet"));
+        setText("homeGreetingName", name);
+        setDisplay("adminShortcut", isAdmin ? "flex" : "none");
+        setDisplay("settingsAdminShortcut", isAdmin ? "block" : "none");
+        const publisherCard = document.getElementById('newsPublisherCard');
+        if (publisherCard) publisherCard.style.display = canPublishNews ? 'block' : 'none';
+        setText("cardHolderName", (name || '').toUpperCase());
+        const cardDigits = generateCardDigitsFromEmail(email);
+        setText("cardMaskedNumber", `•••• •••• •••• ${cardDigits}`);
+
+        if (isAdmin) {
+          safe("Admin: populateAdminRecipients", populateAdminRecipients);
+          safe("Admin: setupFamilyBalancesListener", setupFamilyBalancesListener);
+          safe("Admin: setupScheduledTransfersListener", setupScheduledTransfersListener);
+          safe("Admin: loadReasons", () => loadReasons());
+          setDisplay("tabAdminNav", "flex");
+        } else {
+          setDisplay("tabAdminNav", "none");
+          safe("setupFamilyShareListener", () => setupFamilyShareListener(email));
+        }
+
+        safe("setupEconomyListener", () => setupEconomyListener(isAdmin));
+        safe("setupNewsListener", () => setupNewsListener(isAdmin, canPublishNews));
+        if (isAdmin) {
+          safe("processDueSchedules", () => processDueSchedules());
+          safe("processDueWithdrawals", () => processDueWithdrawals());
+        }
+
+        // Median/OneSignal: nunca bloquea la carga de la app.
+        safe("PushManager.syncUser", () => PushManager.syncUser(email, name));
+        safe("populateTransferRecipients", () => populateTransferRecipients(email));
+        safe("setupUserDataListener", () => setupUserDataListener(email, name));
+        safe("setupTransactionsListener", () => setupTransactionsListener(email));
+        safe("setupWithdrawalsListener", () => setupWithdrawalsListener(email, isAdmin));
+        safe("setupChatListener", () => setupChatListener());
+      } catch (err) {
+        // No propagamos el rechazo hacia onAuthStateChanged. Mostramos detalles útiles.
+        console.error("Error interno cargando la app:", err && (err.stack || err.message || err.code) || err);
+        showToast("⚠️ La cuenta abrió, pero una función no pudo cargarse.", "error");
+      }
     }
 
     function populateAdminRecipients() {
