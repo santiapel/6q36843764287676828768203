@@ -9,23 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- OneSignal Web Push SDK -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      try {
-        await OneSignal.init({
-          appId: "f57ce516-611b-4500-a009-c323db4f4840",
-        });
-      } catch (err) {
-        // Dentro del WebView de Median, el Web Push SDK de OneSignal puede
-        // rechazar el init() (por ejemplo, "Incompatible browser").
-        // Es normal si las notificaciones las maneja el plugin nativo.
-        console.info("OneSignal Web SDK init omitido/fallido:", err && err.message ? err.message : err);
-      }
-    });
-  </script>
+  <!-- OneSignal Web Push: en Median/WebView usamos el bridge nativo.
+       El SDK Web se omite para evitar el rechazo "Incompatible browser". -->
 
   <style>
     * {
@@ -1059,7 +1044,22 @@
         addLine('error', [`${e.message} (${e.filename}:${e.lineno}:${e.colno})`]);
       });
       window.addEventListener('unhandledrejection', function(e) {
-        addLine('error', ['Promise rechazada sin manejar:', e.reason]);
+        const reason = e.reason;
+        let details = '';
+        try {
+          if (reason instanceof Error) {
+            details = `${reason.name}: ${reason.message}${reason.stack ? '\n' + reason.stack : ''}`;
+          } else if (reason && typeof reason === 'object') {
+            details = JSON.stringify(reason, Object.getOwnPropertyNames(reason));
+          } else {
+            details = String(reason);
+          }
+        } catch (_) {
+          details = String(reason);
+        }
+        addLine('error', ['Promise rechazada sin manejar:', details]);
+        console.error('Unhandled rejection detallada:', reason);
+        e.preventDefault();
       });
 
       // Triple toque sobre cualquier logo "MC" (login o barra superior)
@@ -1779,17 +1779,8 @@
           });
         }
 
-        // 3. Solicitar permiso de Notificaciones Web si está permitido
-        if ('Notification' in window && typeof Notification.requestPermission === 'function' && Notification.permission === 'default') {
-          try {
-            const permissionResult = Notification.requestPermission();
-            if (permissionResult && typeof permissionResult.catch === 'function') {
-              permissionResult.catch(err => console.info('Permiso de notificaciones no disponible en este WebView:', err && err.message ? err.message : err));
-            }
-          } catch (err) {
-            console.info('Permiso de notificaciones no disponible en este WebView:', err && err.message ? err.message : err);
-          }
-        }
+        // 3. En Median las notificaciones se gestionan por el bridge nativo;
+        // no solicitamos permisos Web aquí porque algunos WebViews rechazan la Promise.
 
         this.updateUIStatus(true);
       },
@@ -2090,22 +2081,35 @@
     // Inicializar Auth al cargar
     initAuth();
 
-    onAuthStateChanged(auth, async (user) => {
+    let appLoadStartedFromAuth = false;
+    onAuthStateChanged(auth, (user) => {
       currentUser = user;
       if (!_authResolved) {
         _authResolved = true;
         _authReadyResolve(user);
       }
-      if (user) {
+      if (user && !appLoadStartedFromAuth) {
         const savedAccount = localStorage.getItem("momcoin_logged_user");
         if (savedAccount) {
-          const parsed = JSON.parse(savedAccount);
-          selectedEmail = parsed.email;
-          selectedName = parsed.name;
-          currentUser = user;
-          await loadUserApp(selectedEmail, selectedName);
+          appLoadStartedFromAuth = true;
+          try {
+            const parsed = JSON.parse(savedAccount);
+            selectedEmail = parsed.email;
+            selectedName = parsed.name;
+            currentUser = user;
+            Promise.resolve(loadUserApp(selectedEmail, selectedName)).catch((err) => {
+              appLoadStartedFromAuth = false;
+              console.error("Error cargando la app desde Auth:", err);
+              showToast("⚠️ No se pudo cargar la cuenta. Revisá la conexión.");
+            });
+          } catch (err) {
+            appLoadStartedFromAuth = false;
+            console.error("Error leyendo la cuenta guardada:", err);
+          }
         }
       }
+    }, (error) => {
+      console.error("Error del listener de Firebase Auth:", error);
     });
 
     // Por si onAuthStateChanged tardara demasiado (ej. red muy lenta dentro
