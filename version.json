@@ -1,12 +1,1 @@
-{
-  "version": "3.1.0",
-  "minimumVersion": "3.1.0",
-  "releaseNotes": [
-    "Ducking automático de música durante voz/TTS",
-    "Actualización automática desde GitHub Pages",
-    "Tema claro/oscuro según el sistema",
-    "Retiros de todos los MC calculados al cierre de mes",
-    "Opción de repetir todos los MC cada mes",
-    "Iconos vectoriales en la navegación"
-  ]
-}
+{"version":"4.0.0"}
