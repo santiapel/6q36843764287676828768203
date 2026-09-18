@@ -9,25 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- OneSignal Web Push SDK -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      try {
-        await OneSignal.init({
-          appId: "f57ce516-611b-4500-a009-c323db4f4840",
-        });
-      } catch (err) {
-        // Dentro del WebView de Median, el Web Push SDK de OneSignal puede
-        // rechazar el init() (se ve como "Incompatible browser" en consola).
-        // Esto es esperable ahí: las notificaciones dentro de la app las
-        // maneja el plugin nativo de Median (median.onesignal), no este SDK
-        // web. Lo atrapamos para que no quede como error sin manejar.
-        console.info("OneSignal Web SDK init omitido/fallido (normal dentro de la app nativa):", err && err.message ? err.message : err);
-      }
-    });
-  </script>
+  <!-- OneSignal Web Push: en Median/WebView usamos el bridge nativo.
+       El SDK Web se omite para evitar el rechazo "Incompatible browser". -->
 
   <style>
     * {
@@ -961,6 +944,19 @@
       .bottom-nav { max-width:760px; }
       .summary-grid { grid-template-columns:repeat(4,1fr); }
     }
+
+    .field-label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px}
+    .small-muted{font-size:10px;color:var(--muted)}
+    .admin-schedule-box{border:1px solid var(--border);background:var(--bg);padding:12px;border-radius:15px;margin:4px 0 14px}
+    .schedule-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+    .schedule-row:last-child{border-bottom:none}
+    .schedule-pill{font-size:10px;font-weight:800;padding:5px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary)}
+    .news-item{padding:12px 0;border-bottom:1px dashed var(--border)}
+    .news-item:last-child{border-bottom:none}
+    .news-title{font-size:14px;font-weight:800;margin-bottom:4px}
+    .news-body{font-size:12px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
+    .news-date{font-size:10px;color:var(--muted);margin-top:7px}
+    .reason-chip{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:700;cursor:pointer}
   </style>
 </head>
 
@@ -1048,7 +1044,22 @@
         addLine('error', [`${e.message} (${e.filename}:${e.lineno}:${e.colno})`]);
       });
       window.addEventListener('unhandledrejection', function(e) {
-        addLine('error', ['Promise rechazada sin manejar:', e.reason]);
+        const reason = e.reason;
+        let details = '';
+        try {
+          if (reason instanceof Error) {
+            details = `${reason.name}: ${reason.message}${reason.stack ? '\n' + reason.stack : ''}`;
+          } else if (reason && typeof reason === 'object') {
+            details = JSON.stringify(reason, Object.getOwnPropertyNames(reason));
+          } else {
+            details = String(reason);
+          }
+        } catch (_) {
+          details = String(reason);
+        }
+        addLine('error', ['Promise rechazada sin manejar:', details]);
+        console.error('Unhandled rejection detallada:', reason);
+        e.preventDefault();
       });
 
       // Triple toque sobre cualquier logo "MC" (login o barra superior)
@@ -1085,10 +1096,10 @@
         <p>Elegí tu cuenta para ingresar</p>
         <div class="account-list">
           <button type="button" class="account-button" data-name="Santi" data-email="santipapel16@gmail.com">
-            <div class="account-avatar">👤</div>
+            <div class="account-avatar admin-avatar">👑</div>
             <div class="account-info">
               <strong>Santi</strong>
-              <span>santipapel16@gmail.com</span>
+              <span>PUBLICADOR DE NOTICIAS</span>
             </div>
             <div class="account-arrow">›</div>
           </button>
@@ -1111,16 +1122,6 @@
             <div class="account-arrow">›</div>
           </button>
         </div>
-      </div>
-
-      <!-- PANTALLA DE HUELLA DIGITAL -->
-      <div id="biometricScreen" style="display: none; text-align:center;">
-        <h1 id="biometricAccountName">Hola</h1>
-        <p>Desbloqueá con tu huella</p>
-        <button type="button" id="biometricUnlockBtn" class="btn-primary" style="font-size:34px; padding:22px; border-radius:50%; width:90px; height:90px; margin:18px auto; display:flex; align-items:center; justify-content:center;">👆</button>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Tocá el ícono y apoyá el dedo en el sensor</p>
-        <button type="button" id="useBiometricPinInstead" class="btn-primary" style="background:var(--bg); color:var(--text); border:1px solid var(--border);">Usar PIN en su lugar</button>
-        <button type="button" id="backAccountsFromBiometric" class="btn-primary" style="background:none; color:var(--muted); box-shadow:none; margin-top:4px;">← Volver a cuentas</button>
       </div>
 
       <!-- FORMULARIO DE CONTRASEÑA -->
@@ -1159,9 +1160,9 @@
       <div class="dashboard-greeting">
         <div>
           <h1>Hola, <span id="homeGreetingName">Usuario</span> 👋</h1>
-          <p>Tu banco familiar, simple y sin vueltas. (Ahora mismo estas usando una version vieja, pues las nuevas no funcionan)</p>
+          <p>Tu banco familiar, simple y sin vueltas.</p>
         </div>
-        <div class="online-pill"><span class="online-dot"></span>SAFETY MODE</div>
+        <div class="online-pill"><span class="online-dot"></span>Sincronizado</div>
       </div>
 
       <div id="adminShortcut" class="admin-shortcut">
@@ -1212,6 +1213,21 @@
       <div class="summary-grid">
         <div class="summary-tile"><div class="label">Valor actual</div><div class="value" id="homeArsValue">$0</div><div class="sub">Tu saldo en ARS</div></div>
         <div class="summary-tile"><div class="label">Cotización</div><div class="value" id="homeMcRate">$0</div><div class="sub">1 MC en pesos</div></div>
+      </div>
+
+      <!-- ECONOMÍA PÚBLICA: Mamá decide si el resto la puede ver -->
+      <div class="card pro-card" id="publicEconomyCard" style="display:none;">
+        <div class="card-title"><span>📊 Economía familiar</span><span id="publicEconomyStatus" style="font-size:10px;color:var(--muted);">Actualizada</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="summary-tile"><div class="label">1 MC</div><div class="value" id="publicEconomyRate">$0</div><div class="sub">Valor en ARS</div></div>
+          <div class="summary-tile"><div class="label">Conversión</div><div class="value" id="publicEconomyExample">1 MC</div><div class="sub">Cotización vigente</div></div>
+        </div>
+      </div>
+
+      <!-- NOTICIAS DE LA FAMILIA -->
+      <div class="card" id="newsCard">
+        <div class="card-title"><span>📰 Noticias</span><span id="newsCount" style="font-size:12px;color:var(--muted);font-weight:normal;">0</span></div>
+        <div id="newsList"><div class="empty-state">Cargando noticias...</div></div>
       </div>
 
       <!-- BOTONES DE ACCIÓN RÁPIDA -->
@@ -1293,16 +1309,21 @@
         <div class="card-title">
           <span>💸 Solicitar Retiro en Efectivo</span>
         </div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">1 MC = $500 ARS (Máximo 10 MC por solicitud)</p>
-        
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Cantidad de MC a retirar</label>
-        <input id="withdrawAmount" type="number" min="1" max="10" class="form-input" placeholder="Ej: 5">
-        
-        <div id="withdrawCalc" style="font-size:14px;color:var(--primary);font-weight:800;margin-bottom:16px;background:var(--primary-light);padding:10px;border-radius:12px;text-align:center;">
-          Valor estimado: $0 ARS
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Los retiros se liquidan al final de cada mes. Podés elegir una cantidad fija o pedir todos los MC que tengas en ese momento.</p>
+
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button type="button" id="withdrawSpecificBtn" class="btn-primary" style="flex:1;padding:10px;">MC específicos</button>
+          <button type="button" id="withdrawAllBtn" class="btn-primary" style="flex:1;padding:10px;background:var(--card);color:var(--primary);border:1px solid var(--primary);">Todos mis MC</button>
         </div>
-        
-        <button id="requestWithdrawBtn" class="btn-primary">Solicitar Retiro a Mamá 🚀</button>
+
+        <div id="withdrawSpecificFields">
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Cantidad de MC a retirar</label>
+          <input id="withdrawAmount" type="number" min="1" step="0.01" class="form-input" placeholder="Ej: 5">
+          <div id="withdrawCalc" style="font-size:14px;color:var(--primary);font-weight:800;margin-bottom:16px;background:var(--primary-light);padding:10px;border-radius:12px;text-align:center;">Valor estimado: $0 ARS</div>
+        </div>
+
+        <div id="withdrawAllInfo" style="display:none;font-size:13px;color:var(--muted);margin-bottom:16px;background:var(--primary-light);padding:12px;border-radius:12px;text-align:center;">Se retirará el saldo que tengas al momento de la liquidación de fin de mes.</div>
+        <button id="requestWithdrawBtn" class="btn-primary">Programar retiro a fin de mes 🚀</button>
       </div>
 
       <div class="card">
@@ -1338,51 +1359,106 @@
 
     <!-- SECCIÓN 4: PANEL MAMÁ (ADMIN) -->
     <section id="pageAdmin" class="page-section">
-      <!-- SALDOS DE LA FAMILIA (visible solo para admin) -->
       <div class="card">
-        <div class="card-title">
-          <span>👨‍👩‍👧 Saldos de la familia</span>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Como Administradora ves el saldo de todos, aunque lo tengan oculto para el resto.</p>
-        <div id="adminFamilyBalances">
-          <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;">Cargando...</div>
-        </div>
+        <div class="card-title"><span>👨‍👩‍👧 Saldos de la familia</span><span id="adminFamilyTotal" style="font-size:12px;color:var(--muted);">0 MC</span></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Como administradora ves todos los saldos, aunque estén ocultos para el resto.</p>
+        <div id="adminFamilyBalances"><div class="empty-state">Cargando...</div></div>
       </div>
 
       <div class="card">
-        <div class="card-title">
-          <span>👑 Ajustar Mom Coins</span>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Subí o bajá el saldo de cualquier integrante (incluida vos misma) por premios, tareas, correcciones, etc.</p>
+        <div class="card-title"><span>👑 Transferencias de Mamá</span><span style="font-size:10px;color:var(--muted);">Instantáneas o programadas</span></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Mandá MC a una persona o a todos. Las transferencias programadas se guardan y se ponen al día automáticamente cuando la app está abierta.</p>
 
         <div class="segmented-control" style="margin-bottom:14px;">
-          <button type="button" class="segmented-option active" id="modeCreditBtn" data-mode="credit">⬆️ Subir</button>
-          <button type="button" class="segmented-option" id="modeDebitBtn" data-mode="debit">⬇️ Bajar</button>
+          <button type="button" class="segmented-option active" id="modeCreditBtn">⬆️ Subir</button>
+          <button type="button" class="segmented-option" id="modeDebitBtn">⬇️ Bajar</button>
         </div>
 
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Seleccionar integrante</label>
-        <select id="recipientEmail" class="form-input">
-          <option value="">Seleccionar destinatario</option>
-        </select>
+        <label class="field-label">Destinatario</label>
+        <select id="recipientEmail" class="form-input"><option value="">Seleccionar destinatario</option></select>
 
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Monto (MC)</label>
-        <input id="sendAmount" type="number" min="1" class="form-input" placeholder="Cantidad de MC">
+        <label class="field-label">Monto (MC)</label>
+        <input id="sendAmount" type="number" min="0.1" step="0.1" class="form-input" placeholder="Cantidad de MC">
 
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Motivo</label>
-        <input id="sendReason" type="text" maxlength="100" class="form-input" placeholder="Ej: Premio por ordenar habitación 🌟">
+        <label class="field-label">Motivo</label>
+        <select id="sendReasonPreset" class="form-input"><option value="">Elegir motivo predeterminado…</option></select>
+        <input id="sendReason" type="text" maxlength="120" class="form-input" placeholder="O escribí un motivo nuevo">
 
-        <button id="sendCoinsButton" class="btn-primary">✨ Confirmar</button>
+        <div class="admin-schedule-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+            <div><strong>🗓️ Repetir transferencia</strong><div class="small-muted">Opcional</div></div>
+            <input id="adminRecurringToggle" type="checkbox" style="width:20px;height:20px;">
+          </div>
+          <div id="adminRecurringFields" style="display:none;margin-top:12px;">
+            <label class="field-label">Frecuencia</label>
+            <select id="adminRecurringFrequency" class="form-input">
+              <option value="daily">Cada día</option>
+              <option value="weekly">Cada semana</option>
+              <option value="monthly">Cada mes</option>
+              <option value="yearly">Cada año</option>
+            </select>
+            <div id="scheduleDateFields">
+              <label class="field-label">Primera ejecución</label>
+              <input id="adminRecurringStart" type="date" class="form-input">
+            </div>
+            <div id="weeklyScheduleField" style="display:none;">
+              <label class="field-label">Día de la semana</label>
+              <select id="adminRecurringWeekday" class="form-input">
+                <option value="1">Lunes</option><option value="2">Martes</option><option value="3">Miércoles</option>
+                <option value="4">Jueves</option><option value="5">Viernes</option><option value="6">Sábado</option><option value="0">Domingo</option>
+              </select>
+            </div>
+            <div id="monthlyScheduleField" style="display:none;">
+              <label class="field-label">Día del mes</label>
+              <input id="adminRecurringDay" type="number" min="1" max="31" class="form-input" placeholder="Ej: 15">
+            </div>
+            <div id="yearlyScheduleField" style="display:none;">
+              <label class="field-label">Mes</label>
+              <select id="adminRecurringMonth" class="form-input">
+                <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option>
+                <option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option>
+                <option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+              </select>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;margin:8px 0;"><input id="adminRecurringInfinite" type="checkbox" checked> Mantener activa hasta que la desactive</label>
+          </div>
+        </div>
+
+        <button id="sendCoinsButton" class="btn-primary">✨ Confirmar transferencia</button>
       </div>
 
-      <!-- ECONOMÍA: tipo de cambio global -->
       <div class="card">
-        <div class="card-title">
-          <span>📈 Economía</span>
+        <div class="card-title"><span>🗓️ Transferencias programadas</span><span id="scheduleCount" style="font-size:12px;color:var(--muted);">0</span></div>
+        <div id="scheduledTransfersList"><div class="empty-state">No hay transferencias programadas.</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>📚 Motivos guardados</span></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Cada motivo nuevo que escribas queda guardado para reutilizarlo.</p>
+        <div id="savedReasonsList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>📈 Economía avanzada</span><span style="font-size:10px;color:var(--muted);">Visible para la familia</span></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Podés subir o bajar la cotización y decidir si los demás integrantes pueden verla.</p>
+        <label class="field-label">Valor de 1 MC (ARS)</label>
+        <input id="economyRateInput" type="number" min="0.01" step="0.01" class="form-input" placeholder="Ej: 500">
+        <button id="saveEconomyBtn" class="btn-primary" style="background:var(--card);color:var(--primary);border:1px solid var(--primary);">Guardar cotización</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);margin-top:14px;">
+          <span style="font-size:13px;font-weight:700;">👁 Mostrar economía a los integrantes</span>
+          <input id="economyVisibleToggle" type="checkbox" style="width:20px;height:20px;">
         </div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Ajustá cuánto vale 1 Mom Coin en pesos argentinos. Afecta a toda la familia al instante.</p>
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Valor de 1 MC (ARS)</label>
-        <input id="economyRateInput" type="number" min="1" class="form-input" placeholder="Ej: 500">
-        <button id="saveEconomyBtn" class="btn-primary" style="background:var(--card);color:var(--primary);border:1px solid var(--primary);">Guardar nuevo valor</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>📰 Publicar noticia</span><span style="font-size:10px;color:var(--muted);">Solo publicación</span></div>
+        <input id="newsTitleInput" type="text" maxlength="100" class="form-input" placeholder="Título de la noticia">
+        <textarea id="newsBodyInput" class="form-input" maxlength="600" rows="5" placeholder="Escribí la noticia para la familia..." style="resize:vertical;"></textarea>
+        <button id="publishNewsBtn" class="btn-primary">📣 Publicar noticia</button>
+        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
+          <div class="small-muted" style="margin-bottom:8px;">Noticias publicadas</div>
+          <div id="adminNewsList"><div class="empty-state">Cargando...</div></div>
+        </div>
       </div>
     </section>
 
@@ -1408,12 +1484,6 @@
             <div class="status-dot" id="onesignalDot"></div>
             <span id="onesignalStatusText">Push activo & Sincronizado con Median.co</span>
           </div>
-        </div>
-
-        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:14px;">
-          <h4 style="font-size:14px;font-weight:800;margin-bottom:10px;">🔒 Bloqueo rápido</h4>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Configurá o cambiá tu huella / PIN de respaldo para abrir la app.</p>
-          <button id="reconfigureLockBtn" class="btn-primary" style="padding:10px;font-size:13px;background:var(--card);color:var(--primary);border:1px solid var(--primary);">Reconfigurar bloqueo</button>
         </div>
 
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:14px;">
@@ -1448,6 +1518,18 @@
             <span style="font-size:14px;font-weight:600;">🔊 Sonidos</span>
             <input type="checkbox" id="prefSoundToggle" style="width:20px;height:20px;cursor:pointer;">
           </div>
+          <div id="soundPackRow" style="padding:10px 0;border-top:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+              <span style="font-size:14px;font-weight:600;">🎵 Estilo de sonidos</span>
+              <button id="testSoundPackBtn" type="button" class="mini-action">Probar</button>
+            </div>
+            <select id="soundPackSelect" class="form-input" style="margin:0;">
+              <option value="classic">Clásico</option>
+              <option value="soft">Suave</option>
+              <option value="arcade">Arcade</option>
+              <option value="minimal">Minimal</option>
+            </select>
+          </div>
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--border);">
             <span style="font-size:14px;font-weight:600;">📳 Vibración</span>
             <input type="checkbox" id="prefVibrationToggle" style="width:20px;height:20px;cursor:pointer;">
@@ -1468,6 +1550,13 @@
 
         <div id="settingsAdminShortcut" style="display:none;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);">
           <button id="openAdminFromSettings" class="btn-primary" type="button">👑 Abrir Centro de administración</button>
+        </div>
+
+        <div id="newsPublisherCard" class="card" style="display:none;margin-top:18px;">
+          <div class="card-title"><span>📰 Publicar noticias</span><span style="font-size:10px;color:var(--muted);">Permiso especial</span></div>
+          <input id="publisherNewsTitle" type="text" maxlength="100" class="form-input" placeholder="Título de la noticia">
+          <textarea id="publisherNewsBody" class="form-input" maxlength="600" rows="5" placeholder="Escribí la noticia para la familia..." style="resize:vertical;"></textarea>
+          <button id="publisherPublishNewsBtn" class="btn-primary">📣 Publicar noticia</button>
         </div>
 
         <button id="logoutButton" class="btn-primary" style="margin-top:20px;background:var(--red);">Cerrar sesión</button>
@@ -1517,7 +1606,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, inMemoryPersistence, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { initializeAuth, inMemoryPersistence, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     /* FIREBASE CONFIGURATION */
@@ -1535,14 +1624,12 @@
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'banco-de-mama';
 
     const app = initializeApp(firebaseConfig);
-    // Se usa initializeAuth (en vez de getAuth) con una cadena explícita de
-    // persistencia. getAuth() hace un chequeo automático de "browser
-    // compatibility" pensado para popups/redirects de login social (que esta
-    // app no usa), y ese chequeo falla dentro de WebViews embebidos como el
-    // de Median, mostrando "Incompatible browser" y a veces impidiendo que
-    // la sesión anónima persista. Con initializeAuth evitamos ese chequeo.
+    // Median puede ejecutar la app dentro de un WebView donde IndexedDB o
+    // la persistencia local de Firebase Auth no está disponible. Usamos
+    // memoria para evitar el rechazo "Incompatible browser" durante el login.
+    // La sesión anónima se vuelve a crear al abrir la app.
     const auth = initializeAuth(app, {
-      persistence: [indexedDBLocalPersistence, browserLocalPersistence, inMemoryPersistence]
+      persistence: inMemoryPersistence
     });
     const db = getFirestore(app);
 
@@ -1550,7 +1637,10 @@
     // Economía y se sincroniza en vivo a través de Firestore. El valor 500
     // es solo el default hasta que cargue el doc de configuración.
     let MC_VALUE_ARS = 500;
-    const ADMIN_EMAILS = ["gabyhuchy@hotmail.com", "gabyhuchy@gmail.com"];
+    // Solo las cuentas de Mamá que se definan aquí tienen acceso al panel administrativo completo.
+    // Santi y Gabriela son publicadores de noticias, NO administradores.
+    const ADMIN_EMAILS = ["gabyhuchy@gmail.com"];
+    const NEWS_PUBLISHER_EMAILS = ["santipapel16@gmail.com", "gabyhuchy@gmail.com", "gabyhuchy@hotmail.com"];
 
     const USER_MAP = [
       { name: "Santi", email: "santipapel16@gmail.com", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Santi" },
@@ -1608,7 +1698,7 @@
     // son ajustes de la app en ese teléfono, no del usuario en general.
     const AppPrefs = (function() {
       const KEY = 'momcoin_prefs';
-      const defaults = { sound: true, vibration: true, tts: true, ttsRate: 1 };
+      const defaults = { sound: true, vibration: true, tts: true, ttsRate: 1, soundPack: 'classic' };
       let state = { ...defaults };
       try {
         const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
@@ -1641,6 +1731,10 @@
     let unreadChatCount = 0;
     let activeTabId = "pageHome";
     let isInitialMessageLoad = true;
+    let unsubscribeSchedules = null;
+    let unsubscribeNews = null;
+    let unsubscribeReasons = null;
+    const DEFAULT_REASONS = ["Premio por tarea 🌟","Ayuda en casa 🏠","Buen comportamiento 💚","Cumpleaños 🎂","Ahorro 💰","Objetivo cumplido 🎯","Pago semanal 📅","Pago mensual 🗓️"];
 
     const PushManager = {
       init: function() {
@@ -1671,24 +1765,9 @@
           console.warn("Median OneSignal bridge error:", err && err.message ? err.message : err);
         }
 
-        // 2. OneSignal Web SDK
-        if (window.OneSignalDeferred) {
-          window.OneSignalDeferred.push(async function(OneSignal) {
-            try {
-              if (typeof OneSignal.login === 'function') {
-                await OneSignal.login(email);
-                await OneSignal.User.addTag("user_name", name);
-              }
-            } catch(err) {
-              console.info("OneSignal user set info:", err && err.message ? err.message : err);
-            }
-          });
-        }
-
-        // 3. Solicitar permiso de Notificaciones Web si está permitido
-        if ('Notification' in window && Notification.permission === 'default') {
-          Notification.requestPermission();
-        }
+        // 2. No usamos el OneSignal Web SDK dentro de Median/WebView.
+        // Las notificaciones de la app se gestionan por el bridge nativo.
+        // Esto evita promesas internas del SDK Web que algunos WebViews rechazan.
 
         this.updateUIStatus(true);
       },
@@ -1727,52 +1806,59 @@
 
     PushManager.init();
 
-    // ===== Texto a Voz (Web Speech API) =====
-    // Funciona dentro del WebView de Median en la mayoría de los Android
-    // modernos (usa el motor de TTS del sistema operativo), pero puede
-    // variar según el dispositivo. Se detecta soporte antes de ofrecerlo,
-    // y las voces se cargan de forma asíncrona (requerido en Chromium).
+    // ===== Texto a Voz (Web Speech + Median.co) =====
+    // Median no publica un comando TTS nativo estándar en su Bridge. En la
+    // app Median usamos el Web Speech API del WebView y esperamos a que el
+    // Bridge esté listo para inicializarlo correctamente.
     const TTS = (function() {
       let voices = [];
-      let voicesLoaded = false;
-      const supported = 'speechSynthesis' in window;
-
+      let medianReady = false;
+      const supported = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
       function loadVoices() {
-        if (!supported) return;
-        voices = window.speechSynthesis.getVoices();
-        if (voices.length > 0) voicesLoaded = true;
+        if (supported) voices = window.speechSynthesis.getVoices() || [];
+      }
+      function init() {
+        medianReady = !!(window.median || window.gonative);
+        loadVoices();
       }
       if (supported) {
         loadVoices();
         window.speechSynthesis.onvoiceschanged = loadVoices;
       }
-
       function pickSpanishVoice() {
-        if (!voices.length) return null;
-        return voices.find(v => /es-AR/i.test(v.lang)) ||
-               voices.find(v => /^es/i.test(v.lang)) ||
-               voices[0];
+        return voices.find(v => /es-AR/i.test(v.lang)) || voices.find(v => /^es/i.test(v.lang)) || voices[0] || null;
       }
-
       return {
+        init,
         isSupported: () => supported,
+        isMedian: () => medianReady,
         speak: function(text) {
-          if (!supported || !text) return;
+          if (!text) return;
+          if (!supported) {
+            showToast('🗣️ El TTS no está disponible en este dispositivo. Activá un motor de texto a voz.');
+            return;
+          }
           try {
-            window.speechSynthesis.cancel(); // evitar solapamiento de lecturas
-            const utter = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.cancel();
+            loadVoices();
+            const utter = new SpeechSynthesisUtterance(String(text));
             const voice = pickSpanishVoice();
-            if (voice) utter.voice = voice;
-            utter.lang = voice ? voice.lang : 'es-AR';
-            utter.rate = AppPrefs.get('ttsRate') || 1;
+            if (voice) { utter.voice = voice; utter.lang = voice.lang; }
+            else utter.lang = 'es-AR';
+            utter.rate = Number(AppPrefs.get('ttsRate')) || 1;
+            utter.volume = 1;
             window.speechSynthesis.speak(utter);
-          } catch (e) { console.warn("TTS error:", e); }
+          } catch(e) { console.warn('TTS error:', e); }
         },
-        stop: function() {
-          if (supported) window.speechSynthesis.cancel();
-        }
+        stop: function() { if (supported) window.speechSynthesis.cancel(); }
       };
     })();
+    TTS.init();
+    window.median_library_ready = function() { TTS.init(); loadVoicesForMedian(); };
+    function loadVoicesForMedian() {
+      try { if ('speechSynthesis' in window) { window.speechSynthesis.getVoices(); } } catch(e) {}
+      refreshTtsAvailability();
+    }
 
     // ===== Sistema de sonidos (Web Audio API, sin archivos externos) =====
     const SoundManager = (function() {
@@ -1782,12 +1868,16 @@
           try { ctx = new (window.AudioContext || window.webkitAudioContext)(); }
           catch (e) { return null; }
         }
-        if (ctx.state === 'suspended') { ctx.resume().catch(() => {}); }
+        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
         return ctx;
       }
       function tone(freq, start, duration, type, gainStart, glideTo) {
         const audioCtx = getCtx();
         if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume().then(() => tone(freq, start, duration, type, gainStart, glideTo)).catch(() => {});
+          return;
+        }
         try {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -1795,47 +1885,62 @@
           const t0 = audioCtx.currentTime + start;
           osc.frequency.setValueAtTime(freq, t0);
           if (glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo, t0 + duration);
-          gain.gain.setValueAtTime(gainStart || 0.15, t0);
+          gain.gain.setValueAtTime(gainStart || 0.12, t0);
           gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(t0);
-          osc.stop(t0 + duration + 0.03);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(t0); osc.stop(t0 + duration + 0.03);
         } catch (e) {}
       }
+      function seq(notes) { notes.forEach(n => tone(n[0], n[1], n[2], n[3], n[4], n[5])); }
+      function pack() { return AppPrefs.get('soundPack') || 'classic'; }
+      function play(kind) {
+        if (!AppPrefs.get('sound')) return;
+        const p = pack();
+        const sets = {
+          classic: {
+            tap:[[720,0,.055,'sine',.09]],
+            success:[[523.25,0,.12,'sine',.14],[659.25,.09,.12,'sine',.14],[783.99,.18,.22,'sine',.14]],
+            error:[[220,0,.16,'sawtooth',.10],[164.81,.12,.22,'sawtooth',.09]],
+            coin:[[987.77,0,.08,'triangle',.15],[1318.51,.06,.18,'triangle',.13,1975.53]],
+            notification:[[587.33,0,.15,'sine',.18,880]],
+            message:[[660,0,.07,'sine',.10],[880,.06,.10,'sine',.09]],
+            pin:[[1046.5,0,.05,'sine',.12],[1567.98,.05,.12,'sine',.10]]
+          },
+          soft: {
+            tap:[[520,0,.07,'sine',.06]],
+            success:[[392,0,.15,'sine',.09],[523.25,.12,.15,'sine',.09],[659.25,.24,.24,'sine',.08]],
+            error:[[330,0,.14,'sine',.07],[247,.12,.20,'sine',.06]],
+            coin:[[784,0,.10,'sine',.10],[1046.5,.08,.20,'sine',.08]],
+            notification:[[440,0,.18,'sine',.09],[659.25,.14,.18,'sine',.07]],
+            message:[[523.25,0,.08,'sine',.07],[659.25,.07,.11,'sine',.06]],
+            pin:[[784,0,.06,'sine',.08],[1046.5,.06,.12,'sine',.07]]
+          },
+          arcade: {
+            tap:[[880,0,.045,'square',.055]],
+            success:[[392,0,.07,'square',.07],[659.25,.07,.07,'square',.07],[1046.5,.14,.16,'triangle',.08]],
+            error:[[180,0,.10,'square',.06],[120,.10,.18,'square',.05]],
+            coin:[[659.25,0,.06,'square',.09],[1046.5,.06,.08,'square',.08],[1568,.14,.12,'triangle',.08]],
+            notification:[[523.25,0,.08,'square',.07],[783.99,.08,.12,'square',.06]],
+            message:[[659.25,0,.05,'square',.06],[987.77,.05,.08,'square',.06]],
+            pin:[[1046.5,0,.045,'square',.08],[1568,.05,.09,'square',.07]]
+          },
+          minimal: {
+            tap:[[880,0,.05,'sine',.055]],
+            success:[[659.25,0,.13,'sine',.08]],
+            error:[[196,0,.16,'sine',.07]],
+            coin:[[1046.5,0,.14,'sine',.09]],
+            notification:[[698.46,0,.14,'sine',.07]],
+            message:[[783.99,0,.09,'sine',.06]],
+            pin:[[1046.5,0,.09,'sine',.07]]
+          }
+        };
+        seq((sets[p] || sets.classic)[kind] || sets.classic.tap);
+      }
       return {
-        unlock: function() { getCtx(); },
-        tap: function() { if (AppPrefs.get('sound')) tone(720, 0, 0.05, 'sine', 0.07); },
-        success: function() {
-          if (!AppPrefs.get('sound')) return;
-          tone(523.25, 0, 0.12, 'sine', 0.14);
-          tone(659.25, 0.09, 0.12, 'sine', 0.14);
-          tone(783.99, 0.18, 0.22, 'sine', 0.14);
-        },
-        error: function() {
-          if (!AppPrefs.get('sound')) return;
-          tone(220, 0, 0.16, 'sawtooth', 0.10);
-          tone(164.81, 0.12, 0.22, 'sawtooth', 0.09);
-        },
-        coin: function() {
-          if (!AppPrefs.get('sound')) return;
-          tone(987.77, 0, 0.08, 'triangle', 0.15);
-          tone(1318.51, 0.06, 0.18, 'triangle', 0.13, 1975.53);
-        },
-        notification: function() {
-          if (!AppPrefs.get('sound')) return;
-          tone(587.33, 0, 0.15, 'sine', 0.18, 880);
-        },
-        message: function() {
-          if (!AppPrefs.get('sound')) return;
-          tone(660, 0, 0.07, 'sine', 0.10);
-          tone(880, 0.06, 0.10, 'sine', 0.09);
-        },
-        pin: function() {
-          if (!AppPrefs.get('sound')) return;
-          tone(1046.5, 0, 0.05, 'sine', 0.12);
-          tone(1567.98, 0.05, 0.12, 'sine', 0.10);
-        }
+        unlock: function() { const c=getCtx(); if(c && c.state==='suspended') c.resume().catch(()=>{}); },
+        tap:()=>play('tap'), success:()=>play('success'), error:()=>play('error'), coin:()=>play('coin'),
+        notification:()=>play('notification'), message:()=>play('message'), pin:()=>play('pin'),
+        packTest:()=>play('success'), setPack: packName=>AppPrefs.set('soundPack',packName)
       };
     })();
 
@@ -1845,15 +1950,17 @@
       document.addEventListener(evt, () => SoundManager.unlock(), { once: true, passive: true });
     });
 
-    // Sonido + vibración de "tap" en botones y acciones táctiles principales
+    // Sonido + vibración de tap. En WebViews móviles conviene desbloquear
+    // el AudioContext en el MISMO gesto que dispara el sonido.
     document.addEventListener('click', (e) => {
-      if (e.target.closest('.btn-primary, .account-button, .nav-tab, .action-item')) {
-        SoundManager.tap();
-        if (navigator.vibrate && AppPrefs.get('vibration')) {
-          try { navigator.vibrate(15); } catch (err) {}
-        }
+      const target = e.target.closest('.btn-primary, .account-button, .nav-tab, .action-item, .quick-action, button, [role=button]');
+      if (!target) return;
+      SoundManager.unlock();
+      SoundManager.tap();
+      if (navigator.vibrate && AppPrefs.get('vibration')) {
+        try { navigator.vibrate(15); } catch (err) {}
       }
-    });
+    }, true);
 
     // ===== Centro de notificaciones en vivo =====
     // Muestra un banner en pantalla + sonido + vibración, sin importar si
@@ -1961,22 +2068,35 @@
     // Inicializar Auth al cargar
     initAuth();
 
-    onAuthStateChanged(auth, async (user) => {
+    let appLoadStartedFromAuth = false;
+    onAuthStateChanged(auth, (user) => {
       currentUser = user;
       if (!_authResolved) {
         _authResolved = true;
         _authReadyResolve(user);
       }
-      if (user) {
+      if (user && !appLoadStartedFromAuth) {
         const savedAccount = localStorage.getItem("momcoin_logged_user");
         if (savedAccount) {
-          const parsed = JSON.parse(savedAccount);
-          selectedEmail = parsed.email;
-          selectedName = parsed.name;
-          currentUser = user;
-          await loadUserApp(selectedEmail, selectedName);
+          appLoadStartedFromAuth = true;
+          try {
+            const parsed = JSON.parse(savedAccount);
+            selectedEmail = parsed.email;
+            selectedName = parsed.name;
+            currentUser = user;
+            Promise.resolve(loadUserApp(selectedEmail, selectedName)).catch((err) => {
+              appLoadStartedFromAuth = false;
+              console.error("Error cargando la app desde Auth:", err && (err.stack || err.message || err.code || JSON.stringify(err)) || err);
+              showToast("⚠️ No se pudo cargar la cuenta. Revisá la conexión.");
+            });
+          } catch (err) {
+            appLoadStartedFromAuth = false;
+            console.error("Error leyendo la cuenta guardada:", err);
+          }
         }
       }
+    }, (error) => {
+      console.error("Error del listener de Firebase Auth:", error);
     });
 
     // Por si onAuthStateChanged tardara demasiado (ej. red muy lenta dentro
@@ -1997,42 +2117,16 @@
         selectedName = btn.getAttribute("data-name");
         selectedEmail = btn.getAttribute("data-email");
         document.getElementById("accountSelection").style.display = "none";
-
-        if (isWebAuthnSupported() && hasBiometricRegistered(selectedEmail)) {
-          document.getElementById("biometricAccountName").textContent = `Hola, ${selectedName}`;
-          document.getElementById("biometricScreen").style.display = "block";
-        } else {
-          showPasswordScreen();
-        }
+        showPasswordScreen();
       });
     });
 
     function showPasswordScreen() {
-      document.getElementById("biometricScreen").style.display = "none";
       document.getElementById("passwordScreen").style.display = "block";
       document.getElementById("passwordAccountName").textContent = `Hola, ${selectedName}`;
       document.getElementById("standardPasswordInput").value = "";
       document.getElementById("standardPasswordInput").focus();
     }
-
-    document.getElementById("biometricUnlockBtn").addEventListener("click", async () => {
-      try {
-        await authenticateBiometric(selectedEmail);
-        SoundManager.success();
-        localStorage.setItem("momcoin_logged_user", JSON.stringify({ email: selectedEmail, name: selectedName }));
-        await loadUserApp(selectedEmail, selectedName);
-      } catch (err) {
-        SoundManager.error();
-        showToast("No se reconoció la huella. Probá de nuevo o usá tu PIN.");
-      }
-    });
-
-    document.getElementById("useBiometricPinInstead").addEventListener("click", showPasswordScreen);
-
-    document.getElementById("backAccountsFromBiometric").addEventListener("click", () => {
-      document.getElementById("biometricScreen").style.display = "none";
-      document.getElementById("accountSelection").style.display = "block";
-    });
 
     document.getElementById("backAccounts").addEventListener("click", () => {
       document.getElementById("passwordScreen").style.display = "none";
@@ -2075,109 +2169,8 @@
       localStorage.setItem("momcoin_logged_user", JSON.stringify({ email: selectedEmail, name: selectedName }));
       await loadUserApp(selectedEmail, selectedName);
 
-      // Ofrecer activar huella si el dispositivo la soporta y esta cuenta
-      // todavía no la tiene configurada acá.
-      if (isWebAuthnSupported() && !hasBiometricRegistered(selectedEmail)) {
-        setTimeout(() => offerBiometricSetup(selectedEmail, selectedName), 900);
-      }
     }
 
-    function offerBiometricSetup(email, name) {
-      const overlay = document.createElement('div');
-      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99997;display:flex;align-items:center;justify-content:center;padding:24px;';
-      overlay.innerHTML = `
-        <div style="background:var(--card);border-radius:20px;padding:24px;max-width:340px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.3);">
-          <div style="font-size:40px;margin-bottom:10px;">👆</div>
-          <h3 style="font-size:16px;margin-bottom:8px;">¿Activar huella digital?</h3>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">La próxima vez vas a poder entrar más rápido, sin escribir el PIN. Podés desactivarla cuando quieras desde Ajustes.</p>
-          <button id="biometricOfferYes" class="btn-primary" style="margin-bottom:8px;">Sí, activar</button>
-          <button id="biometricOfferNo" class="btn-primary" style="background:var(--bg);color:var(--text);border:1px solid var(--border);">Ahora no</button>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-      overlay.querySelector('#biometricOfferNo').addEventListener('click', () => overlay.remove());
-      overlay.querySelector('#biometricOfferYes').addEventListener('click', async () => {
-        try {
-          await registerBiometric(email, name);
-          SoundManager.success();
-          showToast("👆 Huella activada");
-        } catch (err) {
-          showToast("No se pudo activar la huella en este dispositivo");
-        }
-        overlay.remove();
-      });
-    }
-
-    // ===== Autenticación con huella digital (WebAuthn) =====
-    // Esta app no tiene backend propio, así que no hay forma de VERIFICAR
-    // una firma criptográfica contra un servidor. Lo que sí hacemos es usar
-    // WebAuthn como una "traba local del dispositivo": se crea una
-    // credencial ligada al sensor de huella/rostro del teléfono, y en cada
-    // apertura se le pide al sistema operativo que la confirme. Si el
-    // sensor no reconoce a la persona, la promesa de WebAuthn rechaza y no
-    // se entra. El PIN sigue existiendo como método de respaldo y para
-    // restablecer la huella si el teléfono cambia o falla el sensor.
-    function isWebAuthnSupported() {
-      return !!(window.PublicKeyCredential && navigator.credentials && navigator.credentials.create);
-    }
-
-    function randomChallenge() {
-      const arr = new Uint8Array(32);
-      crypto.getRandomValues(arr);
-      return arr;
-    }
-
-    function b64encode(buf) {
-      return btoa(String.fromCharCode(...new Uint8Array(buf)));
-    }
-    function b64decode(str) {
-      return Uint8Array.from(atob(str), c => c.charCodeAt(0)).buffer;
-    }
-
-    function biometricKey(email) {
-      return `momcoin_biometric_${email}`;
-    }
-
-    function hasBiometricRegistered(email) {
-      return !!localStorage.getItem(biometricKey(email));
-    }
-
-    function removeBiometric(email) {
-      localStorage.removeItem(biometricKey(email));
-    }
-
-    async function registerBiometric(email, name) {
-      const cred = await navigator.credentials.create({
-        publicKey: {
-          challenge: randomChallenge(),
-          rp: { name: "Mom Coin Wallet" },
-          user: {
-            id: new TextEncoder().encode(email),
-            name: email,
-            displayName: name || email
-          },
-          pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-          authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-          timeout: 60000
-        }
-      });
-      localStorage.setItem(biometricKey(email), b64encode(cred.rawId));
-      return true;
-    }
-
-    async function authenticateBiometric(email) {
-      const credId = localStorage.getItem(biometricKey(email));
-      if (!credId) throw new Error('no-credential');
-      await navigator.credentials.get({
-        publicKey: {
-          challenge: randomChallenge(),
-          allowCredentials: [{ id: b64decode(credId), type: 'public-key' }],
-          userVerification: 'required',
-          timeout: 60000
-        }
-      });
-      return true;
-    }
 
     // ===== Bloqueo de botones mientras se procesa una acción =====
     // Evita el doble-toque (ej: transferir dos veces sin querer). Deshabilita
@@ -2196,6 +2189,9 @@
         button.innerHTML = '<span class="btn-spinner"></span> Procesando...';
         try {
           await asyncFn(...args);
+        } catch (err) {
+          console.error("Error en la acción:", err);
+          showToast("⚠️ No se pudo completar la acción", "error");
         } finally {
           button.dataset.locked = 'false';
           button.disabled = false;
@@ -2207,299 +2203,100 @@
       };
     }
 
-    // ===== Bloqueo rápido de la app (huella / PIN local del dispositivo) =====
-    // IMPORTANTE (para quien lea el código): esto usa la Web Authentication
-    // API (WebAuthn) como una forma de "candado de pantalla" local del
-    // celular — NO hay servidor que verifique la firma criptográfica contra
-    // una clave pública guardada, porque esta app no tiene backend propio.
-    // Es decir: es un gate de conveniencia a nivel de UI, del mismo nivel de
-    // seguridad que un patrón de desbloqueo de pantalla, no una capa de
-    // autenticación remota adicional. El PIN de respaldo se guarda hasheado
-    // (SHA-256) en localStorage de ese dispositivo, nunca en texto plano.
-    const AppLock = (function() {
-      function cfgKey(email) { return `momcoin_lock_${email}`; }
 
-      function getConfig(email) {
-        try { return JSON.parse(localStorage.getItem(cfgKey(email)) || 'null'); }
-        catch (e) { return null; }
-      }
-      function saveConfig(email, cfg) {
-        localStorage.setItem(cfgKey(email), JSON.stringify(cfg));
-      }
-
-      async function sha256Hex(text) {
-        const enc = new TextEncoder().encode(text);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', enc);
-        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-      }
-
-      function bufToB64(buf) {
-        return btoa(String.fromCharCode(...new Uint8Array(buf)));
-      }
-      function b64ToBuf(b64) {
-        return Uint8Array.from(atob(b64), c => c.charCodeAt(0)).buffer;
-      }
-
-      async function biometricSupported() {
-        return !!(window.PublicKeyCredential &&
-          typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function' &&
-          await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());
-      }
-
-      async function enrollBiometric(email) {
-        const credential = await navigator.credentials.create({
-          publicKey: {
-            challenge: crypto.getRandomValues(new Uint8Array(32)),
-            rp: { name: "Mom Coin Wallet" },
-            user: {
-              id: new TextEncoder().encode(email),
-              name: email,
-              displayName: email
-            },
-            pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-            timeout: 60000
-          }
-        });
-        return bufToB64(credential.rawId);
-      }
-
-      async function verifyBiometric(email) {
-        const cfg = getConfig(email);
-        if (!cfg || !cfg.credentialId) return false;
-        try {
-          const assertion = await navigator.credentials.get({
-            publicKey: {
-              challenge: crypto.getRandomValues(new Uint8Array(32)),
-              allowCredentials: [{ id: b64ToBuf(cfg.credentialId), type: 'public-key' }],
-              userVerification: 'required',
-              timeout: 60000
-            }
-          });
-          return !!assertion;
-        } catch (e) {
-          return false;
-        }
-      }
-
-      function clearConfig(email) {
-        localStorage.removeItem(cfgKey(email));
-      }
-
-      return { getConfig, saveConfig, clearConfig, sha256Hex, biometricSupported, enrollBiometric, verifyBiometric };
-    })();
-
-    let pendingUnlockEmail = null;
-
-    async function showAppLockSetupIfNeeded(email) {
-      const existing = AppLock.getConfig(email);
-      if (existing) return; // ya configurado (o el usuario dijo "ahora no")
-      await forceShowAppLockSetup(email);
-    }
-
-    async function forceShowAppLockSetup(email) {
-      const supported = await AppLock.biometricSupported();
-      document.getElementById("setupBiometricBtn").style.display = supported ? "block" : "none";
-      document.getElementById("setupPinCreateArea").style.display = "none";
-      document.getElementById("setupPinInput1").value = "";
-      document.getElementById("setupPinInput2").value = "";
-      document.getElementById("appLockSetupScreen").style.display = "flex";
-    }
-
-    function showAppLockScreen(email) {
-      pendingUnlockEmail = email;
-      const cfg = AppLock.getConfig(email);
-      document.getElementById("app").style.display = "none";
-      document.getElementById("bottomNav").style.display = "none";
-      const screen = document.getElementById("appLockScreen");
-      screen.style.display = "flex";
-      const bioBtn = document.getElementById("appLockBiometricBtn");
-      const pinArea = document.getElementById("appLockPinArea");
-      const usePinLink = document.getElementById("appLockUsePinInstead");
-
-      if (cfg && cfg.biometric) {
-        bioBtn.style.display = "block";
-        pinArea.style.display = "none";
-        usePinLink.style.display = cfg.pinHash ? "block" : "none";
-        document.getElementById("appLockSubtitle").textContent = "Desbloqueá con tu huella para continuar";
-        attemptBiometricUnlock(email);
-      } else {
-        bioBtn.style.display = "none";
-        pinArea.style.display = "block";
-        usePinLink.style.display = "none";
-        document.getElementById("appLockSubtitle").textContent = "Ingresá tu PIN de respaldo";
-      }
-    }
-
-    function hideAppLockScreen() {
-      document.getElementById("appLockScreen").style.display = "none";
-      document.getElementById("app").style.display = "block";
-      document.getElementById("bottomNav").style.display = "flex";
-      pendingUnlockEmail = null;
-    }
-
-    async function attemptBiometricUnlock(email) {
-      const ok = await AppLock.verifyBiometric(email);
-      if (ok) {
-        SoundManager.success();
-        hideAppLockScreen();
-      }
-      // Si falla, se queda en pantalla de bloqueo: el usuario puede
-      // reintentar tocando el botón o pasarse a PIN de respaldo.
-    }
-
-    document.getElementById("appLockBiometricBtn").addEventListener("click", () => {
-      if (pendingUnlockEmail) attemptBiometricUnlock(pendingUnlockEmail);
-    });
-    document.getElementById("appLockUsePinInstead").addEventListener("click", () => {
-      document.getElementById("appLockPinArea").style.display = "block";
-      document.getElementById("appLockBiometricBtn").style.display = "none";
-      document.getElementById("appLockUsePinInstead").style.display = "none";
-    });
-    document.getElementById("appLockPinBtn").addEventListener("click", runLocked(document.getElementById("appLockPinBtn"), async () => {
-      if (!pendingUnlockEmail) return;
-      const cfg = AppLock.getConfig(pendingUnlockEmail);
-      const entered = document.getElementById("appLockPinInput").value.trim();
-      const hash = await AppLock.sha256Hex(entered);
-      if (cfg && cfg.pinHash === hash) {
-        document.getElementById("appLockPinInput").value = "";
-        SoundManager.success();
-        hideAppLockScreen();
-      } else {
-        SoundManager.error();
-        if (navigator.vibrate && AppPrefs.get('vibration')) navigator.vibrate([80, 40, 80]);
-        showToast("PIN incorrecto");
-      }
-    }));
-
-    // ===== Configuración inicial de bloqueo =====
-    document.getElementById("reconfigureLockBtn").addEventListener("click", () => {
-      AppLock.clearConfig(selectedEmail);
-      forceShowAppLockSetup(selectedEmail);
-    });
-
-    document.getElementById("setupSkipBtn").addEventListener("click", () => {
-      AppLock.saveConfig(selectedEmail, { biometric: false, pinHash: null, skipped: true });
-      document.getElementById("appLockSetupScreen").style.display = "none";
-    });
-
-    document.getElementById("setupPinOnlyBtn").addEventListener("click", () => {
-      document.getElementById("setupPinCreateArea").dataset.mode = "pinonly";
-      document.getElementById("setupPinCreateArea").style.display = "block";
-    });
-
-    document.getElementById("setupBiometricBtn").addEventListener("click", async () => {
-      try {
-        const credentialId = await AppLock.enrollBiometric(selectedEmail);
-        document.getElementById("setupPinCreateArea").dataset.mode = "biometric";
-        document.getElementById("setupPinCreateArea").dataset.credentialId = credentialId;
-        document.getElementById("setupPinCreateArea").style.display = "block";
-        showToast("👆 Huella registrada. Ahora creá un PIN de respaldo.");
-      } catch (err) {
-        showToast("No se pudo configurar la huella en este dispositivo");
-      }
-    });
-
-    document.getElementById("setupPinConfirmBtn").addEventListener("click", runLocked(document.getElementById("setupPinConfirmBtn"), async () => {
-      const p1 = document.getElementById("setupPinInput1").value.trim();
-      const p2 = document.getElementById("setupPinInput2").value.trim();
-      if (p1.length < 4) { showToast("El PIN debe tener al menos 4 dígitos"); return; }
-      if (p1 !== p2) { showToast("Los PIN no coinciden"); return; }
-
-      const area = document.getElementById("setupPinCreateArea");
-      const mode = area.dataset.mode;
-      const pinHash = await AppLock.sha256Hex(p1);
-
-      AppLock.saveConfig(selectedEmail, {
-        biometric: mode === "biometric",
-        credentialId: mode === "biometric" ? area.dataset.credentialId : null,
-        pinHash: pinHash
-      });
-
-      document.getElementById("appLockSetupScreen").style.display = "none";
-      document.getElementById("setupPinInput1").value = "";
-      document.getElementById("setupPinInput2").value = "";
-      area.style.display = "none";
-      showToast("🔒 Bloqueo configurado con éxito");
-    }));
-
+    // Genera los últimos 4 dígitos del número virtual de la tarjeta a partir del email.
+    // Se mantiene determinista para que el mismo usuario vea siempre los mismos dígitos.
     function generateCardDigitsFromEmail(email) {
       let hash = 0;
-      for (let i = 0; i < email.length; i++) {
-        hash = (hash * 31 + email.charCodeAt(i)) >>> 0;
+      const value = String(email || '');
+      for (let i = 0; i < value.length; i++) {
+        hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
       }
       return String(hash % 10000).padStart(4, '0');
     }
 
     async function loadUserApp(email, name) {
-      // Esperar a que Firebase Auth confirme sesión (o falle) antes de abrir
-      // listeners de Firestore, para no repetir la condición de carrera.
-      await authReady;
-
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("app").style.display = "block";
-      document.getElementById("bottomNav").style.display = "flex";
-
-      const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
-
-      // Ajustar UI según perfil
-      const userObj = USER_MAP.find(u => u.email === email) || { avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}` };
-      
-      document.getElementById("headerName").textContent = name;
-      document.getElementById("headerAvatar").src = userObj.avatar;
-      document.getElementById("profileName").textContent = name;
-      document.getElementById("profileEmail").textContent = email;
-      document.getElementById("profileAvatar").src = userObj.avatar;
-      document.getElementById("roleBadge").textContent = isAdmin ? "ADMINISTRADORA 👑" : "INTEGRANTE 👤";
-      document.getElementById("headerRole").textContent = isAdmin ? "Banco Oficial (Admin)" : "Mom Coin Wallet";
-      document.getElementById("homeGreetingName").textContent = name;
-      document.getElementById("adminShortcut").style.display = isAdmin ? "flex" : "none";
-      document.getElementById("settingsAdminShortcut").style.display = isAdmin ? "block" : "none";
-
-      // Personalizar la "tarjeta" con nombre del titular y un número
-      // pseudo-aleatorio pero fijo (determinado por el email, así siempre
-      // es el mismo número para la misma cuenta).
-      document.getElementById("cardHolderName").textContent = name.toUpperCase();
-      const cardDigits = generateCardDigitsFromEmail(email);
-      document.getElementById("cardMaskedNumber").textContent = `•••• •••• •••• ${cardDigits}`;
-
-      if (isAdmin) {
-        document.getElementById("tabAdminNav").style.display = "flex";
-        populateAdminRecipients();
-        setupFamilyBalancesListener();
-      } else {
-        document.getElementById("tabAdminNav").style.display = "none";
-        setupFamilyShareListener(email);
+      // Esta función no debe rechazar por un componente secundario. En WebViews
+      // un rechazo de cualquier listener/bridge puede aparecer solamente como {}
+      // en la consola de Median. Capturamos cada etapa por separado.
+      try { await authReady; } catch (e) {
+        console.warn("AuthReady falló, continuando en modo local:", e && (e.message || e.code) || e);
       }
 
-      // Economía (tipo de cambio) es visible/afecta a todos
-      setupEconomyListener(isAdmin);
+      const safe = (label, fn) => {
+        try {
+          const result = fn();
+          if (result && typeof result.catch === 'function') {
+            result.catch(err => console.error(label + " (async):", err && (err.stack || err.message || err.code) || err));
+          }
+          return result;
+        } catch (err) {
+          console.error(label + ":", err && (err.stack || err.message || err.code) || err);
+          return null;
+        }
+      };
 
-      // Sincronizar con OneSignal y Median.co
-      PushManager.syncUser(email, name);
+      try {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        document.getElementById("bottomNav").style.display = "flex";
 
-      // Cargar lista de destinatarios para transferencias
-      populateTransferRecipients(email);
+        const normalizedEmail = (email || '').toLowerCase();
+        const isAdmin = ADMIN_EMAILS.includes(normalizedEmail);
+        const canPublishNews = NEWS_PUBLISHER_EMAILS.includes(normalizedEmail);
+        const userObj = USER_MAP.find(u => u.email === email) || { avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}` };
 
-      // Iniciar escuchadores de Firestore
-      setupUserDataListener(email, name);
-      setupTransactionsListener(email);
-      setupWithdrawalsListener(email, isAdmin);
-      setupChatListener();
+        const setText = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=value; };
+        const setSrc = (id, value) => { const el=document.getElementById(id); if(el) el.src=value; };
+        const setDisplay = (id, value) => { const el=document.getElementById(id); if(el) el.style.display=value; };
+        setText("headerName", name); setSrc("headerAvatar", userObj.avatar);
+        setText("profileName", name); setText("profileEmail", email); setSrc("profileAvatar", userObj.avatar);
+        setText("roleBadge", isAdmin ? "ADMINISTRADORA 👑" : (canPublishNews ? "PUBLICADOR/A DE NOTICIAS 📰" : "INTEGRANTE 👤"));
+        setText("headerRole", isAdmin ? "Banco Oficial (Admin)" : (canPublishNews ? "Mom Coin Wallet · Noticias" : "Mom Coin Wallet"));
+        setText("homeGreetingName", name);
+        setDisplay("adminShortcut", isAdmin ? "flex" : "none");
+        setDisplay("settingsAdminShortcut", isAdmin ? "block" : "none");
+        const publisherCard = document.getElementById('newsPublisherCard');
+        if (publisherCard) publisherCard.style.display = canPublishNews ? 'block' : 'none';
+        setText("cardHolderName", (name || '').toUpperCase());
+        const cardDigits = generateCardDigitsFromEmail(email);
+        setText("cardMaskedNumber", `•••• •••• •••• ${cardDigits}`);
 
-      // Bloqueo rápido (huella/PIN): pedir configuración la primera vez, o
-      // exigir desbloqueo en cada apertura de la app si ya está activo.
-      const lockCfg = AppLock.getConfig(email);
-      if (!lockCfg) {
-        showAppLockSetupIfNeeded(email);
-      } else if (!lockCfg.skipped && (lockCfg.biometric || lockCfg.pinHash)) {
-        showAppLockScreen(email);
+        if (isAdmin) {
+          safe("Admin: populateAdminRecipients", populateAdminRecipients);
+          safe("Admin: setupFamilyBalancesListener", setupFamilyBalancesListener);
+          safe("Admin: setupScheduledTransfersListener", setupScheduledTransfersListener);
+          safe("Admin: loadReasons", () => loadReasons());
+          setDisplay("tabAdminNav", "flex");
+        } else {
+          setDisplay("tabAdminNav", "none");
+          safe("setupFamilyShareListener", () => setupFamilyShareListener(email));
+        }
+
+        safe("setupEconomyListener", () => setupEconomyListener(isAdmin));
+        safe("setupNewsListener", () => setupNewsListener(isAdmin, canPublishNews));
+        if (isAdmin) {
+          safe("processDueSchedules", () => processDueSchedules());
+          safe("processDueWithdrawals", () => processDueWithdrawals());
+        }
+
+        // Median/OneSignal: nunca bloquea la carga de la app.
+        safe("PushManager.syncUser", () => PushManager.syncUser(email, name));
+        safe("populateTransferRecipients", () => populateTransferRecipients(email));
+        safe("setupUserDataListener", () => setupUserDataListener(email, name));
+        safe("setupTransactionsListener", () => setupTransactionsListener(email));
+        safe("setupWithdrawalsListener", () => setupWithdrawalsListener(email, isAdmin));
+        safe("setupChatListener", () => setupChatListener());
+      } catch (err) {
+        // No propagamos el rechazo hacia onAuthStateChanged. Mostramos detalles útiles.
+        console.error("Error interno cargando la app:", err && (err.stack || err.message || err.code) || err);
+        showToast("⚠️ La cuenta abrió, pero una función no pudo cargarse.", "error");
       }
     }
 
     function populateAdminRecipients() {
       const select = document.getElementById("recipientEmail");
-      select.innerHTML = '<option value="">Seleccionar destinatario</option>' +
+      select.innerHTML = '<option value="">Seleccionar destinatario</option><option value="__ALL__">👨‍👩‍👧 Todos los usuarios</option>' +
         USER_MAP.map(u => `<option value="${u.email}">${u.name}${u.email === selectedEmail ? ' (vos)' : ''}</option>`).join('');
     }
 
@@ -2511,9 +2308,16 @@
         if (snap.exists() && typeof snap.data().mcValueArs === 'number') {
           MC_VALUE_ARS = snap.data().mcValueArs;
           updateHomeSummary();
+          const visible = snap.data().visibleToFamily === true;
+          const publicCard=document.getElementById('publicEconomyCard');
+          if(publicCard) publicCard.style.display=(isAdmin || visible)?'block':'none';
+          const rateEl=document.getElementById('publicEconomyRate'); if(rateEl) rateEl.textContent=`$${MC_VALUE_ARS.toLocaleString('es-AR')}`;
+          const ex=document.getElementById('publicEconomyExample'); if(ex) ex.textContent=`$${MC_VALUE_ARS.toLocaleString('es-AR')}`;
           if (isAdmin) {
             const input = document.getElementById("economyRateInput");
             if (input && document.activeElement !== input) input.value = MC_VALUE_ARS;
+            const toggle=document.getElementById('economyVisibleToggle');
+            if(toggle && document.activeElement!==toggle) toggle.checked=visible;
           }
         }
       }, () => {});
@@ -3105,7 +2909,7 @@
       }
     }));
 
-    /* PANEL MAMÁ (ADMIN) - SUBIR / BAJAR MOM COINS */
+    /* PANEL MAMÁ (ADMIN) - TRANSFERENCIAS INSTANTÁNEAS Y PROGRAMADAS */
     let adminAdjustMode = 'credit';
     document.getElementById("modeCreditBtn").addEventListener("click", () => {
       adminAdjustMode = 'credit';
@@ -3118,113 +2922,327 @@
       document.getElementById("modeCreditBtn").classList.remove("active");
     });
 
-    document.getElementById("sendCoinsButton").addEventListener("click", runLocked(document.getElementById("sendCoinsButton"), async () => {
-      const recipientEmail = document.getElementById("recipientEmail").value;
-      const rawAmount = parseFloat(document.getElementById("sendAmount").value);
-      const reason = document.getElementById("sendReason").value.trim();
+    function selectedAdminRecipients() {
+      const value = document.getElementById("recipientEmail").value;
+      if (value === "__ALL__") return USER_MAP.map(u => u.email);
+      return value ? [value] : [];
+    }
 
-      if (!recipientEmail || isNaN(rawAmount) || rawAmount <= 0) {
-        showToast("Completá todos los campos correctamente");
-        return;
+    function localDateFromInput(value) {
+      if (!value) return new Date();
+      const [y,m,d] = value.split('-').map(Number);
+      return new Date(y, m-1, d, 12, 0, 0);
+    }
+
+    function clampDay(year, monthIndex, day) {
+      return Math.min(day, new Date(year, monthIndex + 1, 0).getDate());
+    }
+
+    function computeNextRun(schedule, afterDate = new Date()) {
+      const base = new Date(afterDate);
+      base.setHours(12,0,0,0);
+      const freq = schedule.frequency;
+      if (freq === 'daily') {
+        const d = new Date(base); d.setDate(d.getDate()+1); return d;
       }
+      if (freq === 'weekly') {
+        const target = Number(schedule.weekday ?? 1);
+        const d = new Date(base);
+        let delta = (target - d.getDay() + 7) % 7; if (delta === 0) delta = 7;
+        d.setDate(d.getDate()+delta); return d;
+      }
+      if (freq === 'monthly') {
+        let y = base.getFullYear(), m = base.getMonth()+1;
+        const day = Number(schedule.dayOfMonth || 1);
+        if (m > 11) { y++; m = 0; }
+        return new Date(y,m,clampDay(y,m,day),12,0,0);
+      }
+      let y = base.getFullYear()+1, m = Number(schedule.month || 1)-1, day = Number(schedule.dayOfMonth || 1);
+      return new Date(y,m,clampDay(y,m,day),12,0,0);
+    }
 
-      const isDebit = adminAdjustMode === 'debit';
-      const signedAmount = isDebit ? -rawAmount : rawAmount;
-      const recipientObj = USER_MAP.find(u => u.email === recipientEmail);
-      const recipientName = recipientObj ? recipientObj.name : "Integrante";
+    function formatScheduleFrequency(s) {
+      return s.frequency === 'daily' ? 'Cada día' : s.frequency === 'weekly' ? `Cada semana · ${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][Number(s.weekday)]}` : s.frequency === 'monthly' ? `Cada mes · día ${s.dayOfMonth}` : `Cada año · ${s.dayOfMonth}/${s.month}`;
+    }
 
-      try {
+    async function executeAdminTransferBatch(recipients, amount, reason, direction='credit', metadata={}) {
+      const isDebit = direction === 'debit';
+      for (const recipientEmail of recipients) {
+        const recipientObj = USER_MAP.find(u => u.email === recipientEmail);
+        const recipientName = recipientObj ? recipientObj.name : "Integrante";
         const recipientDocId = recipientEmail.replace(/\./g, '_');
         const recipientRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', recipientDocId);
-
+        const txRef = doc(db, 'artifacts', appId, 'public', 'data', 'transactions', `admin_${Date.now()}_${Math.random().toString(36).slice(2,8)}`);
         await runTransaction(db, async (transaction) => {
-          const recipientSnap = await transaction.get(recipientRef);
-          const currentBal = recipientSnap.exists() ? (recipientSnap.data().balance || 0) : 0;
-          const newBal = Math.max(0, currentBal + signedAmount); // nunca queda en negativo
-
-          if (recipientSnap.exists()) {
-            transaction.update(recipientRef, { balance: newBal });
-          } else {
-            transaction.set(recipientRef, { name: recipientName, email: recipientEmail, balance: Math.max(0, signedAmount) });
-          }
+          const snap = await transaction.get(recipientRef);
+          const currentBal = snap.exists() ? Number(snap.data().balance || 0) : 0;
+          const newBal = isDebit ? Math.max(0, currentBal - amount) : currentBal + amount;
+          if (snap.exists()) transaction.update(recipientRef, { balance: newBal });
+          else transaction.set(recipientRef, { name: recipientName, email: recipientEmail, balance: newBal, balanceVisible:false, createdAt:serverTimestamp() });
+          transaction.set(txRef, {
+            type: isDebit ? 'debit' : 'credit',
+            userEmail: recipientEmail, userName: recipientName,
+            senderEmail: selectedEmail, senderName: selectedName,
+            amount, reason: reason || (isDebit ? "Ajuste de Mamá" : "Recarga de Mamá 🌟"),
+            scheduled: !!metadata.scheduled, scheduleId: metadata.scheduleId || null,
+            timestamp: serverTimestamp()
+          });
         });
-
-        // Guardar movimiento
-        const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
-        await addDoc(txCol, {
-          type: isDebit ? 'debit' : 'credit',
-          userEmail: recipientEmail,
-          userName: recipientName,
-          senderEmail: selectedEmail,
-          senderName: selectedName,
-          amount: rawAmount,
-          reason: reason || (isDebit ? "Ajuste de Mamá" : "Recarga de Mamá 🌟"),
-          timestamp: serverTimestamp()
-        });
-
-        document.getElementById("sendAmount").value = "";
-        document.getElementById("sendReason").value = "";
-        SoundManager.coin();
-        showToast(isDebit ? `⬇️ Le bajaste ${rawAmount} MC a ${recipientName}` : `✨ Acreditaste ${rawAmount} MC a ${recipientName}`);
-        if (recipientEmail !== selectedEmail) switchTab("pageHome");
-
-      } catch (err) {
-        showToast("Error al ajustar Mom Coins");
+        if (recipientEmail !== selectedEmail) {
+          sendRealPushNotification(recipientEmail,
+            isDebit ? `⬇️ Mamá bajó ${amount} MC` : `✨ Mamá te acreditó ${amount} MC`,
+            reason || (isDebit ? "Ajuste de Mamá" : "Recarga de Mamá 🌟"));
+        }
       }
+    }
+
+    async function saveReasonIfNew(reason) {
+      if (!reason) return;
+      const reasonRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'momcoin_reasons');
+      const snap = await getDoc(reasonRef);
+      const reasons = snap.exists() && Array.isArray(snap.data().items) ? snap.data().items : DEFAULT_REASONS.slice();
+      if (!reasons.includes(reason)) {
+        reasons.push(reason);
+        await setDoc(reasonRef, { items: reasons, updatedAt: serverTimestamp(), updatedBy: selectedName }, { merge:true });
+      }
+    }
+
+    function renderReasonOptions(reasons) {
+      const select = document.getElementById('sendReasonPreset');
+      select.innerHTML = '<option value="">Elegir motivo predeterminado…</option>' + reasons.map(r => `<option value="${String(r).replace(/"/g,'&quot;')}">${r}</option>`).join('');
+      const list = document.getElementById('savedReasonsList');
+      list.innerHTML = reasons.map(r => `<button type="button" class="reason-chip" data-reason="${String(r).replace(/"/g,'&quot;')}">${r}</button>`).join('');
+    }
+
+    async function loadReasons() {
+      const ref = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'momcoin_reasons');
+      try {
+        const snap = await getDoc(ref);
+        const reasons = snap.exists() && Array.isArray(snap.data().items) ? snap.data().items : DEFAULT_REASONS.slice();
+        renderReasonOptions(reasons);
+        if (!snap.exists()) await setDoc(ref, {items:reasons, updatedAt:serverTimestamp()},{merge:true});
+      } catch(e) { renderReasonOptions(DEFAULT_REASONS); }
+    }
+
+    document.getElementById('sendReasonPreset').addEventListener('change', e => {
+      if (e.target.value) document.getElementById('sendReason').value = e.target.value;
+    });
+    document.getElementById('savedReasonsList').addEventListener('click', e => {
+      const btn=e.target.closest('.reason-chip'); if(btn) document.getElementById('sendReason').value=btn.dataset.reason;
+    });
+
+    document.getElementById('adminRecurringToggle').addEventListener('change', e => {
+      document.getElementById('adminRecurringFields').style.display = e.target.checked ? 'block' : 'none';
+    });
+    document.getElementById('adminRecurringFrequency').addEventListener('change', updateScheduleFields);
+    function updateScheduleFields() {
+      const f=document.getElementById('adminRecurringFrequency').value;
+      document.getElementById('weeklyScheduleField').style.display=f==='weekly'?'block':'none';
+      document.getElementById('monthlyScheduleField').style.display=(f==='monthly'||f==='yearly')?'block':'none';
+      document.getElementById('yearlyScheduleField').style.display=f==='yearly'?'block':'none';
+      const day=document.getElementById('adminRecurringDay');
+      if(f==='yearly' && !day.value) day.value='1';
+    }
+    updateScheduleFields();
+
+    document.getElementById("sendCoinsButton").addEventListener("click", runLocked(document.getElementById("sendCoinsButton"), async () => {
+      const recipients = selectedAdminRecipients();
+      const rawAmount = parseFloat(document.getElementById("sendAmount").value);
+      const reason = document.getElementById("sendReason").value.trim();
+      const recurring = document.getElementById('adminRecurringToggle').checked;
+      if (!recipients.length || isNaN(rawAmount) || rawAmount <= 0) { showToast("Completá destinatario y monto correctamente","error"); return; }
+
+      try {
+        await saveReasonIfNew(reason);
+        if (!recurring) {
+          await executeAdminTransferBatch(recipients, rawAmount, reason, adminAdjustMode);
+          SoundManager.coin();
+          showToast(`${adminAdjustMode==='debit'?'⬇️ Ajuste aplicado':'✨ Transferencia realizada'} a ${recipients.length} usuario(s)`);
+        } else {
+          const frequency=document.getElementById('adminRecurringFrequency').value;
+          const start=localDateFromInput(document.getElementById('adminRecurringStart').value);
+          const schedule={
+            recipients, amount:rawAmount, reason, direction:adminAdjustMode, frequency,
+            weekday:frequency==='weekly'?Number(document.getElementById('adminRecurringWeekday').value):null,
+            dayOfMonth:(frequency==='monthly'||frequency==='yearly')?Number(document.getElementById('adminRecurringDay').value || start.getDate()):start.getDate(),
+            month:frequency==='yearly'?Number(document.getElementById('adminRecurringMonth').value):null,
+            startDate:start.toISOString(), nextRunAt:start.toISOString(), active:true,
+            infinite:document.getElementById('adminRecurringInfinite').checked,
+            createdBy:selectedEmail, createdByName:selectedName, createdAt:serverTimestamp()
+          };
+          if (frequency==='weekly') {
+            const d=new Date(start); schedule.weekday=Number(document.getElementById('adminRecurringWeekday').value); 
+            if (d.getDay()!==schedule.weekday) { const diff=(schedule.weekday-d.getDay()+7)%7; d.setDate(d.getDate()+diff); schedule.nextRunAt=d.toISOString(); }
+          }
+          await addDoc(collection(db,'artifacts',appId,'public','data','scheduledTransfers'), schedule);
+          showToast("🗓️ Transferencia programada correctamente");
+          await processDueSchedules();
+        }
+        document.getElementById("sendAmount").value="";
+        document.getElementById("sendReason").value="";
+        document.getElementById("sendReasonPreset").value="";
+        document.getElementById("adminRecurringToggle").checked=false;
+        document.getElementById("adminRecurringFields").style.display='none';
+        loadReasons();
+      } catch(err) { console.error(err); showToast("Error en la operación: "+(err.message||"desconocido"),"error"); }
     }));
 
-    /* ECONOMÍA: tipo de cambio global */
+    async function processDueSchedules() {
+      if (!selectedEmail || !ADMIN_EMAILS.includes(selectedEmail.toLowerCase())) return;
+      const col=collection(db,'artifacts',appId,'public','data','scheduledTransfers');
+      const snap=await getDocs(col);
+      const now=new Date();
+      for (const ds of snap.docs) {
+        const s={id:ds.id,...ds.data()};
+        if (!s.active || !s.nextRunAt) continue;
+        let next=new Date(s.nextRunAt);
+        let guard=0;
+        while(next<=now && guard<100) {
+          await executeAdminTransferBatch(s.recipients||[], Number(s.amount)||0, s.reason||'', s.direction||'credit', {scheduled:true,scheduleId:s.id});
+          guard++;
+          if (s.frequency==='daily') next=computeNextRun(s,next);
+          else if (s.frequency==='weekly') next=computeNextRun(s,next);
+          else if (s.frequency==='monthly') next=computeNextRun(s,next);
+          else next=computeNextRun(s,next);
+          if (!s.infinite && next<=now) continue;
+        }
+        const updates={nextRunAt:next.toISOString(),updatedAt:serverTimestamp()};
+        if (!s.infinite) { updates.active=false; }
+        await updateDoc(ds.ref,updates);
+      }
+    }
+
+    function setupScheduledTransfersListener() {
+      const col=collection(db,'artifacts',appId,'public','data','scheduledTransfers');
+      if(unsubscribeSchedules) unsubscribeSchedules();
+      unsubscribeSchedules=onSnapshot(col,snap=>{
+        const list=document.getElementById('scheduledTransfersList'); if(!list) return;
+        const rows=snap.docs.map(d=>({id:d.id,...d.data()})).filter(s=>s.active!==false);
+        document.getElementById('scheduleCount').textContent=rows.length;
+        list.innerHTML=rows.length?rows.map(s=>`<div class="schedule-row"><div><strong>${(s.recipients||[]).length===USER_MAP.length?'👨‍👩‍👧 Todos':(s.recipients||[]).map(e=>(USER_MAP.find(u=>u.email===e)||{}).name||e).join(', ')}</strong><div class="small-muted">${s.amount} MC · ${formatScheduleFrequency(s)} · próximo ${new Date(s.nextRunAt).toLocaleDateString('es-AR')}</div><div class="small-muted">${s.reason||'Sin motivo'}</div></div><div style="display:flex;align-items:center;gap:6px;"><span class="schedule-pill">${s.direction==='debit'?'BAJAR':'SUBIR'}</span><button class="mini-action" onclick="window.cancelScheduledTransfer('${s.id}')">×</button></div></div>`).join(''):'<div class="empty-state">No hay transferencias programadas.</div>';
+      },()=>{});
+    }
+    window.cancelScheduledTransfer=async function(id){
+      try{await updateDoc(doc(db,'artifacts',appId,'public','data','scheduledTransfers',id),{active:false,updatedAt:serverTimestamp()});showToast('🗓️ Transferencia programada desactivada');}
+      catch(e){showToast('No se pudo desactivar','error');}
+    };
+
+    /* ECONOMÍA: tipo de cambio global + visibilidad */
     document.getElementById("saveEconomyBtn").addEventListener("click", runLocked(document.getElementById("saveEconomyBtn"), async () => {
       const newRate = parseFloat(document.getElementById("economyRateInput").value);
-      if (isNaN(newRate) || newRate <= 0) {
-        showToast("Ingresá un valor válido para 1 MC");
-        return;
-      }
+      if (isNaN(newRate) || newRate <= 0) { showToast("Ingresá un valor válido para 1 MC","error"); return; }
       try {
         const econRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'economy');
-        await setDoc(econRef, { mcValueArs: newRate, updatedBy: selectedName, updatedAt: serverTimestamp() }, { merge: true });
-        showToast(`📈 Ahora 1 MC vale $${newRate} ARS para toda la familia`);
-      } catch (err) {
-        showToast("Error guardando el nuevo valor");
-      }
+        const visible = document.getElementById('economyVisibleToggle').checked;
+        await setDoc(econRef, { mcValueArs: newRate, visibleToFamily: visible, updatedBy: selectedName, updatedAt: serverTimestamp() }, { merge: true });
+        showToast(`📈 1 MC ahora vale $${newRate} ARS`);
+      } catch (err) { showToast("Error guardando la economía","error"); }
     }));
 
+    let newsCache=[];
+    function setupNewsListener(isAdmin, canPublishNews=false){
+      const col=collection(db,'artifacts',appId,'public','data','news');
+      if(unsubscribeNews) unsubscribeNews();
+      unsubscribeNews=onSnapshot(col,snap=>{
+        newsCache=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
+        const list=document.getElementById('newsList');
+        const count=document.getElementById('newsCount');
+        count.textContent=`${newsCache.length}`;
+        list.innerHTML=newsCache.length?newsCache.slice(0,8).map(n=>`<article class="news-item"><div class="news-title">${n.title||'Sin título'}</div><div class="news-body">${n.body||''}</div><div class="news-date">${n.authorName||'Admin'} · ${n.createdAt?.toDate?n.createdAt.toDate().toLocaleString('es-AR'):''}</div></article>`).join(''):'<div class="empty-state">Todavía no hay noticias.</div>';
+        if(isAdmin){
+          const al=document.getElementById('adminNewsList');
+          al.innerHTML=newsCache.length?newsCache.map(n=>`<div class="schedule-row"><div><strong>${n.title||'Sin título'}</strong><div class="small-muted">${n.authorName||'Admin'}</div></div><button class="mini-action" onclick="window.deleteNews('${n.id}')">×</button></div>`).join(''):'<div class="empty-state">No hay noticias.</div>';
+        }
+      },()=>{});
+    }
+    document.getElementById('publishNewsBtn').addEventListener('click',runLocked(document.getElementById('publishNewsBtn'),async()=>{
+      const title=document.getElementById('newsTitleInput').value.trim();
+      const body=document.getElementById('newsBodyInput').value.trim();
+      if(!title||!body){showToast('Completá título y contenido','error');return;}
+      try{
+        await addDoc(collection(db,'artifacts',appId,'public','data','news'),{title,body,authorEmail:selectedEmail,authorName:selectedName,createdAt:serverTimestamp()});
+        document.getElementById('newsTitleInput').value=''; document.getElementById('newsBodyInput').value='';
+        showToast('📣 Noticia publicada');
+      }catch(e){showToast('No se pudo publicar la noticia','error');}
+    }));
+    window.deleteNews=async function(id){try{await deleteDoc(doc(db,'artifacts',appId,'public','data','news',id));showToast('🗑️ Noticia eliminada')}catch(e){showToast('No se pudo eliminar','error')}};
+    document.getElementById('publisherPublishNewsBtn')?.addEventListener('click', runLocked(document.getElementById('publisherPublishNewsBtn'), async () => {
+      if (!NEWS_PUBLISHER_EMAILS.includes((selectedEmail || '').toLowerCase())) { showToast('No tenés permiso para publicar noticias','error'); return; }
+      const title = document.getElementById('publisherNewsTitle').value.trim();
+      const body = document.getElementById('publisherNewsBody').value.trim();
+      if (!title || !body) { showToast('Completá título y contenido','error'); return; }
+      try {
+        await addDoc(collection(db,'artifacts',appId,'public','data','news'), { title, body, authorEmail:selectedEmail, authorName:selectedName, createdAt:serverTimestamp() });
+        document.getElementById('publisherNewsTitle').value='';
+        document.getElementById('publisherNewsBody').value='';
+        showToast('📣 Noticia publicada');
+      } catch(e) { showToast('No se pudo publicar la noticia','error'); }
+    }));
+
+    let withdrawMode = 'specific';
     const withdrawAmountInput = document.getElementById("withdrawAmount");
+    const withdrawSpecificBtn = document.getElementById("withdrawSpecificBtn");
+    const withdrawAllBtn = document.getElementById("withdrawAllBtn");
+    const withdrawSpecificFields = document.getElementById("withdrawSpecificFields");
+    const withdrawAllInfo = document.getElementById("withdrawAllInfo");
+
+    function updateWithdrawMode(mode) {
+      withdrawMode = mode;
+      const specific = mode === 'specific';
+      withdrawSpecificFields.style.display = specific ? 'block' : 'none';
+      withdrawAllInfo.style.display = specific ? 'none' : 'block';
+      withdrawSpecificBtn.style.background = specific ? 'var(--primary)' : 'var(--card)';
+      withdrawSpecificBtn.style.color = specific ? 'white' : 'var(--primary)';
+      withdrawAllBtn.style.background = specific ? 'var(--card)' : 'var(--primary)';
+      withdrawAllBtn.style.color = specific ? 'var(--primary)' : 'white';
+    }
+    withdrawSpecificBtn.addEventListener('click', () => updateWithdrawMode('specific'));
+    withdrawAllBtn.addEventListener('click', () => updateWithdrawMode('all'));
     withdrawAmountInput.addEventListener("input", () => {
       const val = parseFloat(withdrawAmountInput.value) || 0;
       document.getElementById("withdrawCalc").textContent = `Valor estimado: $${(val * MC_VALUE_ARS).toLocaleString()} ARS`;
     });
 
+    function getEndOfMonthDate() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+    }
+
     document.getElementById("requestWithdrawBtn").addEventListener("click", runLocked(document.getElementById("requestWithdrawBtn"), async () => {
+      const isAll = withdrawMode === 'all';
       const amount = parseFloat(withdrawAmountInput.value);
-      if (isNaN(amount) || amount <= 0 || amount > 10) {
-        showToast("El monto debe ser entre 1 y 10 MC");
-        return;
-      }
-      if (amount > currentBalance) {
-        showToast("❌ Saldo insuficiente de MC");
-        return;
-      }
+      if (!isAll && (isNaN(amount) || amount <= 0)) { showToast("Ingresá una cantidad válida de MC"); return; }
+      if (!isAll && amount > currentBalance) { showToast("❌ Saldo insuficiente de MC"); return; }
+      if (isAll && currentBalance <= 0) { showToast("❌ No tenés MC para retirar"); return; }
 
       try {
+        const dueAt = getEndOfMonthDate();
         const wCol = collection(db, 'artifacts', appId, 'public', 'data', 'withdrawals');
         await addDoc(wCol, {
-          userEmail: selectedEmail,
-          userName: selectedName,
-          amount: amount,
-          arsAmount: amount * MC_VALUE_ARS,
-          status: 'pending',
+          userEmail: selectedEmail, userName: selectedName,
+          amount: isAll ? null : amount, arsAmount: isAll ? null : amount * MC_VALUE_ARS,
+          amountMode: isAll ? 'all' : 'specific', dynamicAll: isAll,
+          status: 'scheduled', dueAt: dueAt.toISOString(),
           createdAt: serverTimestamp()
         });
-
-        withdrawAmountInput.value = "";
+        withdrawAmountInput.value = '';
         document.getElementById("withdrawCalc").textContent = "Valor estimado: $0 ARS";
-        showToast("🚀 Solicitud de retiro enviada a Mamá");
-
-      } catch (err) {
-        showToast("Error enviando solicitud de retiro");
-      }
+        showToast(`🗓️ Retiro programado para fin de mes (${dueAt.toLocaleDateString('es-AR')})`);
+      } catch (err) { showToast("Error programando el retiro"); }
     }));
+
+    async function processDueWithdrawals() {
+      if (!selectedEmail || !ADMIN_EMAILS.includes(selectedEmail.toLowerCase())) return;
+      const col = collection(db, 'artifacts', appId, 'public', 'data', 'withdrawals');
+      const snap = await getDocs(col);
+      const now = Date.now();
+      for (const ds of snap.docs) {
+        const d = ds.data();
+        if (d.status === 'scheduled' && d.dueAt && new Date(d.dueAt).getTime() <= now) {
+          await updateDoc(ds.ref, { status: 'pending', dueProcessedAt: serverTimestamp() });
+        }
+      }
+    }
 
     let isInitialWithdrawLoad = true;
 
@@ -3312,8 +3330,8 @@
                   <strong>${w.userName}</strong>: ${w.amount} MC ($${w.arsAmount} ARS)
                 </div>
                 <div style="display:flex;gap:6px;">
-                  <button onclick="window.processWithdrawal(this, '${w.id}', '${w.userEmail}', ${w.amount}, true)" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:bold;cursor:pointer;">Aprobar</button>
-                  <button onclick="window.processWithdrawal(this, '${w.id}', '${w.userEmail}', ${w.amount}, false)" style="background:#4b5563;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:bold;cursor:pointer;">Rechazar</button>
+                  <button onclick="window.processWithdrawal(this, '${w.id}', '${w.userEmail}', ${w.amount}, true, ${w.dynamicAll === true})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:bold;cursor:pointer;">Aprobar</button>
+                  <button onclick="window.processWithdrawal(this, '${w.id}', '${w.userEmail}', ${w.amount}, false, ${w.dynamicAll === true})" style="background:#4b5563;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:bold;cursor:pointer;">Rechazar</button>
                 </div>
               </div>
             `).join('');
@@ -3328,7 +3346,7 @@
       }, err => console.log("Withdrawals error:", err));
     }
 
-    window.processWithdrawal = async function(btnEl, withdrawId, userEmail, amount, approve) {
+    window.processWithdrawal = async function(btnEl, withdrawId, userEmail, amount, approve, dynamicAll = false) {
       // Bloquear los dos botones de esa fila para evitar doble aprobación/rechazo
       const row = btnEl ? btnEl.closest('div[style*="justify-content:space-between"]') : null;
       const rowButtons = row ? row.querySelectorAll('button') : (btnEl ? [btnEl] : []);
@@ -3342,19 +3360,20 @@
         if (approve) {
           await runTransaction(db, async (transaction) => {
             const uSnap = await transaction.get(userRef);
-            const currentBal = uSnap.exists() ? uSnap.data().balance : 0;
-            if (currentBal < amount) throw new Error("El usuario ya no cuenta con el saldo");
+            const currentBal = uSnap.exists() ? Number(uSnap.data().balance || 0) : 0;
+            const settledAmount = dynamicAll ? currentBal : Number(amount || 0);
+            if (settledAmount <= 0) throw new Error("El usuario no tiene MC para retirar");
+            if (currentBal < settledAmount) throw new Error("El usuario ya no cuenta con el saldo");
 
-            transaction.update(userRef, { balance: currentBal - amount });
-            transaction.update(wRef, { status: 'approved', processedAt: serverTimestamp() });
+            transaction.update(userRef, { balance: currentBal - settledAmount });
+            transaction.update(wRef, { status: 'approved', amount: settledAmount, arsAmount: settledAmount * MC_VALUE_ARS, processedAt: serverTimestamp(), settledAtBalance: currentBal });
+            amount = settledAmount;
           });
 
           // Agregar a movimientos
           const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
           await addDoc(txCol, {
-            type: 'withdraw',
-            userEmail: userEmail,
-            amount: amount,
+            type: 'withdraw', userEmail: userEmail, amount: amount,
             reason: `Retiro efectivo aprobado ($${amount * MC_VALUE_ARS} ARS)`,
             timestamp: serverTimestamp()
           });
@@ -3380,14 +3399,15 @@
 
       container.innerHTML = list.map(w => {
         let statusBadge = '';
-        if (w.status === 'pending') statusBadge = '<span style="color:#d97706;font-weight:bold;">⏳ Pendiente</span>';
+        if (w.status === 'scheduled') statusBadge = '<span style="color:#7c3aed;font-weight:bold;">🗓️ Fin de mes</span>';
+        else if (w.status === 'pending') statusBadge = '<span style="color:#d97706;font-weight:bold;">⏳ Pendiente</span>';
         else if (w.status === 'approved') statusBadge = '<span style="color:#10b981;font-weight:bold;">✅ Aprobado</span>';
         else statusBadge = '<span style="color:#ef4444;font-weight:bold;">❌ Rechazado</span>';
 
         return `
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--border);">
             <div>
-              <div style="font-size:13px;font-weight:700;">${w.amount} MC ($${w.arsAmount} ARS)</div>
+              <div style="font-size:13px;font-weight:700;">${w.dynamicAll ? "Todos los MC disponibles al cierre" : `${w.amount} MC ($${w.arsAmount} ARS)`}</div>
               <div style="font-size:11px;color:var(--muted);">${w.createdAt ? new Date(w.createdAt.toMillis()).toLocaleDateString() : 'Reciente'}</div>
             </div>
             <div style="font-size:12px;">${statusBadge}</div>
@@ -3547,6 +3567,16 @@
     prefTtsRate.value = AppPrefs.get('ttsRate');
     ttsRateLabel.textContent = `${Number(AppPrefs.get('ttsRate')).toFixed(1)}x`;
     refreshTtsAvailability();
+    if (window.median_library_ready) { try { window.median_library_ready(); } catch(e) {} }
+    setTimeout(() => { TTS.init(); refreshTtsAvailability(); }, 800);
+
+    const soundPackSelect = document.getElementById('soundPackSelect');
+    const testSoundPackBtn = document.getElementById('testSoundPackBtn');
+    if (soundPackSelect) {
+      soundPackSelect.value = AppPrefs.get('soundPack') || 'classic';
+      soundPackSelect.addEventListener('change', e => { SoundManager.setPack(e.target.value); SoundManager.packTest(); });
+    }
+    if (testSoundPackBtn) testSoundPackBtn.addEventListener('click', () => SoundManager.packTest());
 
     prefSoundToggle.addEventListener("change", (e) => {
       AppPrefs.set('sound', e.target.checked);
