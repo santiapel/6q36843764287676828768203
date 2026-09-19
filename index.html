@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mom Coin Wallet</title>
   <meta name="color-scheme" content="light dark">
-  <meta name="momcoin-version" content="6.0.0">
   <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -972,6 +971,55 @@
     .news-date{font-size:10px;color:var(--muted);margin-top:7px}
     .reason-chip{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:700;cursor:pointer}
 
+    /* ===== CENTRO / EVENTOS TIPO LIVE-EVENT ===== */
+    #pageCenter{padding-bottom:96px}
+    .center-header-pro{position:relative;overflow:hidden;border-radius:24px;padding:18px;margin-bottom:14px;background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;box-shadow:0 14px 35px rgba(0,0,0,.18)}
+    .center-header-pro:before,.center-header-pro:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.18);pointer-events:none}
+    .center-header-pro:before{width:180px;height:180px;right:-70px;top:-100px}
+    .center-header-pro:after{width:120px;height:120px;right:30px;bottom:-85px}
+    .center-live-row{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
+    .center-kicker{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.78;font-weight:900}
+    .center-header-pro h1{margin:3px 0;font-size:26px;letter-spacing:-.03em}
+    .center-header-pro p{margin:0;opacity:.88;font-size:12px;max-width:290px;line-height:1.45}
+    .center-live-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.16);font-size:10px;font-weight:900;white-space:nowrap;backdrop-filter:blur(8px)}
+    .center-live-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:centerPulse 1.2s infinite}
+    @keyframes centerPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.55);opacity:1}}
+    .center-event-board{display:grid;gap:12px}
+    .event-card{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:22px;background:var(--card);box-shadow:var(--shadow);padding:14px;transition:transform .2s,box-shadow .2s,border-color .2s}
+    .event-card:hover{transform:translateY(-2px)}
+    .event-card.featured{border-color:var(--primary);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+    .event-card.featured:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,rgba(255,255,255,.10),transparent 45%,rgba(255,255,255,.04));pointer-events:none}
+    .event-top{display:flex;align-items:flex-start;gap:11px;position:relative;z-index:1}
+    .event-icon{width:48px;height:48px;flex:0 0 48px;border-radius:16px;display:grid;place-items:center;background:var(--primary-light);font-size:25px;box-shadow:inset 0 0 0 1px var(--border)}
+    .event-title{font-size:15px;font-weight:950;line-height:1.15}
+    .event-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.35}
+    .event-badge{margin-left:auto;font-size:9px;font-weight:950;padding:6px 8px;border-radius:999px;background:var(--soft);white-space:nowrap}
+    .event-badge.live{background:var(--primary-light);color:var(--primary)}
+    .event-badge.cooldown{background:var(--gold-light);color:var(--text)}
+    .event-progress{height:9px;background:var(--border);border-radius:999px;overflow:hidden;margin:13px 0 8px;position:relative}
+    .event-progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-dark));border-radius:inherit;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+    .event-progress.shimmer > div{background-size:200% 100%;animation:eventShimmer 1.5s linear infinite}
+    @keyframes eventShimmer{to{background-position:-200% 0}}
+    .event-meta{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--muted)}
+    .event-actions{display:flex;gap:8px;margin-top:12px}
+    .event-action{flex:1;border:0;border-radius:13px;padding:10px 11px;font-weight:900;background:var(--primary);color:#fff;cursor:pointer}
+    .event-action.secondary{background:var(--soft);color:var(--text);border:1px solid var(--border)}
+    .event-action:disabled{opacity:.45;cursor:not-allowed}
+    .event-countdown{font-variant-numeric:tabular-nums;font-weight:950;color:var(--text)}
+    .event-xp{font-size:10px;font-weight:900;color:var(--primary)}
+    .event-complete-pop{animation:eventComplete .75s ease}
+    @keyframes eventComplete{0%{transform:scale(1)}35%{transform:scale(1.025) rotate(-.3deg)}65%{transform:scale(.995) rotate(.2deg)}100%{transform:scale(1)}}
+    .event-empty{padding:26px 16px;text-align:center;border:1px dashed var(--border);border-radius:20px;color:var(--muted);background:var(--card)}
+    .center-command-bar{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:12px}
+    .center-command-bar .form-input{margin:0}
+    .center-nav-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+    .center-nav-card{padding:12px;border:1px solid var(--border);border-radius:17px;background:var(--card);box-shadow:var(--shadow);cursor:pointer;transition:transform .18s}
+    .center-nav-card:active{transform:scale(.98)}
+    .center-nav-card strong{display:block;font-size:12px;margin-top:6px}.center-nav-card span{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+    .center-tabs{background:var(--soft);padding:5px;border-radius:16px;gap:5px;margin-bottom:12px}
+    .center-tab{padding:8px 10px;font-size:11px;border-radius:12px;border:0;background:transparent}
+    .center-tab.active{box-shadow:0 5px 14px rgba(0,0,0,.12)}
+
     /* ===== CENTRO DE FUNCIONES / PERSONALIZACIÓN ===== */
     .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     .feature-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
@@ -1621,20 +1669,30 @@
 
     <!-- ===== CENTRO: METAS, TAREAS, RECOMPENSAS, LOGROS, PRESUPUESTO, CALENDARIO Y TEMAS ===== -->
     <section id="pageCenter" class="page-section">
-      <div class="dashboard-greeting">
-        <div><h1>Centro ✨</h1><p>Personalizá Mom Coin y organizá tu vida familiar.</p></div>
+      <div class="center-header-pro">
+        <div class="center-live-row">
+          <div><div class="center-kicker">MOM COIN · LIVE CENTER</div><h1>Centro de eventos ⚡</h1><p>Completá los encargos de Mamá como si fueran misiones de un evento especial.</p></div>
+          <div class="center-live-pill"><span class="center-live-dot"></span> EN VIVO</div>
+        </div>
       </div>
 
       <div class="stat-strip">
-        <div class="stat-box"><strong id="centerTaskCount">0</strong><span>Tareas</span></div>
+        <div class="stat-box"><strong id="centerTaskCount">0</strong><span>Eventos</span></div>
         <div class="stat-box"><strong id="centerGoalCount">0</strong><span>Metas</span></div>
         <div class="stat-box"><strong id="centerAchievementCount">0</strong><span>Logros</span></div>
+      </div>
+
+      <div class="center-nav-grid">
+        <div class="center-nav-card" data-center-jump="centerTasks"><div style="font-size:22px">⚡</div><strong>Eventos activos</strong><span>Entrá a tu próxima misión</span></div>
+        <div class="center-nav-card" data-center-jump="centerGoals"><div style="font-size:22px">🎯</div><strong>Metas</strong><span>Seguimiento de objetivos</span></div>
+        <div class="center-nav-card" data-center-jump="centerRewards"><div style="font-size:22px">🎁</div><strong>Recompensas</strong><span>Canjes pendientes</span></div>
+        <div class="center-nav-card" data-center-jump="centerActivity"><div style="font-size:22px">🧭</div><strong>Actividad</strong><span>Tu historial del Centro</span></div>
       </div>
 
       <div class="center-tabs">
         <button class="center-tab active" data-center-tab="centerOverview">✨ Todo</button>
         <button class="center-tab" data-center-tab="centerActivity">🧭 Actividad</button>
-        <button class="center-tab" data-center-tab="centerTasks">✅ Tareas</button>
+        <button class="center-tab" data-center-tab="centerTasks">⚡ Eventos</button>
         <button class="center-tab" data-center-tab="centerGoals">🎯 Metas</button>
         <button class="center-tab" data-center-tab="centerRewards">🎁 Recompensas</button>
         <button class="center-tab" data-center-tab="centerAchievements">🏆 Logros</button>
@@ -1651,7 +1709,7 @@
           <div class="hero-sub" id="centerHeroMessage">Organizá, ahorrá y disfrutá tus objetivos.</div>
         </div>
         <div class="center-quick-grid">
-          <div class="quick-card" data-center-jump="centerTasks"><div>✅</div><strong>Tareas</strong><span id="quickTasksText">Organizá responsabilidades</span></div>
+          <div class="quick-card" data-center-jump="centerTasks"><div>⚡</div><strong>Eventos</strong><span id="quickTasksText">Misiones de Mamá</span></div>
           <div class="quick-card" data-center-jump="centerGoals"><div>🎯</div><strong>Metas</strong><span id="quickGoalsText">Seguí tus objetivos</span></div>
           <div class="quick-card" data-center-jump="centerRewards"><div>🎁</div><strong>Recompensas</strong><span>Solicitá un canje</span></div>
           <div class="quick-card" data-center-jump="centerActivity"><div>🧭</div><strong>Actividad</strong><span>Todo lo que pasó</span></div>
@@ -1666,14 +1724,14 @@
           </div>
         </div>
         <div class="feature-grid">
-          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 11 12 14 22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div><h3>Tareas y rachas</h3><p>Organizá responsabilidades y construí constancia. Las tareas del Centro no entregan MC.</p></div>
+          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 11 12 14 22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div><h3>Eventos y rachas</h3><p>Misiones con cuenta regresiva, estados, enfriamiento y animaciones. Completar un evento no entrega MC automáticamente.</p></div>
           <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div><h3>Metas de ahorro</h3><p>Seguimiento visual del progreso de cada objetivo.</p></div>
           <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"></path></svg></div><h3>Recompensas</h3><p>Solicitá canjes con MC; mamá decide y registra la entrega.</p></div>
           <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10l2 3-7 10L5 7l2-3Z"></path></svg></div><h3>Logros</h3><p>Insignias por ahorrar, completar tareas y mantener constancia.</p></div>
           <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h17"></path><path d="m7 15 4-4 3 2 6-7"></path></svg></div><h3>Estadísticas</h3><p>Resumen de ingresos, retiros, metas y progreso.</p></div>
           <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 9h18"></path></svg></div><h3>Calendario familiar</h3><p>Cumpleaños, fechas límite, eventos y recordatorios.</p></div>
         </div>
-        <div class="card" style="margin-top:14px"><div class="card-title"><span>💡 Ideas del día</span></div><p style="margin:0;color:var(--muted);font-size:13px">Usá las tareas para organizar responsabilidades, las metas para ahorrar y las recompensas para canjear MC. <strong>Completar una tarea nunca agrega MC automáticamente.</strong></p></div>
+        <div class="card" style="margin-top:14px"><div class="card-title"><span>💡 Ideas del día</span></div><p style="margin:0;color:var(--muted);font-size:13px">Usá los eventos para completar encargos de Mamá, las metas para ahorrar y las recompensas para canjear MC. <strong>Completar un evento nunca agrega MC automáticamente.</strong></p></div>
       </div>
 
       <div id="centerActivity" class="center-pane" style="display:none">
@@ -1684,24 +1742,27 @@
         </div>
         <div class="card" style="margin-top:14px">
           <div class="card-title"><span>💡 Centro de control</span></div>
-          <p style="font-size:12px;color:var(--muted);line-height:1.5">Las tareas, metas, rachas y logros del Centro <strong>no crean MC</strong>. Las recompensas se solicitan y quedan pendientes de aprobación.</p>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5">Los eventos, metas, rachas y logros del Centro <strong>no crean MC</strong>. Las recompensas se solicitan y quedan pendientes de aprobación.</p>
         </div>
       </div>
 
       <div id="centerTasks" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>✅ Tareas familiares</span><button id="centerAddTaskBtn" class="mini-action" type="button">+ Nueva</button></div>
-          <div class="center-search"><input id="centerTaskSearch" class="form-input" placeholder="Buscar tareas..." style="margin:0"></div>
-          <div class="filter-pills" id="centerTaskFilters"><button class="filter-pill active" data-task-filter="all">Todas</button><button class="filter-pill" data-task-filter="pending">Pendientes</button><button class="filter-pill" data-task-filter="done">Completadas</button></div>
-          <div id="centerTaskForm" style="display:none">
-            <input id="centerTaskTitle" class="form-input" placeholder="Ej: Ordenar la habitación">
-            <select id="centerTaskCategory" class="form-input"><option value="hogar">🏠 Hogar</option><option value="estudio">📚 Estudio</option><option value="personal">🌱 Personal</option><option value="familia">❤️ Familia</option><option value="otro">✨ Otro</option></select>
-            <input id="centerTaskDue" class="form-input" type="date">
-            <textarea id="centerTaskNotes" class="form-input" rows="2" placeholder="Notas o instrucciones (opcional)" style="resize:vertical"></textarea>
-            <button id="centerSaveTaskBtn" class="btn-primary">Crear tarea</button>
-          </div>
-          <div id="centerTasksList" class="mini-list"><div class="empty-state">Cargando tareas...</div></div>
+        <div class="center-command-bar">
+          <input id="centerTaskSearch" class="form-input" placeholder="Buscar eventos...">
+          <button id="centerAddTaskBtn" class="mini-action" type="button">+ Crear</button>
         </div>
+        <div class="filter-pills" id="centerTaskFilters"><button class="filter-pill active" data-task-filter="all">Todos</button><button class="filter-pill" data-task-filter="live">Activos</button><button class="filter-pill" data-task-filter="done">Completados</button><button class="filter-pill" data-task-filter="cooldown">En espera</button></div>
+        <div id="centerTaskForm" class="card" style="display:none;margin-bottom:12px">
+          <div class="card-title"><span>⚡ Lanzar nuevo evento</span></div>
+          <input id="centerTaskTitle" class="form-input" placeholder="Ej: Operación habitación ordenada">
+          <select id="centerTaskCategory" class="form-input"><option value="hogar">🏠 Hogar</option><option value="estudio">📚 Estudio</option><option value="personal">🌱 Personal</option><option value="familia">❤️ Familia</option><option value="otro">✨ Otro</option></select>
+          <select id="centerTaskDuration" class="form-input"><option value="15">⏱️ 15 minutos</option><option value="30" selected>⏱️ 30 minutos</option><option value="45">⏱️ 45 minutos</option><option value="60">⏱️ 1 hora</option><option value="120">⏱️ 2 horas</option></select>
+          <select id="centerTaskCooldown" class="form-input"><option value="0">Sin espera</option><option value="15">15 min de espera</option><option value="30" selected>30 min de espera</option><option value="60">1 hora de espera</option><option value="1440">24 horas de espera</option></select>
+          <select id="centerTaskDifficulty" class="form-input"><option value="easy">🟢 Tranquilo</option><option value="normal" selected>🟡 Normal</option><option value="hard">🔴 Desafío</option></select>
+          <textarea id="centerTaskNotes" class="form-input" rows="2" placeholder="Objetivo o instrucciones del evento..." style="resize:vertical"></textarea>
+          <button id="centerSaveTaskBtn" class="btn-primary">🚀 Lanzar evento</button>
+        </div>
+        <div id="centerTasksList" class="center-event-board"><div class="event-empty">Cargando eventos...</div></div>
       </div>
 
       <div id="centerGoals" class="center-pane" style="display:none">
@@ -1859,7 +1920,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { initializeAuth, inMemoryPersistence, signInWithEmailAndPassword, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { initializeAuth, browserLocalPersistence, signInWithEmailAndPassword, signInWithCustomToken, onAuthStateChanged, setPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, getDocs, collection, query, where, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     /* FIREBASE CONFIGURATION */
@@ -1877,12 +1938,11 @@
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'banco-de-mama';
 
     const app = initializeApp(firebaseConfig);
-    // Median puede ejecutar la app dentro de un WebView donde IndexedDB o
-    // la persistencia local de Firebase Auth no está disponible. Usamos
-    // memoria para evitar el rechazo "Incompatible browser" durante el login.
-    // La sesión anónima se vuelve a crear al abrir la app.
+    // Mantener la sesión en el dispositivo. Firebase guarda el estado de Auth
+    // localmente; nosotros NO guardamos el correo ni el nombre en localStorage.
+    // Esto permite cerrar/reabrir la app y seguir autenticado.
     const auth = initializeAuth(app, {
-      persistence: inMemoryPersistence
+      persistence: browserLocalPersistence
     });
     const db = getFirestore(app);
 
@@ -1988,47 +2048,6 @@
     let unsubscribeNews = null;
     let unsubscribeReasons = null;
     const DEFAULT_REASONS = ["Premio por tarea 🌟","Ayuda en casa 🏠","Buen comportamiento 💚","Cumpleaños 🎂","Ahorro 💰","Objetivo cumplido 🎯","Pago semanal 📅","Pago mensual 🗓️"];
-
-    // ===== Versión / actualización automática =====
-    const APP_VERSION = '6.0.0';
-    const APP_UPDATE_URL = './version.json';
-    let appUpdateReloading = false;
-    async function checkForAppUpdate(force = false) {
-      try {
-        const res = await fetch(APP_UPDATE_URL + '?t=' + Date.now(), { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        const remoteVersion = String(data.version || '').trim();
-        if (!remoteVersion || remoteVersion === APP_VERSION) return;
-        const parseVer = v => String(v).split('.').map(n => parseInt(n,10) || 0);
-        const rv = parseVer(remoteVersion), lv = parseVer(APP_VERSION);
-        const isNewer = (rv[0] > lv[0]) || (rv[0] === lv[0] && (rv[1] > lv[1] || (rv[1] === lv[1] && rv[2] > lv[2])));
-        if (!isNewer) return;
-        const modal = document.getElementById('appUpdateModal');
-        const text = document.getElementById('appUpdateText');
-        const btn = document.getElementById('appUpdateNowBtn');
-        if (!modal || !btn) return;
-        text.textContent = `Hay una versión nueva (${remoteVersion}). Esta versión (${APP_VERSION}) quedará reemplazada por la nueva.`;
-        modal.style.display = 'flex';
-        const updateNow = () => {
-          if (appUpdateReloading) return;
-          appUpdateReloading = true;
-          btn.disabled = true;
-          btn.textContent = 'Actualizando…';
-          const url = new URL(window.location.href);
-          url.searchParams.set('app_update', remoteVersion);
-          url.searchParams.set('cache_bust', String(Date.now()));
-          window.location.replace(url.toString());
-        };
-        btn.onclick = updateNow;
-        setTimeout(updateNow, force ? 900 : 3200);
-      } catch (err) {
-        console.info('Actualización automática no disponible:', err && (err.message || err.code) || err);
-      }
-    }
-    window.addEventListener('online', () => checkForAppUpdate(false));
-    setTimeout(() => checkForAppUpdate(false), 2500);
-    setInterval(() => checkForAppUpdate(false), 10 * 60 * 1000);
 
     // ===== Tema automático del sistema =====
     const systemThemeMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
@@ -2418,24 +2437,22 @@
         _authResolved = true;
         _authReadyResolve(user);
       }
-      if (user && !appLoadStartedFromAuth) {
-        const savedAccount = localStorage.getItem("momcoin_logged_user");
-        if (savedAccount) {
+      // La sesión persistente de Firebase ya contiene la identidad necesaria.
+      // No guardamos una cuenta paralela en localStorage.
+      if (user && user.email && !appLoadStartedFromAuth) {
+        const match = USER_MAP.find(u => String(u.email).toLowerCase() === String(user.email).toLowerCase());
+        if (match) {
           appLoadStartedFromAuth = true;
-          try {
-            const parsed = JSON.parse(savedAccount);
-            selectedEmail = parsed.email;
-            selectedName = parsed.name;
-            currentUser = user;
-            Promise.resolve(loadUserApp(selectedEmail, selectedName)).catch((err) => {
-              appLoadStartedFromAuth = false;
-              console.error("Error cargando la app desde Auth:", err && (err.stack || err.message || err.code || JSON.stringify(err)) || err);
-              showToast("⚠️ No se pudo cargar la cuenta. Revisá la conexión.");
-            });
-          } catch (err) {
+          selectedEmail = match.email;
+          selectedName = match.name;
+          currentUser = user;
+          document.getElementById("accountSelection").style.display = "none";
+          document.getElementById("passwordScreen").style.display = "none";
+          Promise.resolve(loadUserApp(selectedEmail, selectedName)).catch((err) => {
             appLoadStartedFromAuth = false;
-            console.error("Error leyendo la cuenta guardada:", err);
-          }
+            console.error("Error cargando la app desde Auth:", err && (err.stack || err.message || err.code || JSON.stringify(err)) || err);
+            showToast("⚠️ No se pudo cargar la cuenta. Revisá la conexión.");
+          });
         }
       }
     }, (error) => {
@@ -2489,6 +2506,8 @@
       }
 
       try {
+        // Firebase mantiene la sesión localmente en este dispositivo.
+        await setPersistence(auth, browserLocalPersistence);
         // La contraseña nunca se compara ni se almacena en el HTML.
         // Firebase Authentication valida la identidad real de la cuenta.
         const credential = await signInWithEmailAndPassword(auth, selectedEmail, passwordVal);
@@ -2499,7 +2518,7 @@
         }
 
         appLoadStartedFromAuth = true;
-        localStorage.setItem("momcoin_logged_user", JSON.stringify({ email: selectedEmail, name: selectedName }));
+        
         await loadUserApp(selectedEmail, selectedName);
       } catch (err) {
         console.error("Firebase Authentication:", err);
@@ -3941,8 +3960,11 @@
     });
 
     // Cerrar Sesión
-    document.getElementById("logoutButton").addEventListener("click", () => {
-      localStorage.removeItem("momcoin_logged_user");
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      try { await signOut(auth); } catch (e) { console.warn('Error cerrando sesión:', e); }
+      appLoadStartedFromAuth = false;
+      selectedEmail = null;
+      selectedName = null;
       location.reload();
     });
   
@@ -3989,28 +4011,90 @@
 
     let centerCache = {tasks:[], goals:[], rewards:[], events:[], budget:null, requests:[], activity:[]};
 
-    function renderCenterTasks() {
+    function formatCountdown(ms){
+      if(ms<=0)return '00:00';
+      const total=Math.floor(ms/1000), d=Math.floor(total/86400), h=Math.floor((total%86400)/3600), m=Math.floor((total%3600)/60), sec=total%60;
+      if(d>0)return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      if(h>0)return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+      return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    }
+    function eventStartMs(e){return Number(e.startedAtMs||e.startsAtMs||0);}
+    function eventEndMs(e){return Number(e.endsAtMs||0);}
+    function eventCooldownMs(e){return Number(e.cooldownUntilMs||0);}
+    function eventState(e){
+      const now=Date.now();
+      if(e.completed && eventCooldownMs(e)>now)return 'cooldown';
+      if(e.completed)return 'done';
+      if(eventEndMs(e)>now)return 'live';
+      if(eventStartMs(e)>0 && eventEndMs(e)<=now)return 'expired';
+      return 'ready';
+    }
+    function renderCenterTasks(){
       const box=document.getElementById('centerTasksList'); if(!box)return;
       const isAdmin=ADMIN_EMAILS.includes(selectedEmail);
       const q=(document.getElementById('centerTaskSearch')?.value||'').trim().toLowerCase();
       const filter=window.centerTaskFilter||'all';
-      const visible=centerCache.tasks.filter(t=>{ const done=!!t.completed; const hay=(String(t.title||'')+' '+String(t.notes||'')+' '+String(t.category||'')).toLowerCase(); return (!q||hay.includes(q)) && (filter==='all'||(filter==='done'&&done)||(filter==='pending'&&!done)); });
-      if(!visible.length){box.innerHTML='<div class="empty-state">No hay tareas que coincidan.</div>';return;}
-      box.innerHTML=visible.map(t=>{
-        const done=!!t.completed;
-        const cat=t.category||'otro';
-        const icon={hogar:'🏠',estudio:'📚',personal:'🌱',familia:'❤️',otro:'✨'}[cat]||'✨';
-        return `<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title" style="${done?'text-decoration:line-through;opacity:.65':''}">${icon} ${escapeHtml(t.title||'Tarea')}</div><div class="mini-row-sub">${t.dueDate?'vence '+escapeHtml(t.dueDate):'Sin fecha límite'}${t.notes?' · '+escapeHtml(t.notes):''}</div></div><button class="mini-action" onclick="window.centerToggleTask('${t.id}',${!done})">${done?'↩️':'✓'}</button>${isAdmin?`<button class="mini-action" onclick="window.centerRemove('tasks','${t.id}')">×</button>`:''}</div>`;
+      const visible=centerCache.tasks.filter(e=>{
+        const state=eventState(e); const hay=(String(e.title||'')+' '+String(e.notes||'')+' '+String(e.category||'')).toLowerCase();
+        return (!q||hay.includes(q)) && (filter==='all'||filter===state||(filter==='pending'&&(state==='ready'||state==='live')));
+      });
+      if(!visible.length){box.innerHTML='<div class="event-empty">✨ No hay eventos en este filtro. Cuando Mamá lance una misión, aparecerá acá.</div>';return;}
+      box.innerHTML=visible.map(e=>{
+        const state=eventState(e), duration=Math.max(1,Number(e.durationMinutes||30))*60000, start=eventStartMs(e), end=eventEndMs(e);
+        const now=Date.now();
+        const progress=state==='live'&&start?Math.max(0,Math.min(100,((now-start)/duration)*100)):state==='done'?100:0;
+        const cat={hogar:'🏠',estudio:'📚',personal:'🌱',familia:'❤️',otro:'✨'}[e.category||'otro']||'✨';
+        const diff={easy:'🟢 Tranquilo',normal:'🟡 Normal',hard:'🔴 Desafío'}[e.difficulty||'normal']||'🟡 Normal';
+        const badge=state==='live'?'<span class="event-badge live">● EN CURSO</span>':state==='cooldown'?'<span class="event-badge cooldown">⏳ EN ESPERA</span>':state==='done'?'<span class="event-badge">✓ COMPLETADO</span>':state==='expired'?'<span class="event-badge">⌛ VENCIDO</span>':'<span class="event-badge">⚡ DISPONIBLE</span>';
+        let timer='Listo para empezar';
+        if(state==='live') timer=`⏱️ <span class="event-countdown" data-event-countdown="${e.id}" data-event-end="${end}">${formatCountdown(end-now)}</span>`;
+        else if(state==='cooldown') timer=`⏳ Disponible en <span class="event-countdown" data-event-countdown="${e.id}" data-event-end="${eventCooldownMs(e)}">${formatCountdown(eventCooldownMs(e)-now)}</span>`;
+        else if(state==='done') timer='🎉 Evento completado';
+        else if(state==='expired') timer='El tiempo del evento terminó';
+        const action=state==='ready'||state==='expired'?`<button class="event-action" onclick="window.centerStartEvent('${e.id}')">🚀 Iniciar evento</button>`:state==='live'?`<button class="event-action" onclick="window.centerCompleteEvent('${e.id}')">🏁 ¡Completé la misión!</button>`:state==='cooldown'?`<button class="event-action" disabled>⏳ En espera</button>`:`<button class="event-action secondary" disabled>✓ Completado</button>`;
+        return `<article class="event-card ${e.featured?'featured':''}" data-event-card="${e.id}">
+          <div class="event-top"><div class="event-icon">${cat}</div><div style="flex:1;min-width:0"><div class="event-title">${escapeHtml(e.title||'Evento')}</div><div class="event-sub">${escapeHtml(e.notes||'Completá este encargo de Mamá.')} · ${diff}</div></div>${badge}</div>
+          <div class="event-progress ${state==='live'?'shimmer':''}"><div style="width:${progress}%"></div></div>
+          <div class="event-meta"><span>${timer}</span><span class="event-xp">+${Number(e.xp||10)} XP · sin MC automático</span></div>
+          <div class="event-actions">${action}${isAdmin?`<button class="event-action secondary" onclick="window.centerRemove('tasks','${e.id}')">Eliminar</button>`:''}</div>
+        </article>`;
       }).join('');
     }
-    window.centerToggleTask=async function(id,done){
+    window.centerStartEvent=async function(id){
+      const e=centerCache.tasks.find(x=>x.id===id); if(!e)return;
+      const state=eventState(e); if(state==='live'||state==='cooldown')return;
+      const duration=Math.max(1,Number(e.durationMinutes||30))*60000, now=Date.now();
       try{
-        await updateDoc(centerDoc('tasks',id),{completed:done,completedBy:done?selectedEmail:null,completedAt:done?serverTimestamp():null});
-        await centerLog(done?'task_completed':'task_reopened','Tarea '+(done?'completada':'reabierta'),{taskId:id});
+        await updateDoc(centerDoc('tasks',id),{startedAtMs:now,endsAtMs:now+duration,completed:false,completedBy:null,completedAt:null,startedBy:selectedEmail});
+        await centerLog('event_started','Evento iniciado: '+(e.title||'Evento'),{eventId:id});
+        SoundManager.success(); TTS.speak('Evento iniciado. ¡A cumplir la misión!');
         await centerLoad();
-        if(done){ showToast('✅ Tarea completada · sin recompensa automática de MC'); TTS.speak('Tarea completada'); }
-      }catch(e){showToast('No se pudo actualizar la tarea','error');}
+      }catch(err){showToast('No se pudo iniciar el evento','error');}
     };
+    window.centerCompleteEvent=async function(id){
+      const e=centerCache.tasks.find(x=>x.id===id); if(!e)return;
+      if(eventState(e)!=='live'){showToast('Ese evento ya no está activo','error');return;}
+      const now=Date.now(), cooldown=Math.max(0,Number(e.cooldownMinutes||0))*60000;
+      try{
+        await updateDoc(centerDoc('tasks',id),{completed:true,completedBy:selectedEmail,completedAt:serverTimestamp(),cooldownUntilMs:cooldown?now+cooldown:0});
+        await centerLog('event_completed','Evento completado: '+(e.title||'Evento'),{eventId:id,xp:Number(e.xp||10)});
+        const card=document.querySelector(`[data-event-card="${id}"]`); if(card)card.classList.add('event-complete-pop');
+        SoundManager.coin(); TTS.speak('¡Misión completada! Excelente trabajo.');
+        showToast('🏁 ¡Evento completado! Sin recompensa automática de MC');
+        await centerLoad();
+      }catch(err){showToast('No se pudo completar el evento','error');}
+    };
+    function refreshEventTimers(){
+      const now=Date.now();
+      document.querySelectorAll('[data-event-countdown]').forEach(el=>{
+        const end=Number(el.dataset.eventEnd||0); el.textContent=formatCountdown(end-now);
+      });
+      if(document.getElementById('centerTasks')?.style.display!=='none'){
+        const active=centerCache.tasks.some(e=>eventState(e)==='live'||eventState(e)==='cooldown');
+        if(active)renderCenterTasks();
+      }
+    }
+    setInterval(refreshEventTimers,1000);
 
     function renderCenterGoals(){
       const box=document.getElementById('centerGoalsList'); if(!box)return;
@@ -4188,13 +4272,21 @@
     }));
 
     document.getElementById('centerAddTaskBtn')?.addEventListener('click',()=>{
-      if(!ADMIN_EMAILS.includes(selectedEmail)){showToast('Solo Mamá puede crear tareas','error');return;}
+      if(!ADMIN_EMAILS.includes(selectedEmail)){showToast('Solo Mamá puede lanzar eventos','error');return;}
       document.getElementById('centerTaskForm').style.display='block';
     });
     document.getElementById('centerSaveTaskBtn')?.addEventListener('click',async()=>{
-      const title=document.getElementById('centerTaskTitle').value.trim(), category=document.getElementById('centerTaskCategory')?.value||'otro', due=document.getElementById('centerTaskDue').value, notes=document.getElementById('centerTaskNotes')?.value.trim()||'';
-      if(!title){showToast('Escribí una tarea','error');return;}
-      try{await centerAdd('tasks',{title,category,dueDate:due,notes,completed:false,shared:true});document.getElementById('centerTaskForm').style.display='none';document.getElementById('centerTaskTitle').value='';if(document.getElementById('centerTaskNotes'))document.getElementById('centerTaskNotes').value='';document.getElementById('centerTaskDue').value='';await centerLoad();showToast('✅ Tarea creada');}catch(e){showToast('No se pudo crear la tarea','error');}
+      if(!ADMIN_EMAILS.includes(selectedEmail)){showToast('Solo Mamá puede lanzar eventos','error');return;}
+      const title=document.getElementById('centerTaskTitle').value.trim(), category=document.getElementById('centerTaskCategory')?.value||'otro', notes=document.getElementById('centerTaskNotes')?.value.trim()||'';
+      const durationMinutes=Number(document.getElementById('centerTaskDuration')?.value||30), cooldownMinutes=Number(document.getElementById('centerTaskCooldown')?.value||0), difficulty=document.getElementById('centerTaskDifficulty')?.value||'normal';
+      if(!title){showToast('Poné un nombre al evento','error');return;}
+      try{
+        await centerAdd('tasks',{title,category,notes,completed:false,shared:true,durationMinutes,cooldownMinutes,difficulty,xp:difficulty==='hard'?30:difficulty==='easy'?10:20,featured:difficulty==='hard'});
+        document.getElementById('centerTaskForm').style.display='none';
+        document.getElementById('centerTaskTitle').value='';
+        if(document.getElementById('centerTaskNotes'))document.getElementById('centerTaskNotes').value='';
+        await centerLoad();showToast('🚀 Evento lanzado'); TTS.speak('Nuevo evento disponible');
+      }catch(e){showToast('No se pudo crear el evento','error');}
     });
 
     document.getElementById('centerAddGoalBtn')?.addEventListener('click',()=>document.getElementById('centerGoalForm').style.display='block');
@@ -4237,7 +4329,7 @@
     document.getElementById('centerActivitySearch')?.addEventListener('input',renderCenterActivity);
     document.querySelectorAll('[data-center-jump]').forEach(el=>el.addEventListener('click',()=>{const target=el.dataset.centerJump;document.querySelectorAll('[data-center-tab]').forEach(b=>b.classList.toggle('active',b.dataset.centerTab===target));document.querySelectorAll('.center-pane').forEach(p=>p.style.display=p.id===target?'block':'none');}));
     document.getElementById('centerExportBtn')?.addEventListener('click',()=>{
-      const payload={version:APP_VERSION,exportedAt:new Date().toISOString(),account:{name:selectedName,email:selectedEmail},balance:Number(currentBalance||0),tasks:centerCache.tasks,goals:centerCache.goals,rewards:centerCache.rewards,events:centerCache.events,requests:centerCache.requests||[],activity:centerCache.activity||[]};
+      const payload={exportedAt:new Date().toISOString(),balance:Number(currentBalance||0),events:centerCache.tasks,goals:centerCache.goals,rewards:centerCache.rewards,calendar:centerCache.events,requests:centerCache.requests||[],activity:centerCache.activity||[]};
       const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mom-coin-resumen.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
       showToast('📦 Resumen exportado');
     });
