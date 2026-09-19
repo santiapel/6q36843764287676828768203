@@ -86,12 +86,6 @@
     .svg-icon { width: 22px; height: 22px; display:inline-block; vertical-align:middle; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
     .tab-icon .svg-icon { width:22px; height:22px; }
     .vector-icon { width:20px; height:20px; vertical-align:-4px; margin-right:6px; }
-    #appUpdateModal { position:fixed; inset:0; z-index:100001; display:none; align-items:center; justify-content:center; padding:22px; background:rgba(0,0,0,.55); backdrop-filter:blur(4px); }
-    #appUpdateModal .update-card { width:min(430px,100%); background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:24px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.25); text-align:center; }
-    #appUpdateModal .update-icon { width:64px; height:64px; margin:0 auto 12px; border-radius:20px; display:grid; place-items:center; background:var(--primary-light); color:var(--primary); }
-    #appUpdateModal .update-icon svg { width:34px; height:34px; }
-    #appUpdateModal .update-actions { display:flex; gap:10px; margin-top:18px; }
-    #appUpdateModal .update-actions button { flex:1; }
 
     /* PANTALLA LOGIN */
     #loginScreen {
@@ -1054,46 +1048,31 @@
     .center-stat-card strong{display:block;font-size:24px;margin-bottom:4px}.center-stat-card span{font-size:12px;color:var(--muted)}
     .milestone-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
     .milestone-dot{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--soft);font-size:17px}
+
+    /* ===== CENTRO LIVE EVENTS 7.0 ===== */
+    .center-live-hero{position:relative;overflow:hidden;border-radius:28px;padding:20px;margin-bottom:12px;background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;box-shadow:0 18px 50px rgba(0,0,0,.2)}
+    .center-live-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;position:relative;z-index:2}.center-kicker{font-size:9px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;font-weight:1000}.center-live-hero h1{margin:4px 0 5px;font-size:28px;letter-spacing:-.04em}.center-live-hero p{margin:0;opacity:.88;font-size:12px;line-height:1.45;max-width:420px}.center-live-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.15);font-size:9px;font-weight:950;white-space:nowrap;backdrop-filter:blur(10px)}.center-live-dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgba(255,255,255,.5);animation:centerLivePulse 1.2s infinite}@keyframes centerLivePulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}50%{box-shadow:0 0 0 8px rgba(255,255,255,0)}}
+    .center-hero-orb{position:absolute;border:1px solid rgba(255,255,255,.18);border-radius:50%;pointer-events:none}.orb-a{width:220px;height:220px;right:-100px;top:-120px}.orb-b{width:130px;height:130px;right:30px;bottom:-95px}.center-player-hud{position:relative;z-index:2;display:flex;justify-content:space-between;gap:16px;margin-top:18px;padding:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.09);border-radius:19px;backdrop-filter:blur(8px)}.hud-main{display:flex;gap:10px;align-items:center;min-width:0}.hud-avatar{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.13);font-size:24px;border:1px solid rgba(255,255,255,.17)}.hud-copy{min-width:0}.hud-copy span{display:block;font-size:8px;letter-spacing:.12em;font-weight:950;opacity:.72}.hud-copy strong{display:block;font-size:14px;margin:1px 0 5px}.hud-copy small{display:block;font-size:9px;opacity:.74}.hud-xp-track{width:min(220px,36vw);height:7px;border-radius:999px;background:rgba(255,255,255,.13);overflow:hidden}.hud-xp-track>div{height:100%;width:0;border-radius:inherit;background:#fff;transition:width .45s ease}.hud-stats{display:flex;align-items:center;gap:13px}.hud-stats>div{text-align:center}.hud-stats strong{display:block;font-size:17px;line-height:1}.hud-stats span{display:block;font-size:8px;opacity:.72;margin-top:3px}
+    .center-feature-strip{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 12px}.feature-live-card{display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid var(--border);border-radius:18px;background:var(--card);box-shadow:var(--shadow)}.feature-live-card.accent{background:linear-gradient(135deg,var(--card),var(--primary-light))}.feature-live-card strong{display:block;font-size:11px}.feature-live-card span{display:block;font-size:9px;color:var(--muted);margin-top:2px;line-height:1.35}.pulse-ring{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:var(--primary-light);font-size:20px;animation:pulseMini 1.6s infinite}.feature-live-card.accent .pulse-ring{animation:none}@keyframes pulseMini{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+    .center-stat-strip.pro{margin-bottom:12px}.center-stat-strip.pro .stat-box{border:1px solid var(--border);background:linear-gradient(135deg,var(--primary-light),var(--card));box-shadow:var(--shadow)}
+    .pro-tabs{overflow-x:auto;display:flex;scrollbar-width:none;white-space:nowrap}.pro-tabs::-webkit-scrollbar{display:none}.pro-tabs .center-tab{flex:0 0 auto}.pro-tabs .center-tab.active{background:var(--card);color:var(--text)}
+    .overview-banners{display:grid;gap:9px}.overview-banner{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:19px;background:var(--card);box-shadow:var(--shadow)}.overview-banner.coins{background:linear-gradient(135deg,var(--gold-light),var(--card))}.overview-banner>div:nth-child(2){flex:1;min-width:0}.overview-banner strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.overview-banner span{display:block;font-size:9px;color:var(--muted);margin-top:3px}.banner-icon{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:var(--primary-light);font-size:20px}.overview-banner.coins .banner-icon{background:rgba(245,158,11,.15)}
+    .center-command-card{margin-top:12px}.season-progress{display:flex;align-items:center;gap:8px}.season-track{height:8px;background:var(--border);border-radius:999px;overflow:hidden;flex:1}.season-track>div{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-dark));border-radius:inherit;transition:width .45s ease}.season-progress span{font-size:9px;color:var(--muted);min-width:72px;text-align:right}.pro-quick{margin-top:12px}.feature-card.pro{position:relative;overflow:hidden}.feature-card.pro:after{content:"";position:absolute;width:90px;height:90px;right:-50px;top:-50px;border-radius:50%;background:var(--primary-light);pointer-events:none}.feature-card.pro .feature-icon{font-size:20px;display:grid;place-items:center}
+    .event-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.event-toolbar .section-kicker{margin:0 0 2px}.compact-btn{min-height:42px;padding:0 13px}.event-filter-row{display:grid;gap:9px;margin-bottom:12px}.event-filter-row .form-input{margin:0}.event-filter-pills{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.event-filter-pills::-webkit-scrollbar{display:none}.event-filter-pills .filter-pill{flex:0 0 auto}
+    .center-launch-panel{border:1px solid var(--primary);border-radius:22px;background:linear-gradient(135deg,var(--primary-light),var(--card));padding:14px;margin-bottom:12px;box-shadow:0 12px 35px rgba(0,0,0,.08)}.launch-panel-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.launch-panel-head strong{display:block;font-size:14px}.launch-panel-head span{display:block;color:var(--muted);font-size:9px;margin-top:3px}.launch-badge{display:inline-flex!important;align-items:center;padding:6px 8px;border-radius:999px;background:var(--card);border:1px solid var(--border);font-weight:900!important;color:var(--primary)!important;white-space:nowrap}.launch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.launch-grid>div{min-width:0}.field-full{grid-column:1/-1}.launch-presets{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:9px 0 10px}.launch-presets span{font-size:9px;color:var(--muted);margin-left:auto}.launch-actions{display:flex;gap:8px;justify-content:flex-end}.launch-actions .btn-primary{min-width:150px}
+    .center-event-board{display:grid;gap:11px}.event-card{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:23px;background:var(--card);box-shadow:var(--shadow);padding:14px;transition:transform .2s,box-shadow .2s,border-color .2s}.event-card:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 35%);pointer-events:none}.event-card.live{border-color:var(--primary);box-shadow:0 14px 32px rgba(0,0,0,.12)}.event-card.legendary{border-color:rgba(245,158,11,.65);background:linear-gradient(135deg,var(--card),rgba(245,158,11,.07))}.event-card.epic{border-color:rgba(139,92,246,.45)}.event-card.rare{border-color:rgba(59,130,246,.40)}.event-card.complete-flash{animation:eventWinFlash .9s ease}@keyframes eventWinFlash{0%{transform:scale(1);filter:brightness(1)}30%{transform:scale(1.02);filter:brightness(1.16)}60%{transform:scale(.995);filter:brightness(1.05)}100%{transform:scale(1);filter:brightness(1)}}
+    .event-top{display:flex;align-items:flex-start;gap:10px;position:relative;z-index:1}.event-icon{width:49px;height:49px;flex:0 0 49px;border-radius:16px;display:grid;place-items:center;background:var(--primary-light);font-size:25px;box-shadow:inset 0 0 0 1px var(--border)}.event-copy{flex:1;min-width:0}.event-title{font-size:15px;font-weight:950;line-height:1.14}.event-sub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.35}.event-badge{margin-left:auto;font-size:8px;font-weight:950;padding:6px 8px;border-radius:999px;background:var(--soft);white-space:nowrap}.event-badge.live{background:var(--primary-light);color:var(--primary)}.event-badge.cooldown{background:var(--gold-light);color:var(--text)}.event-badge.upcoming{background:rgba(59,130,246,.12);color:#2563eb}.event-reward-line{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:11px;padding:9px;border-radius:14px;background:var(--soft);border:1px solid var(--border)}.event-reward-main{display:flex;align-items:center;gap:7px}.coin-orb{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;background:var(--gold-light);font-size:14px}.event-reward-main strong{font-size:13px}.event-reward-main span{display:block;font-size:8px;color:var(--muted);margin-top:1px}.event-rarity{font-size:8px;font-weight:950}.rarity-common{color:var(--muted)}.rarity-rare{color:#2563eb}.rarity-epic{color:#7c3aed}.rarity-legendary{color:#d97706}
+    .event-progress{height:10px;background:var(--border);border-radius:999px;overflow:hidden;margin:11px 0 7px;position:relative}.event-progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-dark));border-radius:inherit;transition:width .65s cubic-bezier(.2,.8,.2,1)}.event-card.live .event-progress>div{background-size:200% 100%;animation:eventShimmer 1.2s linear infinite}@keyframes eventShimmer{to{background-position:-200% 0}}.event-meta{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:var(--muted)}.event-countdown{font-variant-numeric:tabular-nums;font-weight:950;color:var(--text)}.event-xp{font-size:9px;font-weight:900;color:var(--primary)}.event-actions{display:flex;gap:8px;margin-top:11px}.event-action{flex:1;border:0;border-radius:13px;padding:10px 10px;font-weight:950;background:var(--primary);color:#fff;cursor:pointer}.event-action.secondary{background:var(--soft);color:var(--text);border:1px solid var(--border)}.event-action:disabled{opacity:.45;cursor:not-allowed}.event-empty{padding:30px 15px;text-align:center;border:1px dashed var(--border);border-radius:21px;color:var(--muted);background:var(--card)}.event-win-count{font-size:9px;color:var(--muted);margin-top:6px}
+    .event-overlay{position:fixed;inset:0;z-index:100020;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.68);backdrop-filter:blur(12px)}.event-overlay-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.11),transparent 34%);pointer-events:none}.event-launch-card,.reward-pop-card{position:relative;z-index:2;width:min(390px,100%);padding:24px;border:1px solid rgba(255,255,255,.16);border-radius:30px;background:var(--card);color:var(--text);box-shadow:0 24px 70px rgba(0,0,0,.32);text-align:center;overflow:hidden}.event-launch-card{animation:eventCardIn .38s cubic-bezier(.2,.8,.2,1)}@keyframes eventCardIn{from{transform:translateY(20px) scale(.96);opacity:0}to{transform:none;opacity:1}}.event-overlay-kicker{font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--primary);font-weight:1000}.event-overlay-icon{width:88px;height:88px;margin:12px auto;border-radius:26px;display:grid;place-items:center;background:var(--primary-light);font-size:44px;animation:eventIconFloat 1.5s ease-in-out infinite}@keyframes eventIconFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}.event-overlay-title{font-size:23px;font-weight:1000;letter-spacing:-.03em}.event-overlay-sub{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.45}.event-overlay-count{font-size:72px;line-height:1;margin:18px 0 12px;font-weight:1000;letter-spacing:-.06em;color:var(--primary);font-variant-numeric:tabular-nums}.event-launch-meter{height:7px;border-radius:999px;background:var(--border);overflow:hidden}.event-launch-meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-dark));border-radius:inherit}.reward-pop-card{animation:rewardPop .55s cubic-bezier(.15,.85,.25,1)}@keyframes rewardPop{0%{transform:scale(.78) rotate(-2deg);opacity:0}60%{transform:scale(1.04) rotate(.5deg)}100%{transform:scale(1);opacity:1}}.reward-pop-icon{font-size:65px;line-height:1;margin:13px 0}.reward-amount{font-size:48px;line-height:1;font-weight:1000;color:var(--primary);letter-spacing:-.06em}.level-up-badge{margin:12px auto 4px;width:max-content;max-width:100%;padding:7px 11px;border-radius:999px;background:var(--gold-light);font-size:9px;font-weight:1000}.reward-pop-card .btn-primary{margin-top:16px;min-width:170px}.reward-confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}.confetti-piece{position:absolute;top:-12px;width:7px;height:12px;border-radius:2px;animation:confettiDrop var(--confetti-dur) linear forwards;transform:rotate(var(--confetti-rot))}@keyframes confettiDrop{to{transform:translate3d(var(--confetti-x),440px,0) rotate(calc(var(--confetti-rot) + 420deg));opacity:.88}}
+    .center-empty-action{padding:24px 14px;text-align:center;color:var(--muted);font-size:11px}.small-muted{font-size:10px;color:var(--muted)}
+    @media(max-width:540px){.center-player-hud{align-items:flex-start}.hud-stats{gap:8px}.hud-stats strong{font-size:14px}.center-feature-strip{grid-template-columns:1fr}.launch-grid{grid-template-columns:1fr}.field-full{grid-column:auto}.launch-presets span{width:100%;margin-left:0}.event-toolbar{align-items:flex-end}.event-toolbar .small-muted{max-width:220px}.event-reward-line{align-items:flex-start}.event-badge{max-width:100px;text-align:center}.event-overlay-count{font-size:64px}}
+    @media(max-width:390px){.center-live-hero h1{font-size:24px}.center-player-hud{flex-direction:column}.hud-xp-track{width:58vw}.hud-stats{justify-content:space-between;width:100%}.pro-tabs{margin-left:-4px;margin-right:-4px}.event-actions{flex-direction:column}.event-action{width:100%}}
+    body.reduce-motion .pulse-ring,body.reduce-motion .event-overlay-icon,body.reduce-motion .center-live-dot,body.reduce-motion .event-card.live .event-progress>div{animation:none!important}.reduce-motion .event-launch-card,.reduce-motion .reward-pop-card{animation:none!important}
+
 </style>
 </head>
 
 <body>
-  <!-- ===== Bloqueo rápido de la app (huella / PIN local del dispositivo) ===== -->
-  <div id="appLockScreen" style="display:none; position:fixed; inset:0; z-index:99997; background:var(--primary-dark, #14532d); color:#fff; flex-direction:column; align-items:center; justify-content:center; padding:24px; text-align:center;">
-    <div style="font-size:52px;margin-bottom:10px;">🔒</div>
-    <h2 style="font-size:18px;margin-bottom:6px;">Banco de Mamá bloqueado</h2>
-    <p id="appLockSubtitle" style="font-size:13px;opacity:0.85;margin-bottom:26px;">Desbloqueá con tu huella para continuar</p>
-
-    <button id="appLockBiometricBtn" class="btn-primary" style="max-width:280px;background:#fff;color:var(--primary-dark, #14532d);margin-bottom:12px;">👆 Usar huella</button>
-
-    <div id="appLockPinArea" style="display:none;max-width:280px;width:100%;">
-      <input id="appLockPinInput" type="password" inputmode="numeric" maxlength="8" placeholder="PIN de respaldo" class="form-input" style="text-align:center;letter-spacing:4px;">
-      <button id="appLockPinBtn" class="btn-primary" style="background:#fff;color:var(--primary-dark, #14532d);">Desbloquear</button>
-    </div>
-
-    <button id="appLockUsePinInstead" style="background:none;border:none;color:#fff;opacity:0.75;font-size:12px;margin-top:16px;text-decoration:underline;cursor:pointer;">Usar PIN de respaldo</button>
-  </div>
-
-  <!-- ===== Configuración inicial de bloqueo (aparece una sola vez) ===== -->
-  <div id="appLockSetupScreen" style="display:none; position:fixed; inset:0; z-index:99996; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; padding:20px;">
-    <div class="card" style="max-width:340px;width:100%;">
-      <div style="text-align:center;font-size:40px;margin-bottom:8px;">🔐</div>
-      <h3 style="text-align:center;font-size:16px;margin-bottom:6px;">Protegé tu banco</h3>
-      <p style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:18px;">Activá un bloqueo rápido para que nadie más abra tu billetera desde este celular.</p>
-
-      <button id="setupBiometricBtn" class="btn-primary" style="margin-bottom:10px;">👆 Configurar huella</button>
-      <button id="setupPinOnlyBtn" class="btn-primary" style="background:var(--card);color:var(--primary);border:1px solid var(--primary);margin-bottom:10px;">🔢 Solo usar PIN</button>
-      <button id="setupSkipBtn" style="background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;width:100%;">Ahora no</button>
-
-      <div id="setupPinCreateArea" style="display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Creá un PIN de respaldo (4-8 dígitos)</label>
-        <input id="setupPinInput1" type="password" inputmode="numeric" maxlength="8" class="form-input" placeholder="Nuevo PIN">
-        <input id="setupPinInput2" type="password" inputmode="numeric" maxlength="8" class="form-input" placeholder="Repetir PIN">
-        <button id="setupPinConfirmBtn" class="btn-primary">Guardar y activar</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ===== Panel de Debug Visual (para ver errores dentro del WebView de Median) ===== -->
   <div id="debugPanel" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.92); color:#0f0; font-family:monospace; font-size:12px; padding:12px; overflow-y:auto; white-space:pre-wrap; word-break:break-word;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; position:sticky; top:0; background:rgba(0,0,0,0.92); padding-bottom:8px;">
@@ -1667,199 +1646,135 @@
   </main>
 
 
-    <!-- ===== CENTRO: METAS, TAREAS, RECOMPENSAS, LOGROS, PRESUPUESTO, CALENDARIO Y TEMAS ===== -->
+    <!-- ===== CENTRO: LIVE EVENTS / METAS / RECOMPENSAS ===== -->
     <section id="pageCenter" class="page-section">
-      <div class="center-header-pro">
-        <div class="center-live-row">
-          <div><div class="center-kicker">MOM COIN · LIVE CENTER</div><h1>Centro de eventos ⚡</h1><p>Completá los encargos de Mamá como si fueran misiones de un evento especial.</p></div>
+      <div class="center-live-hero">
+        <div class="center-hero-orb orb-a"></div><div class="center-hero-orb orb-b"></div>
+        <div class="center-live-top">
+          <div>
+            <div class="center-kicker">MOM COIN · LIVE EVENT</div>
+            <h1>Centro de eventos ⚡</h1>
+            <p>Los encargos de Mamá ahora son eventos con misión, cuenta regresiva, rachas, XP y recompensas en Mom Coins.</p>
+          </div>
           <div class="center-live-pill"><span class="center-live-dot"></span> EN VIVO</div>
+        </div>
+        <div class="center-player-hud">
+          <div class="hud-main">
+            <div class="hud-avatar" id="centerHudAvatar">⚡</div>
+            <div class="hud-copy"><span id="centerLevelLabel">NIVEL 1</span><strong id="centerLevelValue">Recluta</strong><div class="hud-xp-track"><div id="centerXpFill"></div></div><small id="centerXpText">0 / 100 XP</small></div>
+          </div>
+          <div class="hud-stats">
+            <div><strong id="centerHudStreak">0</strong><span>Racha</span></div>
+            <div><strong id="centerHudWins">0</strong><span>Victorias</span></div>
+            <div><strong id="centerHudEarned">0</strong><span>MC ganados</span></div>
+          </div>
         </div>
       </div>
 
-      <div class="stat-strip">
+      <div class="center-feature-strip">
+        <div class="feature-live-card"><div class="pulse-ring">⚡</div><div><strong>Modo evento activado</strong><span>Arrancá una misión, completá la misión antes de que termine el contador y desbloqueá el premio.</span></div></div>
+        <div class="feature-live-card accent"><div class="pulse-ring">💰</div><div><strong>Premios reales en MC</strong><span>La victoria acredita las Mom Coins de forma atómica.</span></div></div>
+      </div>
+
+      <div class="center-stat-strip pro">
         <div class="stat-box"><strong id="centerTaskCount">0</strong><span>Eventos</span></div>
         <div class="stat-box"><strong id="centerGoalCount">0</strong><span>Metas</span></div>
         <div class="stat-box"><strong id="centerAchievementCount">0</strong><span>Logros</span></div>
       </div>
 
-      <div class="center-nav-grid">
-        <div class="center-nav-card" data-center-jump="centerTasks"><div style="font-size:22px">⚡</div><strong>Eventos activos</strong><span>Entrá a tu próxima misión</span></div>
-        <div class="center-nav-card" data-center-jump="centerGoals"><div style="font-size:22px">🎯</div><strong>Metas</strong><span>Seguimiento de objetivos</span></div>
-        <div class="center-nav-card" data-center-jump="centerRewards"><div style="font-size:22px">🎁</div><strong>Recompensas</strong><span>Canjes pendientes</span></div>
-        <div class="center-nav-card" data-center-jump="centerActivity"><div style="font-size:22px">🧭</div><strong>Actividad</strong><span>Tu historial del Centro</span></div>
-      </div>
-
-      <div class="center-tabs">
-        <button class="center-tab active" data-center-tab="centerOverview">✨ Todo</button>
-        <button class="center-tab" data-center-tab="centerActivity">🧭 Actividad</button>
+      <div class="center-tabs pro-tabs">
+        <button class="center-tab active" data-center-tab="centerOverview">✨ Resumen</button>
         <button class="center-tab" data-center-tab="centerTasks">⚡ Eventos</button>
         <button class="center-tab" data-center-tab="centerGoals">🎯 Metas</button>
-        <button class="center-tab" data-center-tab="centerRewards">🎁 Recompensas</button>
+        <button class="center-tab" data-center-tab="centerRewards">🎁 Premios</button>
         <button class="center-tab" data-center-tab="centerAchievements">🏆 Logros</button>
-        <button class="center-tab" data-center-tab="centerStats">📈 Estadísticas</button>
+        <button class="center-tab" data-center-tab="centerStats">📈 Perfil</button>
+        <button class="center-tab" data-center-tab="centerActivity">🧭 Actividad</button>
         <button class="center-tab" data-center-tab="centerBudget">📊 Presupuesto</button>
         <button class="center-tab" data-center-tab="centerCalendar">📅 Calendario</button>
         <button class="center-tab" data-center-tab="centerCustomize">🎨 Personalizar</button>
       </div>
 
       <div id="centerOverview" class="center-pane">
-        <div class="hero-mini">
-          <div class="eyebrow">Tu Mom Coin</div>
-          <div class="hero-value"><span id="centerHeroBalance">0.00</span> MC</div>
-          <div class="hero-sub" id="centerHeroMessage">Organizá, ahorrá y disfrutá tus objetivos.</div>
+        <div class="overview-banners">
+          <div class="overview-banner event"><span class="banner-icon">🚀</span><div><strong id="centerNextEventTitle">Buscando próximo evento…</strong><span id="centerNextEventText">Las misiones aparecerán acá.</span></div><button class="mini-action" data-center-jump="centerTasks">Ver</button></div>
+          <div class="overview-banner coins"><span class="banner-icon">🪙</span><div><strong>Tu cosecha de eventos</strong><span id="centerOverviewEarned">0 MC ganados en eventos</span></div><button class="mini-action" data-center-jump="centerActivity">Historial</button></div>
         </div>
-        <div class="center-quick-grid">
-          <div class="quick-card" data-center-jump="centerTasks"><div>⚡</div><strong>Eventos</strong><span id="quickTasksText">Misiones de Mamá</span></div>
-          <div class="quick-card" data-center-jump="centerGoals"><div>🎯</div><strong>Metas</strong><span id="quickGoalsText">Seguí tus objetivos</span></div>
-          <div class="quick-card" data-center-jump="centerRewards"><div>🎁</div><strong>Recompensas</strong><span>Solicitá un canje</span></div>
-          <div class="quick-card" data-center-jump="centerActivity"><div>🧭</div><strong>Actividad</strong><span>Todo lo que pasó</span></div>
-        </div>
-        <div class="card" style="margin-top:14px">
-          <div class="card-title"><span>⚡ Acciones rápidas</span></div>
-          <div class="center-quick-grid" style="margin-top:0">
-            <div class="quick-card" data-center-jump="centerStats"><div>📈</div><strong>Mis estadísticas</strong><span>Resumen personal</span></div>
-            <div class="quick-card" data-center-jump="centerBudget"><div>📊</div><strong>Presupuesto</strong><span>Control mensual</span></div>
-            <div class="quick-card" data-center-jump="centerCalendar"><div>📅</div><strong>Calendario</strong><span>Fechas familiares</span></div>
-            <div class="quick-card" data-center-jump="centerCustomize"><div>🎨</div><strong>Personalizar</strong><span>Tema, color y accesibilidad</span></div>
+        <div class="card center-command-card">
+          <div class="card-title"><span>⚡ Tu temporada</span><span id="centerSeasonLabel" style="font-size:10px;color:var(--muted)">Mom Coin Live</span></div>
+          <div class="season-progress"><div class="season-track"><div id="centerSeasonFill"></div></div><span id="centerSeasonText">0% al próximo nivel</span></div>
+          <div class="center-quick-grid pro-quick">
+            <div class="quick-card" data-center-jump="centerTasks"><div>⚡</div><strong>Eventos</strong><span id="quickTasksText">0 disponibles</span></div>
+            <div class="quick-card" data-center-jump="centerGoals"><div>🎯</div><strong>Metas</strong><span id="quickGoalsText">0 activas</span></div>
+            <div class="quick-card" data-center-jump="centerRewards"><div>🎁</div><strong>Canjes</strong><span>Usá tus MC</span></div>
+            <div class="quick-card" data-center-jump="centerAchievements"><div>🏆</div><strong>Logros</strong><span>Desbloqueá hitos</span></div>
           </div>
         </div>
-        <div class="feature-grid">
-          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 11 12 14 22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div><h3>Eventos y rachas</h3><p>Misiones con cuenta regresiva, estados, enfriamiento y animaciones. Completar un evento no entrega MC automáticamente.</p></div>
-          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div><h3>Metas de ahorro</h3><p>Seguimiento visual del progreso de cada objetivo.</p></div>
-          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"></path></svg></div><h3>Recompensas</h3><p>Solicitá canjes con MC; mamá decide y registra la entrega.</p></div>
-          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10l2 3-7 10L5 7l2-3Z"></path></svg></div><h3>Logros</h3><p>Insignias por ahorrar, completar tareas y mantener constancia.</p></div>
-          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h17"></path><path d="m7 15 4-4 3 2 6-7"></path></svg></div><h3>Estadísticas</h3><p>Resumen de ingresos, retiros, metas y progreso.</p></div>
-          <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 9h18"></path></svg></div><h3>Calendario familiar</h3><p>Cumpleaños, fechas límite, eventos y recordatorios.</p></div>
-        </div>
-        <div class="card" style="margin-top:14px"><div class="card-title"><span>💡 Ideas del día</span></div><p style="margin:0;color:var(--muted);font-size:13px">Usá los eventos para completar encargos de Mamá, las metas para ahorrar y las recompensas para canjear MC. <strong>Completar un evento nunca agrega MC automáticamente.</strong></p></div>
-      </div>
-
-      <div id="centerActivity" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>🧭 Actividad reciente</span><button id="centerExportBtn" class="mini-action" type="button">Exportar</button></div>
-          <div class="center-search"><input id="centerActivitySearch" class="form-input" placeholder="Buscar actividad..." style="margin:0"></div>
-          <div id="centerActivityList"><div class="center-empty-action">Todavía no hay actividad registrada.</div></div>
-        </div>
-        <div class="card" style="margin-top:14px">
-          <div class="card-title"><span>💡 Centro de control</span></div>
-          <p style="font-size:12px;color:var(--muted);line-height:1.5">Los eventos, metas, rachas y logros del Centro <strong>no crean MC</strong>. Las recompensas se solicitan y quedan pendientes de aprobación.</p>
+        <div class="center-idea-grid">
+          <div class="feature-card pro"><div class="feature-icon">⏱️</div><h3>Cuenta regresiva</h3><p>El evento arranca al confirmar la misión y podés completarlo antes de que se acabe la cuenta regresiva.</p></div>
+          <div class="feature-card pro"><div class="feature-icon">💰</div><h3>Recompensa en MC</h3><p>Mamá define el premio y las Mom Coins se acreditan al completar el evento.</p></div>
+          <div class="feature-card pro"><div class="feature-icon">🔥</div><h3>Rachas y niveles</h3><p>Ganás XP, acumulás victorias y progresás de nivel con tus eventos.</p></div>
+          <div class="feature-card pro"><div class="feature-icon">🎉</div><h3>Final cinematográfico</h3><p>Celebración, confeti, monedas y aviso de nivel cuando terminás una misión.</p></div>
         </div>
       </div>
 
       <div id="centerTasks" class="center-pane" style="display:none">
-        <div class="center-command-bar">
-          <input id="centerTaskSearch" class="form-input" placeholder="Buscar eventos...">
-          <button id="centerAddTaskBtn" class="mini-action" type="button">+ Crear</button>
+        <div class="event-toolbar">
+          <div><div class="section-kicker"><strong>⚡ Eventos disponibles</strong><span id="centerEventSubtitle">Elegí tu misión</span></div><p class="small-muted" style="margin:0">Cada evento tiene objetivo, cuenta regresiva, rareza y recompensa fija.</p></div>
+          <button id="centerAddTaskBtn" class="btn-primary compact-btn" type="button">＋ Lanzar</button>
         </div>
-        <div class="filter-pills" id="centerTaskFilters"><button class="filter-pill active" data-task-filter="all">Todos</button><button class="filter-pill" data-task-filter="live">Activos</button><button class="filter-pill" data-task-filter="done">Completados</button><button class="filter-pill" data-task-filter="cooldown">En espera</button></div>
-        <div id="centerTaskForm" class="card" style="display:none;margin-bottom:12px">
-          <div class="card-title"><span>⚡ Lanzar nuevo evento</span></div>
-          <input id="centerTaskTitle" class="form-input" placeholder="Ej: Operación habitación ordenada">
-          <select id="centerTaskCategory" class="form-input"><option value="hogar">🏠 Hogar</option><option value="estudio">📚 Estudio</option><option value="personal">🌱 Personal</option><option value="familia">❤️ Familia</option><option value="otro">✨ Otro</option></select>
-          <select id="centerTaskDuration" class="form-input"><option value="15">⏱️ 15 minutos</option><option value="30" selected>⏱️ 30 minutos</option><option value="45">⏱️ 45 minutos</option><option value="60">⏱️ 1 hora</option><option value="120">⏱️ 2 horas</option></select>
-          <select id="centerTaskCooldown" class="form-input"><option value="0">Sin espera</option><option value="15">15 min de espera</option><option value="30" selected>30 min de espera</option><option value="60">1 hora de espera</option><option value="1440">24 horas de espera</option></select>
-          <select id="centerTaskDifficulty" class="form-input"><option value="easy">🟢 Tranquilo</option><option value="normal" selected>🟡 Normal</option><option value="hard">🔴 Desafío</option></select>
-          <textarea id="centerTaskNotes" class="form-input" rows="2" placeholder="Objetivo o instrucciones del evento..." style="resize:vertical"></textarea>
-          <button id="centerSaveTaskBtn" class="btn-primary">🚀 Lanzar evento</button>
+        <div class="event-filter-row">
+          <input id="centerTaskSearch" class="form-input" placeholder="Buscar evento, categoría o misión…">
+          <div class="event-filter-pills" id="centerTaskFilters">
+            <button class="filter-pill active" data-task-filter="all">Todos</button><button class="filter-pill" data-task-filter="ready">Disponibles</button><button class="filter-pill" data-task-filter="live">En curso</button><button class="filter-pill" data-task-filter="cooldown">En espera</button><button class="filter-pill" data-task-filter="done">Ganados</button>
+          </div>
         </div>
-        <div id="centerTasksList" class="center-event-board"><div class="event-empty">Cargando eventos...</div></div>
+        <div id="centerTaskForm" class="center-launch-panel" style="display:none">
+          <div class="launch-panel-head"><div><div class="center-kicker">ADMIN · EVENT CREATOR</div><strong>🚀 Lanzar nuevo evento</strong><span>Diseñá una misión de Mamá con su propio premio.</span></div><span class="launch-badge">MC + XP</span></div>
+          <div class="launch-grid">
+            <div class="field-full"><label class="field-label">Nombre del evento</label><input id="centerTaskTitle" class="form-input" placeholder="Ej: Operación habitación ordenada"></div>
+            <div><label class="field-label">Categoría</label><select id="centerTaskCategory" class="form-input"><option value="hogar">🏠 Hogar</option><option value="estudio">📚 Estudio</option><option value="personal">🌱 Personal</option><option value="familia">❤️ Familia</option><option value="otro">✨ Otro</option></select></div>
+            <div><label class="field-label">Rareza</label><select id="centerTaskRarity" class="form-input"><option value="common">⚪ Común</option><option value="rare" selected>🔵 Raro</option><option value="epic">🟣 Épico</option><option value="legendary">🟠 Legendario</option></select></div>
+            <div><label class="field-label">Duración</label><select id="centerTaskDuration" class="form-input"><option value="5">5 minutos</option><option value="10">10 minutos</option><option value="15">15 minutos</option><option value="30" selected>30 minutos</option><option value="45">45 minutos</option><option value="60">1 hora</option><option value="120">2 horas</option><option value="240">4 horas</option></select></div>
+            <div><label class="field-label">Enfriamiento</label><select id="centerTaskCooldown" class="form-input"><option value="0">Sin espera</option><option value="10">10 minutos</option><option value="30" selected>30 minutos</option><option value="60">1 hora</option><option value="180">3 horas</option><option value="1440">24 horas</option><option value="10080">7 días</option></select></div>
+            <div><label class="field-label">Recompensa MC</label><input id="centerTaskReward" class="form-input" type="number" min="1" max="10000" step="1" value="10" inputmode="numeric"></div>
+            <div><label class="field-label">XP</label><input id="centerTaskXP" class="form-input" type="number" min="1" max="5000" step="1" value="25" inputmode="numeric"></div>
+            <div><label class="field-label">Inicio programado</label><input id="centerTaskStartAt" class="form-input" type="datetime-local"></div>
+            <div><label class="field-label">Presentación</label><select id="centerTaskFeatured" class="form-input"><option value="false">Normal</option><option value="true">⭐ Evento destacado</option></select></div>
+            <div class="field-full"><label class="field-label">Objetivo / instrucciones</label><textarea id="centerTaskNotes" class="form-input" rows="3" placeholder="Ej: Ordená ropa, guardá los zapatos y dejá la cama lista…" style="resize:vertical"></textarea></div>
+          </div>
+          <div class="launch-presets"><button type="button" class="reason-chip" data-event-preset="5">+5 MC</button><button type="button" class="reason-chip" data-event-preset="10">+10 MC</button><button type="button" class="reason-chip" data-event-preset="25">+25 MC</button><button type="button" class="reason-chip" data-event-preset="50">+50 MC</button><span>Premio fijo; sin azar.</span></div>
+          <div class="launch-actions"><button id="centerCancelTaskBtn" class="mini-action" type="button">Cancelar</button><button id="centerSaveTaskBtn" class="btn-primary" type="button">🚀 Lanzar evento</button></div>
+        </div>
+        <div id="centerTasksList" class="center-event-board"><div class="event-empty">Cargando eventos…</div></div>
       </div>
 
       <div id="centerGoals" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>🎯 Metas de ahorro</span><button id="centerAddGoalBtn" class="mini-action" type="button">+ Nueva</button></div>
-          <div id="centerGoalForm" style="display:none">
-            <input id="centerGoalTitle" class="form-input" placeholder="Ej: Ahorrar para algo especial">
-            <input id="centerGoalTarget" class="form-input" type="number" min="1" step="0.01" placeholder="Objetivo en MC">
-            <button id="centerSaveGoalBtn" class="btn-primary">Crear meta</button>
-          </div>
-          <div id="centerGoalsList" class="mini-list"><div class="empty-state">Cargando metas...</div></div>
+        <div class="card"><div class="card-title"><span>🎯 Metas de ahorro</span><button id="centerAddGoalBtn" class="mini-action" type="button">+ Nueva</button></div>
+          <div id="centerGoalForm" style="display:none"><input id="centerGoalTitle" class="form-input" placeholder="Ej: Ahorrar para algo especial"><input id="centerGoalTarget" class="form-input" type="number" min="1" step="0.01" placeholder="Objetivo en MC"><button id="centerSaveGoalBtn" class="btn-primary">Crear meta</button></div>
+          <div id="centerGoalsList" class="mini-list"><div class="empty-state">Cargando metas…</div></div>
         </div>
       </div>
 
       <div id="centerRewards" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>🎁 Centro de recompensas</span><button id="centerAddRewardBtn" class="mini-action" type="button">+ Nueva</button></div>
-          <div id="centerRewardForm" style="display:none">
-            <input id="centerRewardTitle" class="form-input" placeholder="Ej: Elegir película">
-            <input id="centerRewardCost" class="form-input" type="number" min="1" step="0.01" placeholder="Precio en MC">
-            <button id="centerSaveRewardBtn" class="btn-primary">Crear recompensa</button>
-          </div>
-          <div id="centerRewardsList" class="mini-list"><div class="empty-state">Cargando recompensas...</div></div>
-          <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-            <div class="card-title"><span>📨 Mis solicitudes</span></div>
-            <div id="centerMyRequests" class="mini-list"><div class="empty-state">Cargando...</div></div>
-          </div>
-          <div id="centerAdminRequestsWrap" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-            <div class="card-title"><span>👑 Solicitudes para aprobar</span></div>
-            <div id="centerAdminRequests" class="mini-list"><div class="empty-state">Sin solicitudes pendientes.</div></div>
-          </div>
+        <div class="card"><div class="card-title"><span>🎁 Recompensas familiares</span><button id="centerAddRewardBtn" class="mini-action" type="button">+ Nueva</button></div>
+          <p class="small-muted" style="margin:0 0 10px">Usá los MC que ganaste en eventos para pedir un premio que Mamá aprueba.</p>
+          <div id="centerRewardForm" style="display:none"><input id="centerRewardTitle" class="form-input" placeholder="Ej: Elegir película"><input id="centerRewardCost" class="form-input" type="number" min="1" step="0.01" placeholder="Precio en MC"><button id="centerSaveRewardBtn" class="btn-primary">Crear recompensa</button></div>
+          <div id="centerRewardsList" class="mini-list"><div class="empty-state">Cargando recompensas…</div></div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><div class="card-title"><span>📨 Mis solicitudes</span></div><div id="centerMyRequests" class="mini-list"><div class="empty-state">Cargando…</div></div></div>
+          <div id="centerAdminRequestsWrap" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><div class="card-title"><span>👑 Solicitudes para aprobar</span></div><div id="centerAdminRequests" class="mini-list"><div class="empty-state">Sin solicitudes pendientes.</div></div></div>
         </div>
       </div>
 
-      <div id="centerAchievements" class="center-pane" style="display:none">
-        <div class="card"><div class="card-title"><span>🏆 Logros</span></div><div id="centerAchievementsList" class="mini-list"></div></div>
-      </div>
+      <div id="centerAchievements" class="center-pane" style="display:none"><div class="card"><div class="card-title"><span>🏆 Logros</span><span id="centerAchievementHint" class="small-muted">Completá eventos para subir</span></div><div id="centerAchievementsList" class="mini-list"></div></div></div>
+      <div id="centerStats" class="center-pane" style="display:none"><div class="card"><div class="card-title"><span>📈 Perfil de eventos</span><span class="small-muted">Tu progreso</span></div><div class="feature-grid" id="centerStatsGrid"></div><div id="centerMilestones" style="margin-top:14px"></div></div></div>
+      <div id="centerActivity" class="center-pane" style="display:none"><div class="card"><div class="card-title"><span>🧭 Actividad</span><span class="small-muted">Movimientos y victorias</span></div><input id="centerActivitySearch" class="form-input" placeholder="Buscar actividad…" style="margin:0 0 12px"><div id="centerActivityList"><div class="center-empty-action">Todavía no hay actividad registrada.</div></div></div></div>
+      <div id="centerBudget" class="center-pane" style="display:none"><div class="card"><div class="card-title"><span>📊 Presupuesto</span><span id="centerBudgetMonth" class="small-muted"></span></div><input id="centerBudgetAmount" class="form-input" type="number" min="0" step="0.01" placeholder="Presupuesto mensual en MC"><button id="centerSaveBudgetBtn" class="btn-primary">Guardar presupuesto</button><div id="centerBudgetStats" style="margin-top:12px"></div></div></div>
+      <div id="centerCalendar" class="center-pane" style="display:none"><div class="card"><div class="card-title"><span>📅 Calendario familiar</span><button id="centerAddEventBtn" class="mini-action" type="button">+ Evento</button></div><div id="centerEventForm" style="display:none"><input id="centerEventTitle" class="form-input" placeholder="Título del evento"><input id="centerEventDate" class="form-input" type="date"><button id="centerSaveEventBtn" class="btn-primary">Guardar evento</button></div><div id="centerEventsList" class="mini-list"></div></div></div>
+      <div id="centerCustomize" class="center-pane" style="display:none"><div class="card"><div class="card-title"><span>🎨 Personalización</span></div><p style="font-size:12px;color:var(--muted);margin-bottom:12px">Elegí cómo querés ver Mom Coin. “Sistema” sigue automáticamente el tema del teléfono.</p><div class="theme-choice"><button type="button" data-theme-choice="system">📱 Sistema</button><button type="button" data-theme-choice="light">☀️ Claro</button><button type="button" data-theme-choice="dark">🌙 Oscuro</button></div><div style="margin-top:18px"><div style="font-size:13px;font-weight:800;margin-bottom:8px">Color principal</div><div style="display:flex;gap:13px;align-items:center;flex-wrap:wrap"><button class="color-dot" data-accent="#1F6F4A" style="background:#1F6F4A" aria-label="Verde"></button><button class="color-dot" data-accent="#2563EB" style="background:#2563EB" aria-label="Azul"></button><button class="color-dot" data-accent="#7C3AED" style="background:#7C3AED" aria-label="Violeta"></button><button class="color-dot" data-accent="#DB2777" style="background:#DB2777" aria-label="Rosa"></button><button class="color-dot" data-accent="#EA580C" style="background:#EA580C" aria-label="Naranja"></button><input id="customAccentColor" type="color" value="#1F6F4A" style="width:40px;height:40px;border:0;background:none;padding:0"></div></div><div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)"><h4 style="font-size:14px;margin-bottom:8px">♿ Accesibilidad</h4><label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0">Texto grande <input type="checkbox" id="prefLargeText"></label><label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--border)">Reducir animaciones <input type="checkbox" id="prefReduceMotion"></label><label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--border)">Modo compacto <input type="checkbox" id="prefCompactMode"></label><div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:12px;color:var(--muted);margin-bottom:5px">🔊 Música durante voz: <strong id="duckLabel">32%</strong></div><input id="prefDuckLevel" class="setting-range" type="range" min="15" max="60" step="1" value="32"></div><div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:12px;color:var(--muted);margin-bottom:5px">🔠 Tamaño del texto</div><input id="prefFontScale" class="setting-range" type="range" min="90" max="125" step="5" value="100"></div></div></div></div>
 
-      <div id="centerStats" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>📈 Estadísticas</span><span style="font-size:11px;color:var(--muted)">Tu progreso</span></div>
-          <div class="feature-grid" id="centerStatsGrid"></div>
-          <div id="centerMilestones" style="margin-top:14px"></div>
-        </div>
-      </div>
-
-      <div id="centerBudget" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>📊 Presupuesto</span><span id="centerBudgetMonth" style="font-size:11px;color:var(--muted)"></span></div>
-          <input id="centerBudgetAmount" class="form-input" type="number" min="0" step="0.01" placeholder="Presupuesto mensual en MC">
-          <button id="centerSaveBudgetBtn" class="btn-primary">Guardar presupuesto</button>
-          <div id="centerBudgetStats" style="margin-top:12px"></div>
-        </div>
-      </div>
-
-      <div id="centerCalendar" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>📅 Calendario familiar</span><button id="centerAddEventBtn" class="mini-action" type="button">+ Evento</button></div>
-          <div id="centerEventForm" style="display:none">
-            <input id="centerEventTitle" class="form-input" placeholder="Título del evento">
-            <input id="centerEventDate" class="form-input" type="date">
-            <button id="centerSaveEventBtn" class="btn-primary">Guardar evento</button>
-          </div>
-          <div id="centerEventsList" class="mini-list"></div>
-        </div>
-      </div>
-
-      <div id="centerCustomize" class="center-pane" style="display:none">
-        <div class="card">
-          <div class="card-title"><span>🎨 Personalización</span></div>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Elegí cómo querés ver Mom Coin. “Sistema” sigue automáticamente el tema del teléfono.</p>
-          <div class="theme-choice">
-            <button type="button" data-theme-choice="system">📱 Sistema</button>
-            <button type="button" data-theme-choice="light">☀️ Claro</button>
-            <button type="button" data-theme-choice="dark">🌙 Oscuro</button>
-          </div>
-          <div style="margin-top:18px">
-            <div style="font-size:13px;font-weight:800;margin-bottom:8px">Color principal</div>
-            <div style="display:flex;gap:13px;align-items:center;flex-wrap:wrap">
-              <button class="color-dot" data-accent="#1F6F4A" style="background:#1F6F4A" aria-label="Verde"></button>
-              <button class="color-dot" data-accent="#2563EB" style="background:#2563EB" aria-label="Azul"></button>
-              <button class="color-dot" data-accent="#7C3AED" style="background:#7C3AED" aria-label="Violeta"></button>
-              <button class="color-dot" data-accent="#DB2777" style="background:#DB2777" aria-label="Rosa"></button>
-              <button class="color-dot" data-accent="#EA580C" style="background:#EA580C" aria-label="Naranja"></button>
-              <input id="customAccentColor" type="color" value="#1F6F4A" style="width:40px;height:40px;border:0;background:none;padding:0">
-            </div>
-          </div>
-          <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
-            <h4 style="font-size:14px;margin-bottom:8px">♿ Accesibilidad</h4>
-            <label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0">Texto grande <input type="checkbox" id="prefLargeText"></label>
-            <label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--border)">Reducir animaciones <input type="checkbox" id="prefReduceMotion"></label>
-            <label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--border)">Modo compacto <input type="checkbox" id="prefCompactMode"></label>
-            <div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:12px;color:var(--muted);margin-bottom:5px">🔊 Música durante voz: <strong id="duckLabel">32%</strong></div><input id="prefDuckLevel" class="setting-range" type="range" min="15" max="60" step="1" value="32"></div>
-            <div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:12px;color:var(--muted);margin-bottom:5px">🔠 Tamaño del texto</div><input id="prefFontScale" class="setting-range" type="range" min="90" max="125" step="5" value="100"></div>
-          </div>
-        </div>
-      </div>
+      <div id="eventLaunchOverlay" class="event-overlay" style="display:none"><div class="event-overlay-bg"></div><div class="event-launch-card"><div class="event-overlay-kicker">MOM COIN LIVE EVENT</div><div id="eventOverlayIcon" class="event-overlay-icon">⚡</div><div id="eventOverlayTitle" class="event-overlay-title">Preparando evento</div><div id="eventOverlaySub" class="event-overlay-sub">Cargando misión…</div><div id="eventOverlayCountdown" class="event-overlay-count">3</div><div class="event-launch-meter"><span id="eventLaunchMeterFill"></span></div></div></div>
+      <div id="eventRewardOverlay" class="event-overlay reward-overlay" style="display:none"><div class="event-overlay-bg"></div><div class="reward-pop-card"><div class="reward-confetti" id="rewardConfetti"></div><div class="event-overlay-kicker">EVENTO COMPLETADO</div><div id="eventRewardIcon" class="reward-pop-icon">🎉</div><div id="eventRewardTitle" class="event-overlay-title">¡Victoria!</div><div id="eventRewardAmount" class="reward-amount">+0 MC</div><div id="eventRewardSub" class="event-overlay-sub">La recompensa ya fue acreditada.</div><div id="eventLevelUp" class="level-up-badge" style="display:none">⬆️ ¡SUBISTE DE NIVEL!</div><button id="eventRewardCloseBtn" class="btn-primary" type="button">🚀 Seguir</button></div></div>
     </section>
 
   <!-- NAVEGACIÓN INFERIOR -->
@@ -1893,19 +1808,6 @@
       <span>Más</span>
     </button>
   </nav>
-
-  <div id="appUpdateModal" role="dialog" aria-modal="true" aria-labelledby="appUpdateTitle">
-    <div class="update-card">
-      <div class="update-icon">
-        <svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
-      </div>
-      <h2 id="appUpdateTitle" style="font-size:20px;margin-bottom:8px;">Nueva versión disponible</h2>
-      <p id="appUpdateText" style="font-size:13px;color:var(--muted);line-height:1.5;">Hay una actualización de Mom Coin Wallet. La aplicación se actualizará automáticamente.</p>
-      <div class="update-actions">
-        <button id="appUpdateNowBtn" class="btn-primary">Actualizar ahora</button>
-      </div>
-    </div>
-  </div>
 
 <div id="toast"></div>
 
@@ -2047,7 +1949,7 @@
     let unsubscribeSchedules = null;
     let unsubscribeNews = null;
     let unsubscribeReasons = null;
-    const DEFAULT_REASONS = ["Premio por tarea 🌟","Ayuda en casa 🏠","Buen comportamiento 💚","Cumpleaños 🎂","Ahorro 💰","Objetivo cumplido 🎯","Pago semanal 📅","Pago mensual 🗓️"];
+    const DEFAULT_REASONS = ["Premio por evento 🌟","Ayuda en casa 🏠","Buen comportamiento 💚","Cumpleaños 🎂","Ahorro 💰","Objetivo cumplido 🎯","Pago semanal 📅","Pago mensual 🗓️"];
 
     // ===== Tema automático del sistema =====
     const systemThemeMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
@@ -3968,290 +3870,77 @@
       location.reload();
     });
   
-    // ===== CENTRO 4.0: tareas, metas, recompensas, logros, presupuesto, calendario y personalización =====
+    // ===== CENTRO LIVE EVENTS 7.0 =====
     const CENTER_PATH = () => ['artifacts', appId, 'public', 'data'];
     const centerDocId = (prefix, value) => `${prefix}_${String(value || '').replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+    const centerUserDocId = (email) => String(email || '').replace(/\./g,'_');
+    const CENTER_EVENT_DEFAULTS = {durationMinutes:30,cooldownMinutes:30,mcReward:10,xp:25,rarity:'rare',featured:false};
 
     function applyThemePreference() {
-      const mode = AppPrefs.get('themeMode') || 'system';
-      const root = document.body;
-      root.classList.remove('dark-mode','system-dark');
-      if (mode === 'dark') root.classList.add('dark-mode');
-      else if (mode === 'system') {
-        const dark = !!(systemThemeMedia && systemThemeMedia.matches);
-        root.classList.toggle('system-dark', dark);
-      }
-      const accent = AppPrefs.get('accent') || '#1F6F4A';
-      root.style.setProperty('--primary', accent);
-      const accentDarkMap = {'#1F6F4A':'#164F35','#2563EB':'#1D4ED8','#7C3AED':'#5B21B6','#DB2777':'#9D174D','#EA580C':'#C2410C'};
-      root.style.setProperty('--primary-dark', accentDarkMap[accent] || accent);
-      document.documentElement.style.colorScheme = (mode === 'dark' ? 'dark' : mode === 'light' ? 'light' : 'light dark');
-      const status = document.getElementById('systemThemeStatus');
-      if (status) status.textContent = mode === 'system' ? ((systemThemeMedia && systemThemeMedia.matches) ? 'Oscuro · sistema' : 'Claro · sistema') : (mode === 'dark' ? 'Oscuro · manual' : 'Claro · manual');
+      const mode=AppPrefs.get('themeMode')||'system',root=document.body; root.classList.remove('dark-mode','system-dark');
+      if(mode==='dark')root.classList.add('dark-mode'); else if(mode==='system'){const dark=!!(systemThemeMedia&&systemThemeMedia.matches);root.classList.toggle('system-dark',dark);}
+      const accent=AppPrefs.get('accent')||'#1F6F4A'; root.style.setProperty('--primary',accent); const map={'#1F6F4A':'#164F35','#2563EB':'#1D4ED8','#7C3AED':'#5B21B6','#DB2777':'#9D174D','#EA580C':'#C2410C'};root.style.setProperty('--primary-dark',map[accent]||accent);document.documentElement.style.colorScheme=mode==='dark'?'dark':mode==='light'?'light':'light dark';
+      const status=document.getElementById('systemThemeStatus');if(status)status.textContent=mode==='system'?((systemThemeMedia&&systemThemeMedia.matches)?'Oscuro · sistema':'Claro · sistema'):(mode==='dark'?'Oscuro · manual':'Claro · manual');
     }
-    applyThemePreference();
-    if (systemThemeMedia) {
-      try { systemThemeMedia.addEventListener('change', applyThemePreference); } catch (_) { try { systemThemeMedia.addListener(applyThemePreference); } catch (__) {} }
-    }
+    applyThemePreference(); if(systemThemeMedia){try{systemThemeMedia.addEventListener('change',applyThemePreference);}catch(_){try{systemThemeMedia.addListener(applyThemePreference);}catch(__){}}}
 
-    function centerCollection(name){ return collection(db, ...CENTER_PATH(), name); }
-    function centerDoc(name,id){ return doc(db, ...CENTER_PATH(), name, id); }
+    function centerCollection(name){return collection(db,...CENTER_PATH(),name);}
+    function centerDoc(name,id){return doc(db,...CENTER_PATH(),name,id);}
+    async function centerAdd(name,data){const ref=await addDoc(centerCollection(name),{...data,createdAt:serverTimestamp(),createdBy:selectedEmail,createdByName:selectedName});try{await addDoc(centerCollection('activity'),{type:name,action:'created',title:data.title||data.rewardTitle||name,userEmail:selectedEmail,userName:selectedName,createdAt:serverTimestamp()});}catch(_){}return ref;}
+    async function centerLog(action,title,extra={}){try{await addDoc(centerCollection('activity'),{action,title,...extra,userEmail:selectedEmail,userName:selectedName,createdAt:serverTimestamp()});}catch(_) {}}
+    async function centerDelete(name,id){if(!confirm('¿Eliminar este elemento?'))return;await deleteDoc(centerDoc(name,id));}
 
-    async function centerAdd(name, data) {
-      const ref=await addDoc(centerCollection(name), {...data, createdAt: serverTimestamp(), createdBy: selectedEmail, createdByName: selectedName});
-      try { await addDoc(centerCollection('activity'), {type:name, action:'created', title:data.title||data.rewardTitle||name, userEmail:selectedEmail, userName:selectedName, createdAt:serverTimestamp()}); } catch(_) {}
-      return ref;
-    }
-    async function centerLog(action,title,extra={}) { try { await addDoc(centerCollection('activity'),{action,title,...extra,userEmail:selectedEmail,userName:selectedName,createdAt:serverTimestamp()}); } catch(_) {} }
+    let centerCache={tasks:[],goals:[],rewards:[],events:[],budget:null,requests:[],activity:[],progress:[]};
+    let centerTimerLoop=null;
 
-    async function centerDelete(name,id) {
-      if (!confirm('¿Eliminar este elemento?')) return;
-      await deleteDoc(centerDoc(name,id));
-    }
+    function timestampMs(v){try{if(v?.toMillis)return v.toMillis();if(v?.seconds)return Number(v.seconds)*1000;if(typeof v==='number')return v;if(v)return new Date(v).getTime();}catch(_){}return 0;}
+    function formatCountdown(ms){if(ms<=0)return '00:00';const total=Math.floor(ms/1000),d=Math.floor(total/86400),h=Math.floor((total%86400)/3600),m=Math.floor((total%3600)/60),s=total%60;if(d>0)return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;if(h>0)return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+    function rarityMeta(r){return ({common:['⚪','Común','rarity-common'],rare:['🔵','Raro','rarity-rare'],epic:['🟣','Épico','rarity-epic'],legendary:['🟠','Legendario','rarity-legendary']})[r]||['🔵','Raro','rarity-rare'];}
+    function categoryIcon(c){return ({hogar:'🏠',estudio:'📚',personal:'🌱',familia:'❤️',otro:'✨'})[c||'otro']||'✨';}
+    function getProgress(eid){return centerCache.progress.find(p=>p.eventId===eid)||null;}
+    function eventAvailableAt(e){return timestampMs(e.availableFrom||e.startsAt||e.startAt||0);}
+    function eventDurationMinutes(e,p){return Math.max(1,Number(p?.durationAtStart||e.durationMinutes||CENTER_EVENT_DEFAULTS.durationMinutes));}
+    function eventEndMs(e,p){const start=timestampMs(p?.startedAt||e.startedAtMs||e.startsAtMs||0);return start?start+eventDurationMinutes(e,p)*60000:0;}
+    function eventCooldownMs(p,e){const completed=timestampMs(p?.completedAt||0);return completed?completed+Math.max(0,Number(p?.cooldownAtStart??e.cooldownMinutes??0))*60000:timestampMs(p?.cooldownUntil||p?.cooldownUntilMs||0);}
+    function eventState(e){const p=getProgress(e.id),now=Date.now(),available=eventAvailableAt(e);if(available&&available>now)return 'upcoming';if(p?.status==='active')return eventEndMs(e,p)>now?'live':'expired';const cd=eventCooldownMs(p,e);if(cd&&cd>now)return 'cooldown';return 'ready';}
+    function levelFromXp(xp){return Math.max(1,Math.floor(Number(xp||0)/100)+1);}
+    function levelTitle(level){const titles=['Recluta','Ayudante','Explorador','Especialista','Pro','Veterano','Leyenda','Ícono'];return titles[Math.min(titles.length-1,Math.floor((level-1)/2))];}
+    function completionDates(){const dates=[];centerCache.progress.forEach(p=>{const ms=timestampMs(p?.lastCompletedAt);if(ms)dates.push(new Date(ms).toISOString().slice(0,10));});return [...new Set(dates)].sort().reverse();}
+    function eventStreak(){const dates=completionDates();if(!dates.length)return 0;const today=new Date();const newest=new Date(`${dates[0]}T12:00:00`);if(Math.round((today-newest)/86400000)>1)return 0;let streak=1,cursor=new Date(newest);for(let i=1;i<dates.length;i++){const prev=new Date(cursor);prev.setDate(prev.getDate()-1);if(dates[i]===prev.toISOString().slice(0,10)){streak++;cursor=prev;}else break;}return streak;}
+    function centerComputedStats(){const wins=centerCache.progress.reduce((n,p)=>n+Number(p.wins||0),0),xp=centerCache.progress.reduce((n,p)=>n+Number(p.totalXp||0),0),earned=centerCache.progress.reduce((n,p)=>n+Number(p.totalMcEarned||0),0),active=centerCache.tasks.filter(e=>eventState(e)==='live').length,available=centerCache.tasks.filter(e=>eventState(e)==='ready').length,level=levelFromXp(xp),base=(level-1)*100,next=level*100,inLevel=Math.max(0,xp-base),pct=Math.min(100,inLevel/Math.max(1,next-base)*100);return {wins,xp,earned,active,available,level,base,next,inLevel,pct,streak:eventStreak()};}
+    function renderCenterHud(){const s=centerComputedStats(),set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};set('centerLevelLabel',`NIVEL ${s.level}`);set('centerLevelValue',levelTitle(s.level));set('centerXpText',`${s.inLevel} / ${s.next-s.base} XP`);set('centerHudStreak',s.streak);set('centerHudWins',s.wins);set('centerHudEarned',s.earned);set('centerOverviewEarned',`${s.earned} MC ganados en eventos`);const xf=document.getElementById('centerXpFill'),sf=document.getElementById('centerSeasonFill');if(xf)xf.style.width=`${s.pct}%`;if(sf)sf.style.width=`${Math.min(100,s.xp%100)}%`;set('centerSeasonText',`${Math.min(100,s.xp%100)}% al próximo nivel`);set('quickTasksText',`${s.available} disponibles · ${s.active} en curso`);set('quickGoalsText',`${centerCache.goals.length} activas`);}
 
-    let centerCache = {tasks:[], goals:[], rewards:[], events:[], budget:null, requests:[], activity:[]};
-
-    function formatCountdown(ms){
-      if(ms<=0)return '00:00';
-      const total=Math.floor(ms/1000), d=Math.floor(total/86400), h=Math.floor((total%86400)/3600), m=Math.floor((total%3600)/60), sec=total%60;
-      if(d>0)return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-      if(h>0)return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-      return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-    }
-    function eventStartMs(e){return Number(e.startedAtMs||e.startsAtMs||0);}
-    function eventEndMs(e){return Number(e.endsAtMs||0);}
-    function eventCooldownMs(e){return Number(e.cooldownUntilMs||0);}
-    function eventState(e){
-      const now=Date.now();
-      if(e.completed && eventCooldownMs(e)>now)return 'cooldown';
-      if(e.completed)return 'done';
-      if(eventEndMs(e)>now)return 'live';
-      if(eventStartMs(e)>0 && eventEndMs(e)<=now)return 'expired';
-      return 'ready';
-    }
     function renderCenterTasks(){
-      const box=document.getElementById('centerTasksList'); if(!box)return;
-      const isAdmin=ADMIN_EMAILS.includes(selectedEmail);
-      const q=(document.getElementById('centerTaskSearch')?.value||'').trim().toLowerCase();
-      const filter=window.centerTaskFilter||'all';
-      const visible=centerCache.tasks.filter(e=>{
-        const state=eventState(e); const hay=(String(e.title||'')+' '+String(e.notes||'')+' '+String(e.category||'')).toLowerCase();
-        return (!q||hay.includes(q)) && (filter==='all'||filter===state||(filter==='pending'&&(state==='ready'||state==='live')));
-      });
+      const box=document.getElementById('centerTasksList');if(!box)return;const isAdmin=ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase()),q=(document.getElementById('centerTaskSearch')?.value||'').trim().toLowerCase(),filter=window.centerTaskFilter||'all',now=Date.now();
+      const visible=centerCache.tasks.filter(e=>{const st=eventState(e),hay=[e.title,e.notes,e.category,e.rarity].filter(Boolean).join(' ').toLowerCase();const done=st==='ready'&&Number(getProgress(e.id)?.wins||0)>0;return (!q||hay.includes(q))&&(filter==='all'||filter===st||(filter==='done'&&done));}).sort((a,b)=>{const order={live:0,ready:1,upcoming:2,cooldown:3,expired:4},sa=eventState(a),sb=eventState(b);if(order[sa]!==order[sb])return order[sa]-order[sb];return Number(b.mcReward||0)-Number(a.mcReward||0);});
       if(!visible.length){box.innerHTML='<div class="event-empty">✨ No hay eventos en este filtro. Cuando Mamá lance una misión, aparecerá acá.</div>';return;}
-      box.innerHTML=visible.map(e=>{
-        const state=eventState(e), duration=Math.max(1,Number(e.durationMinutes||30))*60000, start=eventStartMs(e), end=eventEndMs(e);
-        const now=Date.now();
-        const progress=state==='live'&&start?Math.max(0,Math.min(100,((now-start)/duration)*100)):state==='done'?100:0;
-        const cat={hogar:'🏠',estudio:'📚',personal:'🌱',familia:'❤️',otro:'✨'}[e.category||'otro']||'✨';
-        const diff={easy:'🟢 Tranquilo',normal:'🟡 Normal',hard:'🔴 Desafío'}[e.difficulty||'normal']||'🟡 Normal';
-        const badge=state==='live'?'<span class="event-badge live">● EN CURSO</span>':state==='cooldown'?'<span class="event-badge cooldown">⏳ EN ESPERA</span>':state==='done'?'<span class="event-badge">✓ COMPLETADO</span>':state==='expired'?'<span class="event-badge">⌛ VENCIDO</span>':'<span class="event-badge">⚡ DISPONIBLE</span>';
-        let timer='Listo para empezar';
-        if(state==='live') timer=`⏱️ <span class="event-countdown" data-event-countdown="${e.id}" data-event-end="${end}">${formatCountdown(end-now)}</span>`;
-        else if(state==='cooldown') timer=`⏳ Disponible en <span class="event-countdown" data-event-countdown="${e.id}" data-event-end="${eventCooldownMs(e)}">${formatCountdown(eventCooldownMs(e)-now)}</span>`;
-        else if(state==='done') timer='🎉 Evento completado';
-        else if(state==='expired') timer='El tiempo del evento terminó';
-        const action=state==='ready'||state==='expired'?`<button class="event-action" onclick="window.centerStartEvent('${e.id}')">🚀 Iniciar evento</button>`:state==='live'?`<button class="event-action" onclick="window.centerCompleteEvent('${e.id}')">🏁 ¡Completé la misión!</button>`:state==='cooldown'?`<button class="event-action" disabled>⏳ En espera</button>`:`<button class="event-action secondary" disabled>✓ Completado</button>`;
-        return `<article class="event-card ${e.featured?'featured':''}" data-event-card="${e.id}">
-          <div class="event-top"><div class="event-icon">${cat}</div><div style="flex:1;min-width:0"><div class="event-title">${escapeHtml(e.title||'Evento')}</div><div class="event-sub">${escapeHtml(e.notes||'Completá este encargo de Mamá.')} · ${diff}</div></div>${badge}</div>
-          <div class="event-progress ${state==='live'?'shimmer':''}"><div style="width:${progress}%"></div></div>
-          <div class="event-meta"><span>${timer}</span><span class="event-xp">+${Number(e.xp||10)} XP · sin MC automático</span></div>
-          <div class="event-actions">${action}${isAdmin?`<button class="event-action secondary" onclick="window.centerRemove('tasks','${e.id}')">Eliminar</button>`:''}</div>
-        </article>`;
-      }).join('');
-    }
-    window.centerStartEvent=async function(id){
-      const e=centerCache.tasks.find(x=>x.id===id); if(!e)return;
-      const state=eventState(e); if(state==='live'||state==='cooldown')return;
-      const duration=Math.max(1,Number(e.durationMinutes||30))*60000, now=Date.now();
-      try{
-        await updateDoc(centerDoc('tasks',id),{startedAtMs:now,endsAtMs:now+duration,completed:false,completedBy:null,completedAt:null,startedBy:selectedEmail});
-        await centerLog('event_started','Evento iniciado: '+(e.title||'Evento'),{eventId:id});
-        SoundManager.success(); TTS.speak('Evento iniciado. ¡A cumplir la misión!');
-        await centerLoad();
-      }catch(err){showToast('No se pudo iniciar el evento','error');}
-    };
-    window.centerCompleteEvent=async function(id){
-      const e=centerCache.tasks.find(x=>x.id===id); if(!e)return;
-      if(eventState(e)!=='live'){showToast('Ese evento ya no está activo','error');return;}
-      const now=Date.now(), cooldown=Math.max(0,Number(e.cooldownMinutes||0))*60000;
-      try{
-        await updateDoc(centerDoc('tasks',id),{completed:true,completedBy:selectedEmail,completedAt:serverTimestamp(),cooldownUntilMs:cooldown?now+cooldown:0});
-        await centerLog('event_completed','Evento completado: '+(e.title||'Evento'),{eventId:id,xp:Number(e.xp||10)});
-        const card=document.querySelector(`[data-event-card="${id}"]`); if(card)card.classList.add('event-complete-pop');
-        SoundManager.coin(); TTS.speak('¡Misión completada! Excelente trabajo.');
-        showToast('🏁 ¡Evento completado! Sin recompensa automática de MC');
-        await centerLoad();
-      }catch(err){showToast('No se pudo completar el evento','error');}
-    };
-    function refreshEventTimers(){
-      const now=Date.now();
-      document.querySelectorAll('[data-event-countdown]').forEach(el=>{
-        const end=Number(el.dataset.eventEnd||0); el.textContent=formatCountdown(end-now);
-      });
-      if(document.getElementById('centerTasks')?.style.display!=='none'){
-        const active=centerCache.tasks.some(e=>eventState(e)==='live'||eventState(e)==='cooldown');
-        if(active)renderCenterTasks();
-      }
-    }
-    setInterval(refreshEventTimers,1000);
-
-    function renderCenterGoals(){
-      const box=document.getElementById('centerGoalsList'); if(!box)return;
-      if(!centerCache.goals.length){box.innerHTML='<div class="empty-state">Creá tu primera meta.</div>';return;}
-      box.innerHTML=centerCache.goals.map(g=>{
-        const target=Number(g.target||0), progress=Math.min(100,target?((Number(currentBalance||0)/target)*100):0);
-        return `<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎯 ${escapeHtml(g.title||'Meta')}</div><div class="mini-row-sub">${Number(currentBalance||0).toFixed(2)} / ${target.toFixed(2)} MC</div><div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div></div>${ADMIN_EMAILS.includes(selectedEmail)?`<button class="mini-action" onclick="window.centerRemove('goals','${g.id}')">×</button>`:''}</div>`;
-      }).join('');
-      document.getElementById('centerGoalCount').textContent=centerCache.goals.length;
+      box.innerHTML=visible.map(e=>{const p=getProgress(e.id),st=eventState(e),r=rarityMeta(e.rarity||'rare'),nowMs=now,start=timestampMs(p?.startedAt||0),end=eventEndMs(e,p),cd=eventCooldownMs(p,e),reward=Math.max(1,Number(p?.rewardAtStart||e.mcReward||10)),xp=Math.max(1,Number(p?.xpAtStart||e.xp||25)),available=eventAvailableAt(e);const prog=st==='live'&&start?Math.max(0,Math.min(100,((nowMs-start)/(eventDurationMinutes(e,p)*60000))*100)):p?.wins&&st==='ready'?100:0;const badge=st==='live'?'<span class="event-badge live">● EN CURSO</span>':st==='cooldown'?'<span class="event-badge cooldown">⏳ EN ESPERA</span>':st==='upcoming'?'<span class="event-badge upcoming">🗓️ PROGRAMADO</span>':st==='expired'?'<span class="event-badge">⌛ VENCIDO</span>':p?.wins?'<span class="event-badge">✓ DISPONIBLE</span>':'<span class="event-badge">⚡ NUEVO</span>';let timer='Listo para empezar';if(st==='live')timer=`⏱️ <span class="event-countdown" data-event-target="${end}">${formatCountdown(end-nowMs)}</span>`;else if(st==='cooldown')timer=`⏳ Reaparece en <span class="event-countdown" data-event-target="${cd}">${formatCountdown(cd-nowMs)}</span>`;else if(st==='upcoming')timer=`🗓️ Comienza en <span class="event-countdown" data-event-target="${available}">${formatCountdown(available-nowMs)}</span>`;else if(st==='expired')timer='⏰ Se terminó el tiempo. Podés reintentar.';let action='';if(st==='ready')action=`<button class="event-action" onclick="window.centerStartEvent('${e.id}')">🚀 Iniciar · +${Number(e.mcReward||10)} MC</button>`;else if(st==='live')action=`<button class="event-action" onclick="window.centerCompleteEvent('${e.id}')">🏁 ¡Terminé la misión!</button>`;else if(st==='cooldown')action=`<button class="event-action secondary" disabled>⏳ Esperá para repetir</button>`;else if(st==='upcoming')action=`<button class="event-action secondary" disabled>🗓️ Todavía no empieza</button>`;else if(st==='expired')action=`<button class="event-action" onclick="window.centerStartEvent('${e.id}')">🔁 Reintentar · +${Number(e.mcReward||10)} MC</button>`;const del=isAdmin?`<button class="event-action secondary" onclick="window.centerRemove('tasks','${e.id}')">Eliminar</button>`:'';return `<article class="event-card ${r[2]} ${st==='live'?'live':''}" data-event-card="${e.id}"><div class="event-top"><div class="event-icon">${categoryIcon(e.category)}</div><div class="event-copy"><div class="event-title">${escapeHtml(e.title||'Evento')}</div><div class="event-sub">${escapeHtml(e.notes||'Completá la misión de Mamá.')} · ${r[1]}${e.featured?' · ⭐ DESTACADO':''}</div></div>${badge}</div><div class="event-reward-line"><div class="event-reward-main"><div class="coin-orb">🪙</div><div><strong>+${reward} MC</strong><span>Premio fijo · +${xp} XP</span></div></div><div class="event-rarity ${r[2]}">${r[0]} ${r[1]}</div></div><div class="event-progress"><div style="width:${prog}%"></div></div><div class="event-meta"><span>${timer}</span><span>${eventDurationMinutes(e,p)} min</span></div><div class="event-win-count">🏅 Victorias en este evento: ${Number(p?.wins||0)}</div><div class="event-actions">${action}${del}</div></article>`;}).join('');
     }
 
-    function renderCenterRewards(){
-      const box=document.getElementById('centerRewardsList'); if(!box)return;
-      if(!centerCache.rewards.length){box.innerHTML='<div class="empty-state">No hay recompensas disponibles.</div>';return;}
-      box.innerHTML=centerCache.rewards.map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.title||'Recompensa')}</div><div class="mini-row-sub">${Number(r.cost||0).toFixed(2)} MC</div></div><button class="mini-action" onclick="window.centerRedeemReward('${r.id}')">Canjear</button>${ADMIN_EMAILS.includes(selectedEmail)?`<button class="mini-action" onclick="window.centerRemove('rewards','${r.id}')">×</button>`:''}</div>`).join('');
-    }
-    window.centerRedeemReward=async function(id){
-      const r=centerCache.rewards.find(x=>x.id===id); if(!r)return;
-      const cost=Number(r.cost||0);
-      if(Number(currentBalance)<cost){showToast('❌ No tenés suficientes MC','error');return;}
-      try{
-        await centerAdd('redemptionRequests',{rewardId:id,rewardTitle:r.title,cost,userEmail:selectedEmail,userName:selectedName,status:'pending'});
-        await centerLog('reward_requested','Solicitud: '+r.title,{cost,rewardId:id});
-        showToast('🎁 Solicitud de recompensa enviada');
-        TTS.speak('Solicitud de recompensa enviada');
-      }catch(e){showToast('No se pudo solicitar la recompensa','error');}
-    };
+    async function showEventLaunchSequence(e){const overlay=document.getElementById('eventLaunchOverlay');if(!overlay)return;const icon=document.getElementById('eventOverlayIcon'),title=document.getElementById('eventOverlayTitle'),sub=document.getElementById('eventOverlaySub'),count=document.getElementById('eventOverlayCountdown'),meter=document.getElementById('eventLaunchMeterFill');icon.textContent=categoryIcon(e.category);title.textContent=e.title||'Nuevo evento';sub.textContent=`Premio: +${Number(e.mcReward||10)} MC · ${Math.max(1,Number(e.durationMinutes||30))} min`;overlay.style.display='flex';if(document.body.classList.contains('reduce-motion')){count.textContent='GO';meter.style.width='100%';await new Promise(r=>setTimeout(r,350));overlay.style.display='none';return;}for(const step of [3,2,1]){count.textContent=step;meter.style.width=`${((4-step)/3)*84}%`;await new Promise(r=>setTimeout(r,650));}count.textContent='GO!';meter.style.width='100%';await new Promise(r=>setTimeout(r,380));overlay.style.display='none';}
 
-    function renderCenterEvents(){
-      const box=document.getElementById('centerEventsList'); if(!box)return;
-      if(!centerCache.events.length){box.innerHTML='<div class="empty-state">No hay eventos.</div>';return;}
-      box.innerHTML=centerCache.events.map(e=>`<div class="calendar-day"><div style="font-weight:800">${escapeHtml(e.title||'Evento')}</div><div style="font-size:11px;color:var(--muted);margin-top:3px">${escapeHtml(e.date||'')}</div>${ADMIN_EMAILS.includes(selectedEmail)?`<button class="mini-action" style="margin-top:8px" onclick="window.centerRemove('events','${e.id}')">Eliminar</button>`:''}</div>`).join('');
-    }
+    window.centerStartEvent=async function(id){const e=centerCache.tasks.find(x=>x.id===id);if(!e)return;const state=eventState(e);if(['live','cooldown','upcoming'].includes(state))return;if(!currentUser?.email||currentUser.email.toLowerCase()!==String(selectedEmail).toLowerCase()){showToast('❌ La sesión no está confirmada','error');return;}try{await showEventLaunchSequence(e);const progressId=`${id}__${currentUser.uid}`.replace(/[^a-zA-Z0-9_-]/g,'_'),progressRef=centerDoc('eventProgress',progressId),eventRef=centerDoc('tasks',id);await runTransaction(db,async(tx)=>{const ev=await tx.get(eventRef),pr=await tx.get(progressRef);if(!ev.exists()||ev.data().shared!==true)throw new Error('Evento no disponible');const ed=ev.data(),available=timestampMs(ed.availableFrom||0);if(available&&Date.now()<available)throw new Error('Este evento todavía no empezó');if(pr.exists()&&pr.data().status==='active')throw new Error('Ya tenés un evento en curso');if(pr.exists()){const cd=eventCooldownMs(pr,ed);if(cd&&Date.now()<cd)throw new Error('Todavía estás en espera');}const old=pr.exists()?pr.data():{};const d=Math.max(1,Number(ed.durationMinutes||30)),reward=Math.max(1,Number(ed.mcReward||10)),xp=Math.max(1,Number(ed.xp||25)),cooldown=Math.max(0,Number(ed.cooldownMinutes||0));tx.set(progressRef,{eventId:id,userEmail:selectedEmail,userName:selectedName,userDocId:centerUserDocId(selectedEmail),status:'active',startedAt:serverTimestamp(),completedAt:null,lastCompletedAt:old.lastCompletedAt||null,wins:Number(old.wins||0),totalMcEarned:Number(old.totalMcEarned||0),totalXp:Number(old.totalXp||0),rewardAtStart:reward,xpAtStart:xp,durationAtStart:d,cooldownAtStart:cooldown,rewardTransactionId:null,updatedAt:serverTimestamp()},{merge:true});});await centerLog('event_started','Evento iniciado: '+(e.title||'Evento'),{eventId:id,mcReward:Number(e.mcReward||10),durationMinutes:Number(e.durationMinutes||30)});SoundManager.success();TTS.speak('Evento iniciado. ¡A cumplir la misión!');await centerLoad();}catch(err){console.error('centerStartEvent:',err);showToast(err.message==='Este evento todavía no empezó'?'⏳ Ese evento todavía no está disponible':err.message==='Todavía estás en espera'?'⏳ Ese evento está en enfriamiento':'No se pudo iniciar el evento','error');}};
 
-    function renderCenterAchievements(){
-      const box=document.getElementById('centerAchievementsList'); if(!box)return;
-      const completed=centerCache.tasks.filter(t=>t.completed).length;
-      const goals=centerCache.goals.length;
-      const streak=updateCenterStreak();
-      const achievements=[
-        ['🌱','Primer paso','Entraste al Centro',true],
-        ['✅','Primera tarea','Completá una tarea',completed>=1],
-        ['🔥','Constancia','Completá 5 tareas',completed>=5],
-        ['🏅','Veterano','Completá 10 tareas',completed>=10],
-        ['🎯','Soñador','Creá una meta',goals>=1],
-        ['💰','Ahorrista','Llegá a 10 MC',Number(currentBalance)>=10],
-        ['🏆','Gran ahorrador','Llegá a 100 MC',Number(currentBalance)>=100],
-        ['🔥','Semana perfecta','Usá el Centro durante 7 días',streak>=7],
-        ['🎁','Cazador de recompensas','Solicitá un canje',false]
-      ];
-      box.innerHTML=achievements.map(a=>`<div class="mini-row ${a[3]?'achievement-unlocked':''}"><div style="font-size:24px">${a[0]}</div><div class="mini-row-main"><div class="mini-row-title">${a[1]} ${a[3]?'✓':''}</div><div class="mini-row-sub">${a[2]}</div></div></div>`).join('');
-      document.getElementById('centerAchievementCount').textContent=achievements.filter(a=>a[3]).length;
-    }
+    function spawnConfetti(){const box=document.getElementById('rewardConfetti');if(!box)return;box.innerHTML='';if(document.body.classList.contains('reduce-motion'))return;for(let i=0;i<54;i++){const s=document.createElement('span');s.className='confetti-piece';s.style.left=(Math.random()*100)+'%';s.style.setProperty('--confetti-x',`${Math.random()*220-110}px`);s.style.setProperty('--confetti-dur',`${1.25+Math.random()*1.4}s`);s.style.setProperty('--confetti-rot',`${Math.random()*180-90}deg`);s.style.background=`hsl(${Math.floor(Math.random()*360)} 80% 60%)`;s.style.animationDelay=`${Math.random()*.15}s`;box.appendChild(s);}}
+    async function showEventRewardSequence(e,gained,leveled){const overlay=document.getElementById('eventRewardOverlay');if(!overlay)return;document.getElementById('eventRewardIcon').textContent='🎉';document.getElementById('eventRewardTitle').textContent='¡Evento completado!';document.getElementById('eventRewardAmount').textContent=`+${gained} MC`;document.getElementById('eventRewardSub').textContent=`${e.title||'Misión'} · recompensa acreditada`;document.getElementById('eventLevelUp').style.display=leveled?'block':'none';spawnConfetti();overlay.style.display='flex';SoundManager.coin();TTS.speak(leveled?'¡Evento completado y nuevo nivel!':`¡Evento completado! Ganaste ${gained} Mom Coins.`);}
+    window.centerCompleteEvent=async function(id){const e=centerCache.tasks.find(x=>x.id===id),p=getProgress(id);if(!e||!p||eventState(e)!=='live')return;const reward=Math.max(1,Number(p.rewardAtStart||e.mcReward||10)),xp=Math.max(1,Number(p.xpAtStart||e.xp||25));const progressId=`${id}__${currentUser.uid}`.replace(/[^a-zA-Z0-9_-]/g,'_'),progressRef=centerDoc('eventProgress',progressId),userRef=doc(db,'artifacts',appId,'public','data','users',centerUserDocId(selectedEmail)),eventRef=centerDoc('tasks',id),txId=`event_${progressId}_${Date.now()}`.slice(0,150),txRef=centerDoc('transactions',txId);try{const before=centerComputedStats();await runTransaction(db,async(tx)=>{const ev=await tx.get(eventRef),pr=await tx.get(progressRef),us=await tx.get(userRef);if(!ev.exists()||!pr.exists()||!us.exists())throw new Error('Datos del evento incompletos');const ed=ev.data(),pd=pr.data(),ud=us.data();if(pd.status!=='active')throw new Error('Evento no activo');const started=timestampMs(pd.startedAt),duration=Math.max(1,Number(pd.durationAtStart||ed.durationMinutes||30));if(!started||Date.now()<started+duration*60000)throw new Error('El evento ya terminó');const bal=Number(ud.balance||0),wins=Number(pd.wins||0)+1,totalMc=Number(pd.totalMcEarned||0)+reward,totalXp=Number(pd.totalXp||0)+xp;tx.update(userRef,{balance:bal+reward,lastEventProgressId:progressId,lastEventTransactionId:txId,lastEventReward:reward});tx.update(progressRef,{status:'completed',completedAt:serverTimestamp(),lastCompletedAt:serverTimestamp(),wins,totalMcEarned:totalMc,totalXp,rewardAtStart:reward,xpAtStart:xp,durationAtStart:duration,cooldownAtStart:Math.max(0,Number(pd.cooldownAtStart||0)),rewardTransactionId:txId,updatedAt:serverTimestamp()});tx.set(txRef,{type:'credit',source:'event',eventId:id,progressId,userEmail:selectedEmail,userName:selectedName,userDocId:centerUserDocId(selectedEmail),senderEmail:'system@momcoin.local',senderName:'Mom Coin Live',amount:reward,reason:`Evento: ${ed.title||'Evento'}`,timestamp:serverTimestamp()});});await centerLog('event_completed',`+${reward} MC · ${e.title||'Evento'}`,{eventId:id,amount:reward,xp,eventProgressId:progressId,transactionId:txId});const card=document.querySelector(`[data-event-card="${id}"]`);if(card)card.classList.add('complete-flash');await centerLoad();const after=centerComputedStats();await showEventRewardSequence(e,reward,after.level>before.level);}catch(err){console.error('centerCompleteEvent:',err);showToast(err.message==='El evento ya terminó'?'⏳ Ese evento ya terminó':err.message||'No se pudo completar el evento','error');}};
+    document.getElementById('eventRewardCloseBtn')?.addEventListener('click',()=>{document.getElementById('eventRewardOverlay').style.display='none';document.getElementById('rewardConfetti').innerHTML='';renderCenterHud();});
+    function refreshEventTimers(){const now=Date.now();document.querySelectorAll('[data-event-countdown]').forEach(el=>{const t=Number(el.dataset.eventTarget||0);el.textContent=formatCountdown(t-now);});if(document.getElementById('pageCenter')?.classList.contains('active')){if(centerCache.tasks.some(e=>['live','cooldown','upcoming'].includes(eventState(e))))renderCenterTasks();renderCenterHud();}}
+    if(centerTimerLoop)clearInterval(centerTimerLoop);centerTimerLoop=setInterval(refreshEventTimers,1000);
 
-    function renderCenterBudget(){
-      const b=centerCache.budget;
-      const box=document.getElementById('centerBudgetStats'); if(!box)return;
-      const month=new Date().toISOString().slice(0,7);
-      document.getElementById('centerBudgetMonth').textContent=month;
-      document.getElementById('centerBudgetAmount').value=b?Number(b.amount||0):'';
-      const pct=b&&Number(b.amount)>0?Math.min(100,(Math.max(0,Number(b.spent||0))/Number(b.amount))*100):0;
-      box.innerHTML=b?`<div style="font-size:12px;color:var(--muted)">Gastado/retirado: ${Number(b.spent||0).toFixed(2)} MC</div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><div style="font-size:11px;margin-top:6px">Restante: ${Math.max(0,Number(b.amount||0)-Number(b.spent||0)).toFixed(2)} MC</div>`:'<div class="empty-state">Definí un presupuesto mensual.</div>';
-    }
+    function renderCenterGoals(){const box=document.getElementById('centerGoalsList');if(!box)return;if(!centerCache.goals.length){box.innerHTML='<div class="empty-state">Creá tu primera meta.</div>';return;}box.innerHTML=centerCache.goals.map(g=>{const target=Number(g.target||0),progress=Math.min(100,target?Number(currentBalance||0)/target*100:0);return `<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎯 ${escapeHtml(g.title||'Meta')}</div><div class="mini-row-sub">${Number(currentBalance||0).toFixed(2)} / ${target.toFixed(2)} MC</div><div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div></div>${ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())?`<button class="mini-action" onclick="window.centerRemove('goals','${g.id}')">×</button>`:''}</div>`}).join('');const c=document.getElementById('centerGoalCount');if(c)c.textContent=centerCache.goals.length;}
+    function renderCenterRewards(){const box=document.getElementById('centerRewardsList');if(!box)return;if(!centerCache.rewards.length){box.innerHTML='<div class="empty-state">No hay recompensas disponibles.</div>';return;}box.innerHTML=centerCache.rewards.map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.title||'Recompensa')}</div><div class="mini-row-sub">${Number(r.cost||0).toFixed(2)} MC</div></div><button class="mini-action" onclick="window.centerRedeemReward('${r.id}')">Canjear</button>${ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())?`<button class="mini-action" onclick="window.centerRemove('rewards','${r.id}')">×</button>`:''}</div>`).join('');}
+    window.centerRedeemReward=async function(id){const r=centerCache.rewards.find(x=>x.id===id);if(!r)return;const cost=Number(r.cost||0);if(Number(currentBalance)<cost){showToast('❌ No tenés suficientes MC','error');return;}try{await centerAdd('redemptionRequests',{rewardId:id,rewardTitle:r.title,cost,userEmail:selectedEmail,userName:selectedName,status:'pending'});await centerLog('reward_requested','Solicitud: '+r.title,{cost,rewardId:id});showToast('🎁 Solicitud de recompensa enviada');TTS.speak('Solicitud de recompensa enviada');}catch(e){showToast('No se pudo solicitar la recompensa','error');}};
+    function renderCenterEvents(){const box=document.getElementById('centerEventsList');if(!box)return;if(!centerCache.events.length){box.innerHTML='<div class="empty-state">No hay eventos.</div>';return;}box.innerHTML=centerCache.events.map(e=>`<div class="calendar-day"><div style="font-weight:800">${escapeHtml(e.title||'Evento')}</div><div style="font-size:11px;color:var(--muted);margin-top:3px">${escapeHtml(e.date||'')}</div>${ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())?`<button class="mini-action" style="margin-top:8px" onclick="window.centerRemove('events','${e.id}')">Eliminar</button>`:''}</div>`).join('');}
+    function renderCenterAchievements(){const box=document.getElementById('centerAchievementsList');if(!box)return;const s=centerComputedStats(),goals=centerCache.goals.length,ach=[['⚡','Primer evento','Ganaste tu primera misión',s.wins>=1],['🔥','Racha','Conseguí 3 días consecutivos',s.streak>=3],['🏅','Maratón','Ganaste 5 eventos',s.wins>=5],['🏆','Veterano','Ganaste 10 eventos',s.wins>=10],['💰','Primer premio','Ganaste 25 MC en eventos',s.earned>=25],['💎','Bolsa de MC','Ganaste 100 MC en eventos',s.earned>=100],['⬆️','Nivel 5','Llegaste al nivel 5',s.level>=5],['🎯','Soñador','Creaste una meta',goals>=1],['🎁','Cazador de premios','Solicitaste un canje',Boolean((centerCache.activity||[]).some(a=>a.action==='reward_requested'))]];box.innerHTML=ach.map(a=>`<div class="mini-row ${a[3]?'achievement-unlocked':''}"><div style="font-size:24px">${a[0]}</div><div class="mini-row-main"><div class="mini-row-title">${a[1]} ${a[3]?'✓':''}</div><div class="mini-row-sub">${a[2]}</div></div><span>${a[3]?'✓':'○'}</span></div>`).join('');const c=document.getElementById('centerAchievementCount');if(c)c.textContent=ach.filter(a=>a[3]).length;}
+    function renderCenterStats(){const box=document.getElementById('centerStatsGrid');if(!box)return;const s=centerComputedStats(),pending=centerCache.tasks.filter(e=>eventState(e)==='ready').length;box.innerHTML=[['💰',s.earned,'MC ganados en eventos'],['🏅',s.wins,'Victorias'],['🔥',s.streak,'Racha actual'],['⚡',s.xp,'XP total'],['🎯',centerCache.goals.length,'Metas'],['🎁',centerCache.rewards.length,'Premios disponibles'],['🚀',pending,'Eventos listos'],['📈',`Nv. ${s.level}`,'Nivel']].map(x=>`<div class="center-stat-card"><div style="font-size:23px">${x[0]}</div><strong>${x[1]}</strong><span>${x[2]}</span></div>`).join('');const m=document.getElementById('centerMilestones');if(m){const ms=[['⚡','Primera victoria',s.wins>=1],['🔥','Racha de 3 días',s.streak>=3],['💰','25 MC ganados',s.earned>=25],['🏆','10 victorias',s.wins>=10],['⬆️','Nivel 5',s.level>=5],['💎','100 MC de eventos',s.earned>=100]];m.innerHTML='<div style="font-weight:800;margin-bottom:6px">Hitos</div>'+ms.map(x=>`<div class="milestone-row"><div class="milestone-dot">${x[0]}</div><div style="flex:1"><strong>${x[1]}</strong><div style="font-size:11px;color:var(--muted)">${x[2]?'Desbloqueado':'Todavía bloqueado'}</div></div><span>${x[2]?'✓':'○'}</span></div>`).join('');}}
+    function formatActivityDate(v){try{const d=v?.toDate?v.toDate():new Date(timestampMs(v));if(!isNaN(d))return d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(_){}return '';}
+    function renderCenterActivity(){const box=document.getElementById('centerActivityList');if(!box)return;const q=(document.getElementById('centerActivitySearch')?.value||'').trim().toLowerCase(),arr=(centerCache.activity||[]).filter(a=>!q||String(a.title||'').toLowerCase().includes(q)||String(a.action||'').toLowerCase().includes(q));if(!arr.length){box.innerHTML='<div class="center-empty-action">No hay actividad que mostrar.</div>';return;}const icons={event_completed:'🏆',event_started:'🚀',reward_requested:'🎁',reward_approved:'✅',reward_rejected:'❌',created:'✨',goals:'🎯',rewards:'🎁',events:'📅',budget:'📊'};box.innerHTML=arr.map(a=>`<div class="activity-row"><div class="activity-icon">${icons[a.action]||icons[a.type]||'•'}</div><div class="activity-main"><div class="activity-title">${escapeHtml(a.title||'Actividad')}</div><div class="activity-sub">${escapeHtml(a.action||'')} · ${formatActivityDate(a.createdAt)}</div></div></div>`).join('');}
+    function renderCenterRequests(){const mine=document.getElementById('centerMyRequests'),admin=document.getElementById('centerAdminRequests'),wrap=document.getElementById('centerAdminRequestsWrap'),arr=centerCache.requests||[];if(mine){const own=arr.filter(x=>x.userEmail===selectedEmail);mine.innerHTML=own.length?own.slice(0,10).map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.rewardTitle||'Recompensa')}</div><div class="mini-row-sub">${Number(r.cost||0).toFixed(2)} MC · ${escapeHtml(r.status||'pending')}</div></div></div>`).join(''):'<div class="empty-state">No tenés solicitudes todavía.</div>';}if(wrap)wrap.style.display=ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())?'block':'none';if(admin){const pending=arr.filter(x=>x.status==='pending');admin.innerHTML=pending.length?pending.map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.rewardTitle||'Recompensa')}</div><div class="mini-row-sub">${escapeHtml(r.userName||r.userEmail||'Usuario')} · ${Number(r.cost||0).toFixed(2)} MC</div></div><button class="mini-action" onclick="window.centerApproveReward('${r.id}',true)">✓</button><button class="mini-action" onclick="window.centerApproveReward('${r.id}',false)">×</button></div>`).join(''):'<div class="empty-state">Sin solicitudes pendientes.</div>';}}
+    window.centerApproveReward=async function(id,approve){if(!ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase()))return;const req=(centerCache.requests||[]).find(x=>x.id===id);if(!req||req.status!=='pending')return;try{if(!approve){await updateDoc(centerDoc('redemptionRequests',id),{status:'rejected',reviewedBy:selectedEmail,reviewedAt:serverTimestamp()});await centerLog('reward_rejected','Recompensa rechazada',{requestId:id});showToast('Solicitud rechazada');await centerLoad();return;}const userRef=doc(db,'artifacts',appId,'public','data','users',centerUserDocId(req.userEmail));await runTransaction(db,async(tx)=>{const us=await tx.get(userRef);if(!us.exists())throw new Error('Usuario no encontrado');const bal=Number(us.data().balance||us.data().mcBalance||0),cost=Number(req.cost||0);if(bal<cost)throw new Error('Saldo insuficiente');const field=us.data().balance!==undefined?'balance':'mcBalance';tx.update(userRef,{[field]:bal-cost});tx.update(centerDoc('redemptionRequests',id),{status:'approved',reviewedBy:selectedEmail,reviewedAt:serverTimestamp(),chargedAmount:cost});});await centerLog('reward_approved','Recompensa aprobada',{requestId:id,cost:Number(req.cost||0),userEmail:req.userEmail});showToast('🎁 Recompensa aprobada');await centerLoad();}catch(e){showToast(e.message==='Saldo insuficiente'?'Saldo insuficiente para aprobar':'No se pudo procesar la solicitud','error');}};
 
-    function updateCenterStreak(){
-      const key='momcoin_center_streak_'+selectedEmail;
-      const today=new Date().toISOString().slice(0,10);
-      let state={last:'',streak:0};
-      try{state=JSON.parse(localStorage.getItem(key)||'{}')}catch(_){}
-      if(state.last!==today){
-        const yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
-        const y=yesterday.toISOString().slice(0,10);
-        state.streak=state.last===y?Number(state.streak||0)+1:1;
-        state.last=today;
-        localStorage.setItem(key,JSON.stringify(state));
-      }
-      return Number(state.streak||1);
-    }
-    function renderCenterStats(){
-      const box=document.getElementById('centerStatsGrid'); if(!box)return;
-      const completed=centerCache.tasks.filter(t=>t.completed).length;
-      const pending=centerCache.tasks.filter(t=>!t.completed).length;
-      const streak=updateCenterStreak();
-      const goals=centerCache.goals.length;
-      const rewards=centerCache.rewards.length;
-      const hb=document.getElementById('centerHeroBalance'); if(hb) hb.textContent=Number(currentBalance||0).toFixed(2);
-      const hm=document.getElementById('centerHeroMessage'); if(hm) hm.textContent=streak>=7?'🔥 Vas con una racha increíble.':pending>0?`Tenés ${pending} tarea${pending===1?'':'s'} pendiente${pending===1?'':'s'}.`:goals>0?'🎯 Seguí avanzando hacia tus metas.':'✨ Empezá creando una meta o tarea.';
-      const qt=document.getElementById('quickTasksText'); if(qt) qt.textContent=`${pending} pendiente${pending===1?'':'s'} · ${completed} completadas`;
-      const qg=document.getElementById('quickGoalsText'); if(qg) qg.textContent=`${goals} meta${goals===1?'':'s'} activas`;
-      box.innerHTML=[
-        ['💰',Number(currentBalance||0).toFixed(2),'Saldo actual (MC)'],
-        ['🔥',streak,'Racha de uso'],
-        ['✅',completed,'Tareas completadas'],
-        ['⏳',pending,'Tareas pendientes'],
-        ['🎯',goals,'Metas creadas'],
-        ['🎁',rewards,'Recompensas disponibles']
-      ].map(x=>`<div class="center-stat-card"><div style="font-size:24px">${x[0]}</div><strong>${x[1]}</strong><span>${x[2]}</span></div>`).join('');
-      const milestones=[
-        ['🌱','Primera tarea',completed>=1],['🔥','5 tareas',completed>=5],['🏅','10 tareas',completed>=10],['🎯','Primera meta',goals>=1],['💰','50 MC de saldo',Number(currentBalance||0)>=50],['🔥','Racha de 7 días',streak>=7]
-      ];
-      const m=document.getElementById('centerMilestones');
-      if(m)m.innerHTML='<div style="font-weight:800;margin-bottom:6px">Hitos</div>'+milestones.map(x=>`<div class="milestone-row"><div class="milestone-dot">${x[0]}</div><div style="flex:1"><strong>${x[1]}</strong><div style="font-size:11px;color:var(--muted)">${x[2]?'Desbloqueado':'Todavía bloqueado'}</div></div><span>${x[2]?'✓':'○'}</span></div>`).join('');
-    }
-
-    function formatActivityDate(v){ try { const d=v?.toDate?v.toDate():new Date(v?.seconds?v.seconds*1000:v); if(!isNaN(d)) return d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(_){} return ''; }
-    function renderCenterActivity(){
-      const box=document.getElementById('centerActivityList'); if(!box)return;
-      const q=(document.getElementById('centerActivitySearch')?.value||'').trim().toLowerCase();
-      const arr=(centerCache.activity||[]).filter(a=>!q||String(a.title||'').toLowerCase().includes(q)||String(a.action||'').toLowerCase().includes(q));
-      if(!arr.length){box.innerHTML='<div class="center-empty-action">No hay actividad que mostrar.</div>';return;}
-      const icons={task_completed:'✅',task_reopened:'↩️',reward_requested:'🎁',tasks:'✅',goals:'🎯',rewards:'🎁',events:'📅',budget:'📊'};
-      box.innerHTML=arr.map(a=>`<div class="activity-row"><div class="activity-icon">${icons[a.action]||icons[a.type]||'•'}</div><div class="activity-main"><div class="activity-title">${escapeHtml(a.title||'Actividad')}</div><div class="activity-sub">${escapeHtml(a.action||'')} · ${formatActivityDate(a.createdAt)}</div></div></div>`).join('');
-    }
-    function renderCenterRequests(){
-      const mine=document.getElementById('centerMyRequests'), admin=document.getElementById('centerAdminRequests'), wrap=document.getElementById('centerAdminRequestsWrap');
-      const arr=centerCache.requests||[];
-      if(mine){ const own=arr.filter(x=>x.userEmail===selectedEmail); mine.innerHTML=own.length?own.slice(0,10).map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.rewardTitle||'Recompensa')}</div><div class="mini-row-sub">${Number(r.cost||0).toFixed(2)} MC · ${escapeHtml(r.status||'pending')}</div></div></div>`).join(''):'<div class="empty-state">No tenés solicitudes todavía.</div>'; }
-      if(wrap) wrap.style.display=ADMIN_EMAILS.includes(selectedEmail)?'block':'none';
-      if(admin){ const pending=arr.filter(x=>x.status==='pending'); admin.innerHTML=pending.length?pending.map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.rewardTitle||'Recompensa')}</div><div class="mini-row-sub">${escapeHtml(r.userName||r.userEmail||'Usuario')} · ${Number(r.cost||0).toFixed(2)} MC</div></div><button class="mini-action" onclick="window.centerApproveReward('${r.id}',true)">✓</button><button class="mini-action" onclick="window.centerApproveReward('${r.id}',false)">×</button></div>`).join(''):'<div class="empty-state">Sin solicitudes pendientes.</div>'; }
-    }
-    window.centerApproveReward=async function(id,approve){
-      if(!ADMIN_EMAILS.includes(selectedEmail))return;
-      const req=(centerCache.requests||[]).find(x=>x.id===id); if(!req||req.status!=='pending')return;
-      try{
-        if(!approve){ await updateDoc(centerDoc('redemptionRequests',id),{status:'rejected',reviewedBy:selectedEmail,reviewedAt:serverTimestamp()}); await centerLog('reward_rejected','Recompensa rechazada',{requestId:id}); showToast('Solicitud rechazada'); await centerLoad(); return; }
-        // El saldo solo se modifica al aprobar y se hace de forma atómica.
-        const userRef=doc(db,'artifacts',appId,'public','data','users',String(req.userEmail||'').replace(/\./g,'_'));
-        await runTransaction(db,async(tx)=>{ const us=await tx.get(userRef); if(!us.exists()) throw new Error('Usuario no encontrado'); const bal=Number(us.data().balance||us.data().mcBalance||0); const cost=Number(req.cost||0); if(bal<cost) throw new Error('Saldo insuficiente'); const field=us.data().balance!==undefined?'balance':'mcBalance'; tx.update(userRef,{[field]:bal-cost}); tx.update(centerDoc('redemptionRequests',id),{status:'approved',reviewedBy:selectedEmail,reviewedAt:serverTimestamp(),chargedAmount:cost}); });
-        await centerLog('reward_approved','Recompensa aprobada',{requestId:id,cost:Number(req.cost||0),userEmail:req.userEmail}); showToast('🎁 Recompensa aprobada'); await centerLoad();
-      }catch(e){showToast(e.message==='Saldo insuficiente'?'Saldo insuficiente para aprobar':'No se pudo procesar la solicitud','error');}
-    };
-
-    async function centerLoad(){
-      if(!selectedEmail)return;
-      try{
-        const names=['tasks','goals','rewards','events'];
-        for(const name of names){
-          const ref=centerCollection(name);
-          const snap=await getDocs(query(ref, where('shared', '==', true)));
-          centerCache[name]=snap.docs.map(d=>({id:d.id,...d.data()}));
-          if(name==='tasks') centerCache.tasks.sort((a,b)=>Number(a.completed)-Number(b.completed));
-          if(name==='events') centerCache.events.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-        }
-        const budgetSnap=await getDoc(centerDoc('budgets',centerDocId('month',new Date().toISOString().slice(0,7))));
-        centerCache.budget=budgetSnap.exists()?budgetSnap.data():null;
-        try {
-          const isAdminUser = ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase());
-          const rq=await getDocs(isAdminUser ? centerCollection('redemptionRequests') : query(centerCollection('redemptionRequests'), where('userEmail','==',selectedEmail)));
-          centerCache.requests=rq.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.createdAt?.seconds||0).localeCompare(String(a.createdAt?.seconds||0)));
-          const ac=await getDocs(isAdminUser ? centerCollection('activity') : query(centerCollection('activity'), where('userEmail','==',selectedEmail)));
-          centerCache.activity=ac.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>Number(b.createdAt?.seconds||0)-Number(a.createdAt?.seconds||0)).slice(0,80);
-        } catch(_) { centerCache.requests=[]; centerCache.activity=[]; }
-        renderCenterTasks();renderCenterGoals();renderCenterRewards();renderCenterEvents();renderCenterAchievements();renderCenterBudget();renderCenterStats();renderCenterActivity();renderCenterRequests();
-        document.getElementById('centerTaskCount').textContent=centerCache.tasks.length;
-      }catch(e){console.warn('Centro: no se pudo cargar todo:',e);showToast('Algunas funciones del Centro no pudieron cargar','error');}
-    }
-
+    async function centerNormalizeLegacyEvents(){if(!ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase()))return;for(const e of centerCache.tasks){const patch={};if(typeof e.mcReward!=='number'||e.mcReward<=0)patch.mcReward=e.difficulty==='hard'?30:e.difficulty==='easy'?10:20;if(typeof e.xp!=='number'||e.xp<=0)patch.xp=e.difficulty==='hard'?60:e.difficulty==='easy'?20:40;if(!e.rarity)patch.rarity=e.difficulty==='hard'?'epic':e.difficulty==='easy'?'common':'rare';if(typeof e.durationMinutes!=='number'||e.durationMinutes<=0)patch.durationMinutes=30;if(typeof e.cooldownMinutes!=='number'||e.cooldownMinutes<0)patch.cooldownMinutes=30;if(typeof e.featured!=='boolean')patch.featured=Boolean(e.difficulty==='hard');if(!Object.prototype.hasOwnProperty.call(e,'availableFrom'))patch.availableFrom=null;if(typeof e.shared!=='boolean')patch.shared=true;if(Object.keys(patch).length){try{await updateDoc(centerDoc('tasks',e.id),patch);Object.assign(e,patch);}catch(err){console.warn('No se pudo normalizar evento',e.id,err);}}}}
+    async function centerLoad(){if(!selectedEmail)return;try{const names=['tasks','goals','rewards','events'];for(const name of names){const snap=await getDocs(query(centerCollection(name),where('shared','==',true)));centerCache[name]=snap.docs.map(d=>({id:d.id,...d.data()}));}await centerNormalizeLegacyEvents();const ps=await getDocs(query(centerCollection('eventProgress'),where('userEmail','==',selectedEmail)));centerCache.progress=ps.docs.map(d=>({id:d.id,...d.data()}));const month=new Date().toISOString().slice(0,7),bs=await getDoc(centerDoc('budgets',centerDocId('month',month)));centerCache.budget=bs.exists()?bs.data():null;try{const isAdminUser=ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase());const rq=await getDocs(isAdminUser?centerCollection('redemptionRequests'):query(centerCollection('redemptionRequests'),where('userEmail','==',selectedEmail)));centerCache.requests=rq.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>timestampMs(b.createdAt)-timestampMs(a.createdAt));const ac=await getDocs(isAdminUser?centerCollection('activity'):query(centerCollection('activity'),where('userEmail','==',selectedEmail)));centerCache.activity=ac.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>timestampMs(b.createdAt)-timestampMs(a.createdAt)).slice(0,120);}catch(_){centerCache.requests=[];centerCache.activity=[];}renderCenterTasks();renderCenterGoals();renderCenterRewards();renderCenterEvents();renderCenterAchievements();renderCenterStats();renderCenterActivity();renderCenterRequests();renderCenterHud();const c=document.getElementById('centerTaskCount');if(c)c.textContent=centerCache.tasks.length;const next=centerCache.tasks.filter(e=>['ready','upcoming'].includes(eventState(e))).sort((a,b)=>Number(b.mcReward||0)-Number(a.mcReward||0))[0],nt=document.getElementById('centerNextEventTitle'),nx=document.getElementById('centerNextEventText');if(nt)nt.textContent=next?next.title:'No hay eventos listos';if(nx)nx.textContent=next?`+${Number(next.mcReward||10)} MC · ${Math.max(1,Number(next.durationMinutes||30))} min`:'Mamá puede lanzar una nueva misión.';}catch(e){console.warn('Centro: no se pudo cargar todo:',e);showToast('Algunas funciones del Centro no pudieron cargar','error');}}
     window.centerRemove=async function(name,id){try{await centerDelete(name,id);await centerLoad();}catch(e){showToast('No se pudo eliminar','error');}};
 
     // Theme / accessibility controls
@@ -4264,75 +3953,24 @@
     document.getElementById('prefLargeText')?.addEventListener('change',e=>{AppPrefs.set('largeText',e.target.checked);document.body.classList.toggle('large-text',e.target.checked);});
     document.getElementById('prefReduceMotion')?.addEventListener('change',e=>{AppPrefs.set('reduceMotion',e.target.checked);document.body.classList.toggle('reduce-motion',e.target.checked);});
 
-    // Center navigation
-    document.querySelectorAll('[data-center-tab]').forEach(btn=>btn.addEventListener('click',()=>{
-      const target=btn.dataset.centerTab;
-      document.querySelectorAll('[data-center-tab]').forEach(b=>b.classList.toggle('active',b===btn));
-      document.querySelectorAll('.center-pane').forEach(p=>p.style.display=p.id===target?'block':'none');
-    }));
-
-    document.getElementById('centerAddTaskBtn')?.addEventListener('click',()=>{
-      if(!ADMIN_EMAILS.includes(selectedEmail)){showToast('Solo Mamá puede lanzar eventos','error');return;}
-      document.getElementById('centerTaskForm').style.display='block';
-    });
-    document.getElementById('centerSaveTaskBtn')?.addEventListener('click',async()=>{
-      if(!ADMIN_EMAILS.includes(selectedEmail)){showToast('Solo Mamá puede lanzar eventos','error');return;}
-      const title=document.getElementById('centerTaskTitle').value.trim(), category=document.getElementById('centerTaskCategory')?.value||'otro', notes=document.getElementById('centerTaskNotes')?.value.trim()||'';
-      const durationMinutes=Number(document.getElementById('centerTaskDuration')?.value||30), cooldownMinutes=Number(document.getElementById('centerTaskCooldown')?.value||0), difficulty=document.getElementById('centerTaskDifficulty')?.value||'normal';
-      if(!title){showToast('Poné un nombre al evento','error');return;}
-      try{
-        await centerAdd('tasks',{title,category,notes,completed:false,shared:true,durationMinutes,cooldownMinutes,difficulty,xp:difficulty==='hard'?30:difficulty==='easy'?10:20,featured:difficulty==='hard'});
-        document.getElementById('centerTaskForm').style.display='none';
-        document.getElementById('centerTaskTitle').value='';
-        if(document.getElementById('centerTaskNotes'))document.getElementById('centerTaskNotes').value='';
-        await centerLoad();showToast('🚀 Evento lanzado'); TTS.speak('Nuevo evento disponible');
-      }catch(e){showToast('No se pudo crear el evento','error');}
-    });
-
+    // Center navigation + live event creator
+    document.querySelectorAll('[data-center-tab]').forEach(btn=>btn.addEventListener('click',()=>{const target=btn.dataset.centerTab;document.querySelectorAll('[data-center-tab]').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('.center-pane').forEach(p=>p.style.display=p.id===target?'block':'none');if(target==='centerTasks')renderCenterTasks();}));
+    document.querySelectorAll('[data-center-jump]').forEach(el=>el.addEventListener('click',()=>{const target=el.dataset.centerJump;document.querySelectorAll('[data-center-tab]').forEach(b=>b.classList.toggle('active',b.dataset.centerTab===target));document.querySelectorAll('.center-pane').forEach(p=>p.style.display=p.id===target?'block':'none');if(target==='centerTasks')renderCenterTasks();}));
+    document.getElementById('centerAddTaskBtn')?.addEventListener('click',()=>{if(!ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())){showToast('Solo Mamá puede lanzar eventos','error');return;}document.getElementById('centerTaskForm').style.display='block';document.getElementById('centerTaskTitle')?.focus();});
+    document.getElementById('centerCancelTaskBtn')?.addEventListener('click',()=>{document.getElementById('centerTaskForm').style.display='none';});
+    document.querySelectorAll('[data-event-preset]').forEach(b=>b.addEventListener('click',()=>{const el=document.getElementById('centerTaskReward');if(el)el.value=b.dataset.eventPreset;}));
+    document.getElementById('centerTaskRarity')?.addEventListener('change',e=>{const d={common:[10,20],rare:[15,40],epic:[25,75],legendary:[50,150]}[e.target.value]||[15,40];const r=document.getElementById('centerTaskReward'),x=document.getElementById('centerTaskXP');if(r)r.value=d[0];if(x)x.value=d[1];});
+    document.getElementById('centerSaveTaskBtn')?.addEventListener('click',runLocked(document.getElementById('centerSaveTaskBtn'),async()=>{if(!ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())){showToast('Solo Mamá puede lanzar eventos','error');return;}const title=document.getElementById('centerTaskTitle').value.trim(),category=document.getElementById('centerTaskCategory').value||'otro',notes=document.getElementById('centerTaskNotes').value.trim(),rarity=document.getElementById('centerTaskRarity').value||'rare',durationMinutes=Math.max(1,Math.min(240,Number(document.getElementById('centerTaskDuration').value||30))),cooldownMinutes=Math.max(0,Math.min(10080,Number(document.getElementById('centerTaskCooldown').value||30))),mcReward=Math.max(1,Math.min(10000,Number(document.getElementById('centerTaskReward').value||10))),xp=Math.max(1,Math.min(5000,Number(document.getElementById('centerTaskXP').value||25))),featured=document.getElementById('centerTaskFeatured').value==='true',startValue=document.getElementById('centerTaskStartAt').value;if(!title){showToast('Poné un nombre al evento','error');return;}let availableFrom=null;if(startValue){const d=new Date(startValue);if(isNaN(d.getTime())){showToast('La fecha de inicio no es válida','error');return;}availableFrom=Timestamp.fromDate(d);}try{await centerAdd('tasks',{title,category,notes,shared:true,durationMinutes,cooldownMinutes,mcReward,xp,rarity,featured,availableFrom});document.getElementById('centerTaskForm').style.display='none';['centerTaskTitle','centerTaskNotes','centerTaskStartAt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});await centerLoad();showToast(`🚀 Evento lanzado · +${mcReward} MC`);TTS.speak('Nuevo evento disponible');}catch(e){console.error(e);showToast('No se pudo crear el evento','error');}}));
     document.getElementById('centerAddGoalBtn')?.addEventListener('click',()=>document.getElementById('centerGoalForm').style.display='block');
-    document.getElementById('centerSaveGoalBtn')?.addEventListener('click',async()=>{
-      const title=document.getElementById('centerGoalTitle').value.trim(), target=Number(document.getElementById('centerGoalTarget').value||0);
-      if(!title||target<=0){showToast('Completá la meta','error');return;}
-      try{await centerAdd('goals',{title,target,userEmail:selectedEmail,shared:true});document.getElementById('centerGoalForm').style.display='none';await centerLoad();showToast('🎯 Meta creada');}catch(e){showToast('No se pudo crear la meta','error');}
-    });
+    document.getElementById('centerSaveGoalBtn')?.addEventListener('click',async()=>{const title=document.getElementById('centerGoalTitle').value.trim(),target=Number(document.getElementById('centerGoalTarget').value||0);if(!title||target<=0){showToast('Completá la meta','error');return;}try{await centerAdd('goals',{title,target,userEmail:selectedEmail,shared:true});document.getElementById('centerGoalForm').style.display='none';await centerLoad();showToast('🎯 Meta creada');}catch(e){showToast('No se pudo crear la meta','error');}});
+    document.getElementById('centerAddRewardBtn')?.addEventListener('click',()=>{if(!ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())){showToast('Solo Mamá puede crear recompensas','error');return;}document.getElementById('centerRewardForm').style.display='block';});
+    document.getElementById('centerSaveRewardBtn')?.addEventListener('click',async()=>{const title=document.getElementById('centerRewardTitle').value.trim(),cost=Number(document.getElementById('centerRewardCost').value||0);if(!title||cost<=0){showToast('Completá la recompensa','error');return;}try{await centerAdd('rewards',{title,cost,shared:true,active:true});document.getElementById('centerRewardForm').style.display='none';await centerLoad();showToast('🎁 Recompensa creada');}catch(e){showToast('No se pudo crear la recompensa','error');}});
+    document.getElementById('centerSaveBudgetBtn')?.addEventListener('click',async()=>{const amount=Number(document.getElementById('centerBudgetAmount').value||0),id=centerDocId('month',new Date().toISOString().slice(0,7));if(amount<0)return;try{await setDoc(centerDoc('budgets',id),{amount,spent:centerCache.budget?.spent||0,month:new Date().toISOString().slice(0,7),updatedAt:serverTimestamp(),updatedBy:selectedEmail},{merge:true});await centerLoad();showToast('📊 Presupuesto guardado');}catch(e){showToast('No se pudo guardar el presupuesto','error');}});
+    document.getElementById('centerAddEventBtn')?.addEventListener('click',()=>{if(!ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase())){showToast('Solo Mamá puede crear eventos','error');return;}document.getElementById('centerEventForm').style.display='block';});
+    document.getElementById('centerSaveEventBtn')?.addEventListener('click',async()=>{const title=document.getElementById('centerEventTitle').value.trim(),date=document.getElementById('centerEventDate').value;if(!title||!date){showToast('Completá el evento','error');return;}try{await centerAdd('events',{title,date,shared:true});document.getElementById('centerEventForm').style.display='none';await centerLoad();showToast('📅 Evento agregado');}catch(e){showToast('No se pudo crear el evento','error');}});
+    window.centerTaskFilter='all';document.getElementById('centerTaskSearch')?.addEventListener('input',renderCenterTasks);document.querySelectorAll('[data-task-filter]').forEach(b=>b.addEventListener('click',()=>{window.centerTaskFilter=b.dataset.taskFilter;document.querySelectorAll('[data-task-filter]').forEach(x=>x.classList.toggle('active',x===b));renderCenterTasks();}));document.getElementById('centerActivitySearch')?.addEventListener('input',renderCenterActivity);
+    document.getElementById('centerExportBtn')?.addEventListener('click',()=>{const payload={exportedAt:new Date().toISOString(),balance:Number(currentBalance||0),eventTemplates:centerCache.tasks,progress:centerCache.progress,goals:centerCache.goals,rewards:centerCache.rewards,calendar:centerCache.events,requests:centerCache.requests||[],activity:centerCache.activity||[]};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mom-coin-resumen.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('📦 Resumen exportado');});
 
-    document.getElementById('centerAddRewardBtn')?.addEventListener('click',()=>{
-      if(!ADMIN_EMAILS.includes(selectedEmail)){showToast('Solo Mamá puede crear recompensas','error');return;}
-      document.getElementById('centerRewardForm').style.display='block';
-    });
-    document.getElementById('centerSaveRewardBtn')?.addEventListener('click',async()=>{
-      const title=document.getElementById('centerRewardTitle').value.trim(), cost=Number(document.getElementById('centerRewardCost').value||0);
-      if(!title||cost<=0){showToast('Completá la recompensa','error');return;}
-      try{await centerAdd('rewards',{title,cost,shared:true,active:true});document.getElementById('centerRewardForm').style.display='none';await centerLoad();showToast('🎁 Recompensa creada');}catch(e){showToast('No se pudo crear la recompensa','error');}
-    });
-
-    document.getElementById('centerSaveBudgetBtn')?.addEventListener('click',async()=>{
-      const amount=Number(document.getElementById('centerBudgetAmount').value||0), id=centerDocId('month',new Date().toISOString().slice(0,7));
-      if(amount<0){return;}
-      try{await setDoc(centerDoc('budgets',id),{amount,spent:centerCache.budget?.spent||0,month:new Date().toISOString().slice(0,7),updatedAt:serverTimestamp(),updatedBy:selectedEmail},{merge:true});await centerLoad();showToast('📊 Presupuesto guardado');}catch(e){showToast('No se pudo guardar el presupuesto','error');}
-    });
-
-    document.getElementById('centerAddEventBtn')?.addEventListener('click',()=>{
-      if(!ADMIN_EMAILS.includes(selectedEmail)){showToast('Solo Mamá puede crear eventos','error');return;}
-      document.getElementById('centerEventForm').style.display='block';
-    });
-    document.getElementById('centerSaveEventBtn')?.addEventListener('click',async()=>{
-      const title=document.getElementById('centerEventTitle').value.trim(), date=document.getElementById('centerEventDate').value;
-      if(!title||!date){showToast('Completá el evento','error');return;}
-      try{await centerAdd('events',{title,date,shared:true});document.getElementById('centerEventForm').style.display='none';await centerLoad();showToast('📅 Evento agregado');}catch(e){showToast('No se pudo crear el evento','error');}
-    });
-
-    // Búsqueda y filtros del Centro
-    window.centerTaskFilter='all';
-    document.getElementById('centerTaskSearch')?.addEventListener('input',renderCenterTasks);
-    document.querySelectorAll('[data-task-filter]').forEach(b=>b.addEventListener('click',()=>{window.centerTaskFilter=b.dataset.taskFilter;document.querySelectorAll('[data-task-filter]').forEach(x=>x.classList.toggle('active',x===b));renderCenterTasks();}));
-    document.getElementById('centerActivitySearch')?.addEventListener('input',renderCenterActivity);
-    document.querySelectorAll('[data-center-jump]').forEach(el=>el.addEventListener('click',()=>{const target=el.dataset.centerJump;document.querySelectorAll('[data-center-tab]').forEach(b=>b.classList.toggle('active',b.dataset.centerTab===target));document.querySelectorAll('.center-pane').forEach(p=>p.style.display=p.id===target?'block':'none');}));
-    document.getElementById('centerExportBtn')?.addEventListener('click',()=>{
-      const payload={exportedAt:new Date().toISOString(),balance:Number(currentBalance||0),events:centerCache.tasks,goals:centerCache.goals,rewards:centerCache.rewards,calendar:centerCache.events,requests:centerCache.requests||[],activity:centerCache.activity||[]};
-      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mom-coin-resumen.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-      showToast('📦 Resumen exportado');
-    });
     // Preferencias avanzadas
     const compact=document.getElementById('prefCompactMode'); if(compact){compact.checked=!!AppPrefs.get('compactMode');document.body.classList.toggle('compact-mode',compact.checked);compact.addEventListener('change',e=>{AppPrefs.set('compactMode',e.target.checked);document.body.classList.toggle('compact-mode',e.target.checked);});}
     const duck=document.getElementById('prefDuckLevel'); if(duck){duck.value=Number(AppPrefs.get('duckLevel')||32);const lab=document.getElementById('duckLabel');if(lab)lab.textContent=duck.value+'%';duck.addEventListener('input',e=>{AppPrefs.set('duckLevel',Number(e.target.value));if(lab)lab.textContent=e.target.value+'%';window.VOICE_DUCK_FACTOR=Math.max(.15,Math.min(.6,Number(e.target.value)/100));});}
