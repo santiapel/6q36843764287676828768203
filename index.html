@@ -1966,6 +1966,9 @@
 
     let currentUser = null;
     let currentBalance = 0;
+    // Estado global de movimientos: debe existir antes de cualquier listener.
+    let allUserTransactions = [];
+    let transactionSearchTerm = "";
     let privateMode = false;
     let selectedEmail = "";
     let selectedName = "";
@@ -2784,6 +2787,16 @@
           </div>
         `).join('');
       }, () => {});
+    }
+
+    // Estado de movimientos y resumen del inicio
+
+    function updateHomeSummary() {
+      const ars = currentBalance * Number(MC_VALUE_ARS || 0);
+      const arsEl = document.getElementById('homeArsValue');
+      const rateEl = document.getElementById('homeMcRate');
+      if (arsEl) arsEl.textContent = privateMode ? '••••' : `$${ars.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
+      if (rateEl) rateEl.textContent = `$${Number(MC_VALUE_ARS || 0).toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
     }
 
     function updateBalanceDisplay() {
