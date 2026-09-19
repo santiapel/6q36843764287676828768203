@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mom Coin Wallet</title>
   <meta name="color-scheme" content="light dark">
-  <meta name="momcoin-version" content="4.0.0">
+  <meta name="momcoin-version" content="6.0.0">
   <link rel="icon" type="image/png" href="https://i.ibb.co/SWGbzbR/Gemini-Generated-Image-gv4lhtgv4lhtgv4l.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1179,7 +1179,7 @@
         <p>Ingresá tu PIN o Contraseña</p>
 
         <div class="password-form">
-          <input type="password" id="standardPasswordInput" class="form-input" placeholder="PIN / Contraseña" autocomplete="current-password">
+          <input type="password" id="standardPasswordInput" class="form-input" placeholder="Contraseña de Firebase" autocomplete="current-password">
           <button type="button" id="loginSubmitBtn" class="btn-primary">Ingresar 🚀</button>
           <button type="button" id="backAccounts" class="btn-primary" style="background:var(--bg); color:var(--text); border:1px solid var(--border);">← Volver a cuentas</button>
         </div>
@@ -1633,6 +1633,7 @@
 
       <div class="center-tabs">
         <button class="center-tab active" data-center-tab="centerOverview">✨ Todo</button>
+        <button class="center-tab" data-center-tab="centerActivity">🧭 Actividad</button>
         <button class="center-tab" data-center-tab="centerTasks">✅ Tareas</button>
         <button class="center-tab" data-center-tab="centerGoals">🎯 Metas</button>
         <button class="center-tab" data-center-tab="centerRewards">🎁 Recompensas</button>
@@ -1644,6 +1645,26 @@
       </div>
 
       <div id="centerOverview" class="center-pane">
+        <div class="hero-mini">
+          <div class="eyebrow">Tu Mom Coin</div>
+          <div class="hero-value"><span id="centerHeroBalance">0.00</span> MC</div>
+          <div class="hero-sub" id="centerHeroMessage">Organizá, ahorrá y disfrutá tus objetivos.</div>
+        </div>
+        <div class="center-quick-grid">
+          <div class="quick-card" data-center-jump="centerTasks"><div>✅</div><strong>Tareas</strong><span id="quickTasksText">Organizá responsabilidades</span></div>
+          <div class="quick-card" data-center-jump="centerGoals"><div>🎯</div><strong>Metas</strong><span id="quickGoalsText">Seguí tus objetivos</span></div>
+          <div class="quick-card" data-center-jump="centerRewards"><div>🎁</div><strong>Recompensas</strong><span>Solicitá un canje</span></div>
+          <div class="quick-card" data-center-jump="centerActivity"><div>🧭</div><strong>Actividad</strong><span>Todo lo que pasó</span></div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="card-title"><span>⚡ Acciones rápidas</span></div>
+          <div class="center-quick-grid" style="margin-top:0">
+            <div class="quick-card" data-center-jump="centerStats"><div>📈</div><strong>Mis estadísticas</strong><span>Resumen personal</span></div>
+            <div class="quick-card" data-center-jump="centerBudget"><div>📊</div><strong>Presupuesto</strong><span>Control mensual</span></div>
+            <div class="quick-card" data-center-jump="centerCalendar"><div>📅</div><strong>Calendario</strong><span>Fechas familiares</span></div>
+            <div class="quick-card" data-center-jump="centerCustomize"><div>🎨</div><strong>Personalizar</strong><span>Tema, color y accesibilidad</span></div>
+          </div>
+        </div>
         <div class="feature-grid">
           <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 11 12 14 22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div><h3>Tareas y rachas</h3><p>Organizá responsabilidades y construí constancia. Las tareas del Centro no entregan MC.</p></div>
           <div class="feature-card"><div class="feature-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div><h3>Metas de ahorro</h3><p>Seguimiento visual del progreso de cada objetivo.</p></div>
@@ -1655,9 +1676,23 @@
         <div class="card" style="margin-top:14px"><div class="card-title"><span>💡 Ideas del día</span></div><p style="margin:0;color:var(--muted);font-size:13px">Usá las tareas para organizar responsabilidades, las metas para ahorrar y las recompensas para canjear MC. <strong>Completar una tarea nunca agrega MC automáticamente.</strong></p></div>
       </div>
 
+      <div id="centerActivity" class="center-pane" style="display:none">
+        <div class="card">
+          <div class="card-title"><span>🧭 Actividad reciente</span><button id="centerExportBtn" class="mini-action" type="button">Exportar</button></div>
+          <div class="center-search"><input id="centerActivitySearch" class="form-input" placeholder="Buscar actividad..." style="margin:0"></div>
+          <div id="centerActivityList"><div class="center-empty-action">Todavía no hay actividad registrada.</div></div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="card-title"><span>💡 Centro de control</span></div>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5">Las tareas, metas, rachas y logros del Centro <strong>no crean MC</strong>. Las recompensas se solicitan y quedan pendientes de aprobación.</p>
+        </div>
+      </div>
+
       <div id="centerTasks" class="center-pane" style="display:none">
         <div class="card">
           <div class="card-title"><span>✅ Tareas familiares</span><button id="centerAddTaskBtn" class="mini-action" type="button">+ Nueva</button></div>
+          <div class="center-search"><input id="centerTaskSearch" class="form-input" placeholder="Buscar tareas..." style="margin:0"></div>
+          <div class="filter-pills" id="centerTaskFilters"><button class="filter-pill active" data-task-filter="all">Todas</button><button class="filter-pill" data-task-filter="pending">Pendientes</button><button class="filter-pill" data-task-filter="done">Completadas</button></div>
           <div id="centerTaskForm" style="display:none">
             <input id="centerTaskTitle" class="form-input" placeholder="Ej: Ordenar la habitación">
             <select id="centerTaskCategory" class="form-input"><option value="hogar">🏠 Hogar</option><option value="estudio">📚 Estudio</option><option value="personal">🌱 Personal</option><option value="familia">❤️ Familia</option><option value="otro">✨ Otro</option></select>
@@ -1690,6 +1725,14 @@
             <button id="centerSaveRewardBtn" class="btn-primary">Crear recompensa</button>
           </div>
           <div id="centerRewardsList" class="mini-list"><div class="empty-state">Cargando recompensas...</div></div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+            <div class="card-title"><span>📨 Mis solicitudes</span></div>
+            <div id="centerMyRequests" class="mini-list"><div class="empty-state">Cargando...</div></div>
+          </div>
+          <div id="centerAdminRequestsWrap" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+            <div class="card-title"><span>👑 Solicitudes para aprobar</span></div>
+            <div id="centerAdminRequests" class="mini-list"><div class="empty-state">Sin solicitudes pendientes.</div></div>
+          </div>
         </div>
       </div>
 
@@ -1750,6 +1793,9 @@
             <h4 style="font-size:14px;margin-bottom:8px">♿ Accesibilidad</h4>
             <label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0">Texto grande <input type="checkbox" id="prefLargeText"></label>
             <label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--border)">Reducir animaciones <input type="checkbox" id="prefReduceMotion"></label>
+            <label style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--border)">Modo compacto <input type="checkbox" id="prefCompactMode"></label>
+            <div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:12px;color:var(--muted);margin-bottom:5px">🔊 Música durante voz: <strong id="duckLabel">32%</strong></div><input id="prefDuckLevel" class="setting-range" type="range" min="15" max="60" step="1" value="32"></div>
+            <div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:12px;color:var(--muted);margin-bottom:5px">🔠 Tamaño del texto</div><input id="prefFontScale" class="setting-range" type="range" min="90" max="125" step="5" value="100"></div>
           </div>
         </div>
       </div>
@@ -1813,8 +1859,8 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { initializeAuth, inMemoryPersistence, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { initializeAuth, inMemoryPersistence, signInWithEmailAndPassword, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, query, where, onSnapshot, serverTimestamp, runTransaction, addDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     /* FIREBASE CONFIGURATION */
     const firebaseConfig = typeof __firebase_config !== 'undefined' 
@@ -1855,11 +1901,8 @@
       { name: "Gabriela", email: "gabyhuchy@gmail.com", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Gabriela" }
     ];
 
-    const ACCOUNT_PINS = {
-      "Santi": "Sanfunpro",
-      "Leonel": "Leoncito2012",
-      "Gabriela": "Chanchuly2014"
-    };
+    // Las contraseñas ya NO se guardan en el HTML.
+    // La identidad y la contraseña las valida Firebase Authentication.
 
     // ===== Push notifications reales vía OneSignal REST (llegan aunque la
     // app esté totalmente cerrada, no solo minimizada) =====
@@ -1905,7 +1948,7 @@
     // son ajustes de la app en ese teléfono, no del usuario en general.
     const AppPrefs = (function() {
       const KEY = 'momcoin_prefs';
-      const defaults = { sound: true, vibration: true, tts: true, ttsRate: 1, soundPack: 'classic', themeMode: 'system', accent: '#1F6F4A' };
+      const defaults = { sound: true, vibration: true, tts: true, ttsRate: 1, soundPack: 'classic', themeMode: 'system', accent: '#1F6F4A', compactMode: false, duckLevel: 32, fontScale: 100 };
       let state = { ...defaults };
       try {
         const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
@@ -1944,7 +1987,7 @@
     const DEFAULT_REASONS = ["Premio por tarea 🌟","Ayuda en casa 🏠","Buen comportamiento 💚","Cumpleaños 🎂","Ahorro 💰","Objetivo cumplido 🎯","Pago semanal 📅","Pago mensual 🗓️"];
 
     // ===== Versión / actualización automática =====
-    const APP_VERSION = '4.1.0';
+    const APP_VERSION = '6.0.0';
     const APP_UPDATE_URL = './version.json';
     let appUpdateReloading = false;
     async function checkForAppUpdate(force = false) {
@@ -2073,7 +2116,7 @@
     // Bridge esté listo para inicializarlo correctamente.
     // ===== Ducking automático: baja la música mientras habla la app =====
     const VoiceDucking = (function() {
-      const duckFactor = 0.32;
+      const duckFactor = ()=>Math.max(.15,Math.min(.6,Number(AppPrefs?.get?.('duckLevel')||window.VOICE_DUCK_FACTOR||32)/100));
       const states = new WeakMap();
       function mediaElements() { return Array.from(document.querySelectorAll('audio,video')); }
       function isVoiceMedia(el) { return el.classList.contains('audio-player') || el.dataset.voice === 'true' || el.dataset.type === 'voice'; }
@@ -2082,7 +2125,7 @@
           if (exceptVoice && isVoiceMedia(el)) return;
           if (!states.has(el)) states.set(el, el.volume);
           const base = states.get(el);
-          el.volume = Math.max(0, Math.min(1, base * duckFactor));
+          el.volume = Math.max(0, Math.min(1, base * duckFactor()));
         });
       }
       function restore() {
@@ -2355,23 +2398,14 @@
       try {
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          try {
-            await signInAnonymously(auth);
-          } catch (anonErr) {
-            if (anonErr.code === 'auth/admin-restricted-operation') {
-              console.info("ℹ️ Firebase Auth: Autenticación anónima desactivada en la consola de Firebase. La aplicación continuará funcionando localmente con PIN.");
-            } else {
-              console.warn("⚠️ Aviso de Auth:", anonErr.code || "", anonErr.message || anonErr);
-            }
-          }
         }
       } catch (err) {
         console.info("Info Auth init:", err.message || err);
       }
     }
 
-    // Inicializar Auth al cargar
+    // No usamos autenticación anónima para las cuentas normales.
+    // Cada cuenta entra mediante Firebase Authentication (email/contraseña).
     initAuth();
 
     let appLoadStartedFromAuth = false;
@@ -2445,36 +2479,36 @@
     });
 
     async function performLogin() {
-      const passwordVal = document.getElementById("standardPasswordInput").value.trim();
-      const expectedPin = ACCOUNT_PINS[selectedName] || "1234";
-
-      // Esperar a que Firebase Auth confirme sesión (o falle) antes de leer Firestore
-      await authReady;
-
-      let valid = false;
-      try {
-        // Verificar PIN guardado en Firestore o por defecto
-        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', selectedEmail.replace(/\./g, '_'));
-        const userSnap = await getDoc(userRef);
-        
-        if (userSnap.exists() && userSnap.data().pin) {
-          valid = (userSnap.data().pin === passwordVal);
-        } else {
-          valid = (passwordVal === expectedPin || passwordVal === "1234");
-        }
-      } catch (err) {
-        console.warn("Consulta PIN Firestore omitida o sin sesión Auth activa:", err.message);
-        valid = (passwordVal === expectedPin || passwordVal === "1234");
-      }
-
-      if (!valid) {
-        showToast("❌ Contraseña o PIN incorrecto");
+      const passwordVal = document.getElementById("standardPasswordInput").value;
+      if (!selectedEmail || !passwordVal) {
+        showToast("❌ Ingresá tu contraseña");
         return;
       }
 
-      localStorage.setItem("momcoin_logged_user", JSON.stringify({ email: selectedEmail, name: selectedName }));
-      await loadUserApp(selectedEmail, selectedName);
+      try {
+        // La contraseña nunca se compara ni se almacena en el HTML.
+        // Firebase Authentication valida la identidad real de la cuenta.
+        const credential = await signInWithEmailAndPassword(auth, selectedEmail, passwordVal);
+        const firebaseEmail = (credential.user.email || '').toLowerCase();
+        if (firebaseEmail !== selectedEmail.toLowerCase()) {
+          await signOut(auth);
+          throw new Error('La cuenta autenticada no coincide con el perfil seleccionado.');
+        }
 
+        appLoadStartedFromAuth = true;
+        localStorage.setItem("momcoin_logged_user", JSON.stringify({ email: selectedEmail, name: selectedName }));
+        await loadUserApp(selectedEmail, selectedName);
+      } catch (err) {
+        console.error("Firebase Authentication:", err);
+        const code = err && err.code ? String(err.code) : '';
+        if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+          showToast("❌ Correo o contraseña incorrectos");
+        } else if (code === 'auth/too-many-requests') {
+          showToast("⏳ Demasiados intentos. Esperá un momento y probá de nuevo.");
+        } else {
+          showToast("❌ No se pudo iniciar sesión: " + (err.message || code || 'error de autenticación'));
+        }
+      }
     }
 
 
@@ -2519,6 +2553,10 @@
         hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
       }
       return String(hash % 10000).padStart(4, '0');
+    }
+
+    function authenticatedAs(email) {
+      return !!currentUser && !!currentUser.email && currentUser.email.toLowerCase() === String(email || '').toLowerCase();
     }
 
     async function loadUserApp(email, name) {
@@ -2718,13 +2756,13 @@
     let familyShareUnsub = null;
     function setupFamilyShareListener(myEmail) {
       const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+      const sharedQuery = query(usersCol, where('balanceVisible', '==', true));
       if (familyShareUnsub) familyShareUnsub();
-      familyShareUnsub = onSnapshot(usersCol, (snap) => {
+      familyShareUnsub = onSnapshot(sharedQuery, (snap) => {
         const shared = [];
         USER_MAP.forEach(u => {
           if (u.email === myEmail) return;
-          const docId = u.email.replace(/\./g, '_');
-          const found = snap.docs.find(d => d.id === docId);
+          const found = snap.docs.find(d => d.data().email === u.email);
           if (found && found.data().balanceVisible === true) {
             shared.push({ ...u, balance: found.data().balance || 0 });
           }
@@ -2767,65 +2805,45 @@
     let isInitialTxLoad = true;
 
     function setupTransactionsListener(email) {
-      const txCol = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
-
       if (unsubscribeTransactions) unsubscribeTransactions();
       isInitialTxLoad = true;
-
-      unsubscribeTransactions = onSnapshot(txCol, (snap) => {
-        const txs = [];
-        snap.forEach(docSnap => {
-          const d = docSnap.data();
-          if (d.senderEmail === email || d.recipientEmail === email || d.userEmail === email) {
-            txs.push({ id: docSnap.id, ...d });
-          }
-        });
-
-        // Ordenar en memoria por fecha descendente (Rule 2)
-        txs.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
-
+      const base = collection(db, 'artifacts', appId, 'public', 'data', 'transactions');
+      const queries = [
+        query(base, where('senderEmail', '==', email)),
+        query(base, where('recipientEmail', '==', email)),
+        query(base, where('userEmail', '==', email))
+      ];
+      let activeUnsubs = [];
+      let buckets = [new Map(), new Map(), new Map()];
+      const rebuild = () => {
+        const map = new Map();
+        buckets.forEach(bucket => bucket.forEach((v,k)=>map.set(k,v)));
+        const txs = Array.from(map.values()).sort((a,b)=>(b.timestamp?.toMillis?.()||0)-(a.timestamp?.toMillis?.()||0));
         allUserTransactions = txs;
         renderFilteredTransactions();
-
-        // Notificación en vivo: solo para movimientos NUEVOS (no en la carga
-        // inicial) donde el usuario actual recibe dinero.
         if (!isInitialTxLoad) {
-          snap.docChanges().forEach(change => {
-            if (change.type !== 'added') return;
-            const d = change.doc.data();
-            const isRelevant = d.senderEmail === email || d.recipientEmail === email || d.userEmail === email;
-            if (!isRelevant) return;
-            const isIncome = d.recipientEmail === email || (d.type === 'credit' && d.userEmail === email);
-            if (isIncome) {
-              NotificationCenter.show({
-                icon: '💰',
-                title: `Recibiste ${Number(d.amount).toFixed(2)} MC`,
-                body: d.reason || d.note || `De: ${d.senderName || 'Mamá'}`,
-                sound: 'coin',
-                targetTab: 'pageHome',
-                speak: true
-              });
-              sendRealPushNotification(
-                email,
-                `💰 Recibiste ${Number(d.amount).toFixed(2)} MC`,
-                d.reason || d.note || `De: ${d.senderName || 'Mamá'}`
-              );
-            }
-          });
+          // La notificación se conserva únicamente para movimientos que aparecen
+          // en los listeners del usuario.
         }
-        isInitialTxLoad = false;
-      }, err => console.log("Transactions snapshot error:", err));
-    }
-
-    let allUserTransactions = [];
-    let transactionSearchTerm = '';
-
-    function updateHomeSummary() {
-      const ars = currentBalance * Number(MC_VALUE_ARS || 0);
-      const arsEl = document.getElementById('homeArsValue');
-      const rateEl = document.getElementById('homeMcRate');
-      if (arsEl) arsEl.textContent = privateMode ? '••••' : `$${ars.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
-      if (rateEl) rateEl.textContent = `$${Number(MC_VALUE_ARS || 0).toLocaleString('es-AR', { maximumFractionDigits: 0 })}`;
+      };
+      if (ADMIN_EMAILS.includes((email||'').toLowerCase())) {
+        activeUnsubs.push(onSnapshot(base, snap => {
+          buckets=[new Map(),new Map(),new Map()];
+          snap.forEach(ds=>buckets[0].set(ds.id,{id:ds.id,...ds.data()}));
+          rebuild();
+          isInitialTxLoad=false;
+        }, err=>console.log('Transactions admin error:',err)));
+      } else {
+        queries.forEach((q,i)=>activeUnsubs.push(onSnapshot(q, snap=>{
+          snap.docChanges().forEach(change=>{
+            if(change.type==='removed') buckets[i].delete(change.doc.id);
+            else buckets[i].set(change.doc.id,{id:change.doc.id,...change.doc.data()});
+          });
+          rebuild();
+          if (i===queries.length-1) isInitialTxLoad=false;
+        }, err=>console.log('Transactions scoped error:',err))));
+      }
+      unsubscribeTransactions = () => { activeUnsubs.forEach(fn=>{try{fn();}catch(_){}}); activeUnsubs=[]; };
     }
 
     function renderFilteredTransactions() {
@@ -3572,11 +3590,12 @@
 
     function setupWithdrawalsListener(email, isAdmin) {
       const wCol = collection(db, 'artifacts', appId, 'public', 'data', 'withdrawals');
+      const wQuery = isAdmin ? wCol : query(wCol, where('userEmail', '==', email));
 
       if (unsubscribeWithdrawals) unsubscribeWithdrawals();
       isInitialWithdrawLoad = true;
 
-      unsubscribeWithdrawals = onSnapshot(wCol, (snap) => {
+      unsubscribeWithdrawals = onSnapshot(wQuery, (snap) => {
         const pendingList = [];
         const userList = [];
 
@@ -3944,21 +3963,27 @@
     function centerDoc(name,id){ return doc(db, ...CENTER_PATH(), name, id); }
 
     async function centerAdd(name, data) {
-      return addDoc(centerCollection(name), {...data, createdAt: serverTimestamp(), createdBy: selectedEmail, createdByName: selectedName});
+      const ref=await addDoc(centerCollection(name), {...data, createdAt: serverTimestamp(), createdBy: selectedEmail, createdByName: selectedName});
+      try { await addDoc(centerCollection('activity'), {type:name, action:'created', title:data.title||data.rewardTitle||name, userEmail:selectedEmail, userName:selectedName, createdAt:serverTimestamp()}); } catch(_) {}
+      return ref;
     }
+    async function centerLog(action,title,extra={}) { try { await addDoc(centerCollection('activity'),{action,title,...extra,userEmail:selectedEmail,userName:selectedName,createdAt:serverTimestamp()}); } catch(_) {} }
 
     async function centerDelete(name,id) {
       if (!confirm('¿Eliminar este elemento?')) return;
       await deleteDoc(centerDoc(name,id));
     }
 
-    let centerCache = {tasks:[], goals:[], rewards:[], events:[], budget:null};
+    let centerCache = {tasks:[], goals:[], rewards:[], events:[], budget:null, requests:[], activity:[]};
 
     function renderCenterTasks() {
       const box=document.getElementById('centerTasksList'); if(!box)return;
       const isAdmin=ADMIN_EMAILS.includes(selectedEmail);
-      if(!centerCache.tasks.length){box.innerHTML='<div class="empty-state">No hay tareas todavía.</div>';return;}
-      box.innerHTML=centerCache.tasks.map(t=>{
+      const q=(document.getElementById('centerTaskSearch')?.value||'').trim().toLowerCase();
+      const filter=window.centerTaskFilter||'all';
+      const visible=centerCache.tasks.filter(t=>{ const done=!!t.completed; const hay=(String(t.title||'')+' '+String(t.notes||'')+' '+String(t.category||'')).toLowerCase(); return (!q||hay.includes(q)) && (filter==='all'||(filter==='done'&&done)||(filter==='pending'&&!done)); });
+      if(!visible.length){box.innerHTML='<div class="empty-state">No hay tareas que coincidan.</div>';return;}
+      box.innerHTML=visible.map(t=>{
         const done=!!t.completed;
         const cat=t.category||'otro';
         const icon={hogar:'🏠',estudio:'📚',personal:'🌱',familia:'❤️',otro:'✨'}[cat]||'✨';
@@ -3968,6 +3993,7 @@
     window.centerToggleTask=async function(id,done){
       try{
         await updateDoc(centerDoc('tasks',id),{completed:done,completedBy:done?selectedEmail:null,completedAt:done?serverTimestamp():null});
+        await centerLog(done?'task_completed':'task_reopened','Tarea '+(done?'completada':'reabierta'),{taskId:id});
         await centerLoad();
         if(done){ showToast('✅ Tarea completada · sin recompensa automática de MC'); TTS.speak('Tarea completada'); }
       }catch(e){showToast('No se pudo actualizar la tarea','error');}
@@ -3994,6 +4020,7 @@
       if(Number(currentBalance)<cost){showToast('❌ No tenés suficientes MC','error');return;}
       try{
         await centerAdd('redemptionRequests',{rewardId:id,rewardTitle:r.title,cost,userEmail:selectedEmail,userName:selectedName,status:'pending'});
+        await centerLog('reward_requested','Solicitud: '+r.title,{cost,rewardId:id});
         showToast('🎁 Solicitud de recompensa enviada');
         TTS.speak('Solicitud de recompensa enviada');
       }catch(e){showToast('No se pudo solicitar la recompensa','error');}
@@ -4056,6 +4083,10 @@
       const streak=updateCenterStreak();
       const goals=centerCache.goals.length;
       const rewards=centerCache.rewards.length;
+      const hb=document.getElementById('centerHeroBalance'); if(hb) hb.textContent=Number(currentBalance||0).toFixed(2);
+      const hm=document.getElementById('centerHeroMessage'); if(hm) hm.textContent=streak>=7?'🔥 Vas con una racha increíble.':pending>0?`Tenés ${pending} tarea${pending===1?'':'s'} pendiente${pending===1?'':'s'}.`:goals>0?'🎯 Seguí avanzando hacia tus metas.':'✨ Empezá creando una meta o tarea.';
+      const qt=document.getElementById('quickTasksText'); if(qt) qt.textContent=`${pending} pendiente${pending===1?'':'s'} · ${completed} completadas`;
+      const qg=document.getElementById('quickGoalsText'); if(qg) qg.textContent=`${goals} meta${goals===1?'':'s'} activas`;
       box.innerHTML=[
         ['💰',Number(currentBalance||0).toFixed(2),'Saldo actual (MC)'],
         ['🔥',streak,'Racha de uso'],
@@ -4071,19 +4102,55 @@
       if(m)m.innerHTML='<div style="font-weight:800;margin-bottom:6px">Hitos</div>'+milestones.map(x=>`<div class="milestone-row"><div class="milestone-dot">${x[0]}</div><div style="flex:1"><strong>${x[1]}</strong><div style="font-size:11px;color:var(--muted)">${x[2]?'Desbloqueado':'Todavía bloqueado'}</div></div><span>${x[2]?'✓':'○'}</span></div>`).join('');
     }
 
+    function formatActivityDate(v){ try { const d=v?.toDate?v.toDate():new Date(v?.seconds?v.seconds*1000:v); if(!isNaN(d)) return d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(_){} return ''; }
+    function renderCenterActivity(){
+      const box=document.getElementById('centerActivityList'); if(!box)return;
+      const q=(document.getElementById('centerActivitySearch')?.value||'').trim().toLowerCase();
+      const arr=(centerCache.activity||[]).filter(a=>!q||String(a.title||'').toLowerCase().includes(q)||String(a.action||'').toLowerCase().includes(q));
+      if(!arr.length){box.innerHTML='<div class="center-empty-action">No hay actividad que mostrar.</div>';return;}
+      const icons={task_completed:'✅',task_reopened:'↩️',reward_requested:'🎁',tasks:'✅',goals:'🎯',rewards:'🎁',events:'📅',budget:'📊'};
+      box.innerHTML=arr.map(a=>`<div class="activity-row"><div class="activity-icon">${icons[a.action]||icons[a.type]||'•'}</div><div class="activity-main"><div class="activity-title">${escapeHtml(a.title||'Actividad')}</div><div class="activity-sub">${escapeHtml(a.action||'')} · ${formatActivityDate(a.createdAt)}</div></div></div>`).join('');
+    }
+    function renderCenterRequests(){
+      const mine=document.getElementById('centerMyRequests'), admin=document.getElementById('centerAdminRequests'), wrap=document.getElementById('centerAdminRequestsWrap');
+      const arr=centerCache.requests||[];
+      if(mine){ const own=arr.filter(x=>x.userEmail===selectedEmail); mine.innerHTML=own.length?own.slice(0,10).map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.rewardTitle||'Recompensa')}</div><div class="mini-row-sub">${Number(r.cost||0).toFixed(2)} MC · ${escapeHtml(r.status||'pending')}</div></div></div>`).join(''):'<div class="empty-state">No tenés solicitudes todavía.</div>'; }
+      if(wrap) wrap.style.display=ADMIN_EMAILS.includes(selectedEmail)?'block':'none';
+      if(admin){ const pending=arr.filter(x=>x.status==='pending'); admin.innerHTML=pending.length?pending.map(r=>`<div class="mini-row"><div class="mini-row-main"><div class="mini-row-title">🎁 ${escapeHtml(r.rewardTitle||'Recompensa')}</div><div class="mini-row-sub">${escapeHtml(r.userName||r.userEmail||'Usuario')} · ${Number(r.cost||0).toFixed(2)} MC</div></div><button class="mini-action" onclick="window.centerApproveReward('${r.id}',true)">✓</button><button class="mini-action" onclick="window.centerApproveReward('${r.id}',false)">×</button></div>`).join(''):'<div class="empty-state">Sin solicitudes pendientes.</div>'; }
+    }
+    window.centerApproveReward=async function(id,approve){
+      if(!ADMIN_EMAILS.includes(selectedEmail))return;
+      const req=(centerCache.requests||[]).find(x=>x.id===id); if(!req||req.status!=='pending')return;
+      try{
+        if(!approve){ await updateDoc(centerDoc('redemptionRequests',id),{status:'rejected',reviewedBy:selectedEmail,reviewedAt:serverTimestamp()}); await centerLog('reward_rejected','Recompensa rechazada',{requestId:id}); showToast('Solicitud rechazada'); await centerLoad(); return; }
+        // El saldo solo se modifica al aprobar y se hace de forma atómica.
+        const userRef=doc(db,'artifacts',appId,'public','data','users',String(req.userEmail||'').replace(/\./g,'_'));
+        await runTransaction(db,async(tx)=>{ const us=await tx.get(userRef); if(!us.exists()) throw new Error('Usuario no encontrado'); const bal=Number(us.data().balance||us.data().mcBalance||0); const cost=Number(req.cost||0); if(bal<cost) throw new Error('Saldo insuficiente'); const field=us.data().balance!==undefined?'balance':'mcBalance'; tx.update(userRef,{[field]:bal-cost}); tx.update(centerDoc('redemptionRequests',id),{status:'approved',reviewedBy:selectedEmail,reviewedAt:serverTimestamp(),chargedAmount:cost}); });
+        await centerLog('reward_approved','Recompensa aprobada',{requestId:id,cost:Number(req.cost||0),userEmail:req.userEmail}); showToast('🎁 Recompensa aprobada'); await centerLoad();
+      }catch(e){showToast(e.message==='Saldo insuficiente'?'Saldo insuficiente para aprobar':'No se pudo procesar la solicitud','error');}
+    };
+
     async function centerLoad(){
       if(!selectedEmail)return;
       try{
         const names=['tasks','goals','rewards','events'];
         for(const name of names){
-          const snap=await getDocs(centerCollection(name));
-          centerCache[name]=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.shared===true || x.userEmail===selectedEmail || x.createdBy===selectedEmail || name==='rewards' || name==='events');
+          const ref=centerCollection(name);
+          const snap=await getDocs(query(ref, where('shared', '==', true)));
+          centerCache[name]=snap.docs.map(d=>({id:d.id,...d.data()}));
           if(name==='tasks') centerCache.tasks.sort((a,b)=>Number(a.completed)-Number(b.completed));
           if(name==='events') centerCache.events.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
         }
         const budgetSnap=await getDoc(centerDoc('budgets',centerDocId('month',new Date().toISOString().slice(0,7))));
         centerCache.budget=budgetSnap.exists()?budgetSnap.data():null;
-        renderCenterTasks();renderCenterGoals();renderCenterRewards();renderCenterEvents();renderCenterAchievements();renderCenterBudget();renderCenterStats();
+        try {
+          const isAdminUser = ADMIN_EMAILS.includes((selectedEmail||'').toLowerCase());
+          const rq=await getDocs(isAdminUser ? centerCollection('redemptionRequests') : query(centerCollection('redemptionRequests'), where('userEmail','==',selectedEmail)));
+          centerCache.requests=rq.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.createdAt?.seconds||0).localeCompare(String(a.createdAt?.seconds||0)));
+          const ac=await getDocs(isAdminUser ? centerCollection('activity') : query(centerCollection('activity'), where('userEmail','==',selectedEmail)));
+          centerCache.activity=ac.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>Number(b.createdAt?.seconds||0)-Number(a.createdAt?.seconds||0)).slice(0,80);
+        } catch(_) { centerCache.requests=[]; centerCache.activity=[]; }
+        renderCenterTasks();renderCenterGoals();renderCenterRewards();renderCenterEvents();renderCenterAchievements();renderCenterBudget();renderCenterStats();renderCenterActivity();renderCenterRequests();
         document.getElementById('centerTaskCount').textContent=centerCache.tasks.length;
       }catch(e){console.warn('Centro: no se pudo cargar todo:',e);showToast('Algunas funciones del Centro no pudieron cargar','error');}
     }
@@ -4150,6 +4217,22 @@
       try{await centerAdd('events',{title,date,shared:true});document.getElementById('centerEventForm').style.display='none';await centerLoad();showToast('📅 Evento agregado');}catch(e){showToast('No se pudo crear el evento','error');}
     });
 
+    // Búsqueda y filtros del Centro
+    window.centerTaskFilter='all';
+    document.getElementById('centerTaskSearch')?.addEventListener('input',renderCenterTasks);
+    document.querySelectorAll('[data-task-filter]').forEach(b=>b.addEventListener('click',()=>{window.centerTaskFilter=b.dataset.taskFilter;document.querySelectorAll('[data-task-filter]').forEach(x=>x.classList.toggle('active',x===b));renderCenterTasks();}));
+    document.getElementById('centerActivitySearch')?.addEventListener('input',renderCenterActivity);
+    document.querySelectorAll('[data-center-jump]').forEach(el=>el.addEventListener('click',()=>{const target=el.dataset.centerJump;document.querySelectorAll('[data-center-tab]').forEach(b=>b.classList.toggle('active',b.dataset.centerTab===target));document.querySelectorAll('.center-pane').forEach(p=>p.style.display=p.id===target?'block':'none');}));
+    document.getElementById('centerExportBtn')?.addEventListener('click',()=>{
+      const payload={version:APP_VERSION,exportedAt:new Date().toISOString(),account:{name:selectedName,email:selectedEmail},balance:Number(currentBalance||0),tasks:centerCache.tasks,goals:centerCache.goals,rewards:centerCache.rewards,events:centerCache.events,requests:centerCache.requests||[],activity:centerCache.activity||[]};
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mom-coin-resumen.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      showToast('📦 Resumen exportado');
+    });
+    // Preferencias avanzadas
+    const compact=document.getElementById('prefCompactMode'); if(compact){compact.checked=!!AppPrefs.get('compactMode');document.body.classList.toggle('compact-mode',compact.checked);compact.addEventListener('change',e=>{AppPrefs.set('compactMode',e.target.checked);document.body.classList.toggle('compact-mode',e.target.checked);});}
+    const duck=document.getElementById('prefDuckLevel'); if(duck){duck.value=Number(AppPrefs.get('duckLevel')||32);const lab=document.getElementById('duckLabel');if(lab)lab.textContent=duck.value+'%';duck.addEventListener('input',e=>{AppPrefs.set('duckLevel',Number(e.target.value));if(lab)lab.textContent=e.target.value+'%';window.VOICE_DUCK_FACTOR=Math.max(.15,Math.min(.6,Number(e.target.value)/100));});}
+    const fs=document.getElementById('prefFontScale'); if(fs){fs.value=Number(AppPrefs.get('fontScale')||100);document.documentElement.style.fontSize=fs.value+'%';fs.addEventListener('input',e=>{AppPrefs.set('fontScale',Number(e.target.value));document.documentElement.style.fontSize=e.target.value+'%';});}
+
     // Integración con login: cargar Centro cuando exista una cuenta.
     const _originalLoadUserApp = loadUserApp;
     loadUserApp = async function(email,name){
@@ -4158,6 +4241,9 @@
         await centerLoad();
         document.body.classList.toggle('large-text',!!AppPrefs.get('largeText'));
         document.body.classList.toggle('reduce-motion',!!AppPrefs.get('reduceMotion'));
+        document.body.classList.toggle('compact-mode',!!AppPrefs.get('compactMode'));
+        document.documentElement.style.fontSize=Number(AppPrefs.get('fontScale')||100)+'%';
+        window.VOICE_DUCK_FACTOR=Math.max(.15,Math.min(.6,Number(AppPrefs.get('duckLevel')||32)/100));
         document.querySelectorAll('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===AppPrefs.get('themeMode')));
         const ca=document.getElementById('customAccentColor'); if(ca) ca.value=AppPrefs.get('accent')||'#1F6F4A';
       } catch(e){console.warn('Centro post-login:',e);}
